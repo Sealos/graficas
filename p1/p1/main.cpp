@@ -7,6 +7,8 @@
 
 using namespace std;
 
+#define GLEW_STATIC
+
 static const int SCREEN_HEIGHT = 600;
 static const int SCREEN_WIDTH = 600;
 static const float DEGREE = static_cast<float>(3.14159/180);
@@ -19,7 +21,13 @@ GLfloat carPos = 0.0f;
 
 void changeViewport(int w, int h)
 {
-	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+	float aspect = 800 / 800;
+	glViewport(0, 0, w, h);
+	cout << w << " "  << h <<" " <<aspect << endl;
+	if (aspect >= 1.0)
+		glOrtho(-50.0 * aspect, 50.0 * aspect, -50.0, 50.0, 1.0, -1.0);
+	else
+		glOrtho(-50.0, 50.0, -50.0 / aspect, 50.0 / aspect, 1.0, -1.0);
 }
 
 void drawFloor()
@@ -171,7 +179,6 @@ void render()
 void getKeyPress(unsigned char key, int x, int y)
 {
 	GLfloat newCarPos;
-	GLfloat diff;
 	switch (key)
 	{
 		case 'z':
