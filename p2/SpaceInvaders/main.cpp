@@ -8,12 +8,17 @@
 
 void changeViewport(int w, int h)
 {
-	float aspect = static_cast<float>(800 / 800);
 	glViewport(0, 0, w, h);
-	if (aspect >= 1.0)
-		glOrtho(-50.0 * aspect, 50.0 * aspect, -50.0, 50.0, 1.0, -1.0);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	GLfloat aspect = (GLfloat)h/(GLfloat)w;
+
+	if (w <= h)
+		glOrtho(0.0, 100.0, 100.0*aspect,0.0*aspect, -1.0, 1.0);
 	else
-		glOrtho(-50.0, 50.0, -50.0 / aspect, 50.0 / aspect, 1.0, -1.0);
+		glOrtho(0.0/aspect, 100.0/aspect, 100.0, 0.0, -1.0, 1.0);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 }
 
 void render()
@@ -21,7 +26,12 @@ void render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
-
+	glBegin(GL_LINES);
+	{
+		glVertex2f(2.0f, 4.0f);
+		glVertex2f(3.0f, 8.0f);
+	}
+	glEnd();
 	glutSwapBuffers();
 	glutPostRedisplay();
 }
