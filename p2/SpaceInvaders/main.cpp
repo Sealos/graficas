@@ -931,24 +931,24 @@ void render() {
 
 	}
 
-	if(invaders.countAliveInvaders() == 0 && player.vivo){
+	if (invaders.countAliveInvaders() == 0 && player.vivo) {
 		glPushMatrix();
-		glColor3f(1.0f,1.0f,1.0f);
-		printw(1.0,50.0,"GANASTE!");
-		printw(40.0,50.0,"GANASTE!");
-		printw(75.0,50.0,"GANASTE!");
+		glColor3f(1.0f, 1.0f, 1.0f);
+		printw(1.0, 50.0, "GANASTE!");
+		printw(40.0, 50.0, "GANASTE!");
+		printw(75.0, 50.0, "GANASTE!");
 		glPopMatrix();
 	}
 
 	glPushMatrix();
-	glColor3f(1.0f,1.0f,1.0f);
+	glColor3f(1.0f, 1.0f, 1.0f);
 	string puntos = to_string(points);
-	printw(1.0,90.0,puntos.c_str());
+	printw(1.0, 90.0, puntos.c_str());
 	glPopMatrix();
 
 	glutSwapBuffers();
-	if(player.vivo && invaders.countAliveInvaders() >0)
-	glutPostRedisplay();
+	if (player.vivo && invaders.countAliveInvaders() > 0)
+	{ glutPostRedisplay(); }
 }
 
 void getKeyPress(unsigned char key, int x, int y) {
@@ -982,16 +982,25 @@ void keyboardRelease(unsigned char key, int x, int y) {
 }
 
 void timerInvaderShoot(int value) {
+	if (!player.vivo || invaders.countAliveInvaders() == 0) {
+		return;
+	}
+
 	invaders.shoot();
 	glutTimerFunc(timeInvaderShoot, timerInvaderShoot, 20);
 }
 
 void timerUFO(int value) {
-	if (invaders.countAliveInvaders() > 0)
+	if (player.vivo && invaders.countAliveInvaders() > 0) {
 		ufoShip = new UFO(0.0, 5.0);
+	}
 }
 
 void timer(int value) {
+	if (!player.vivo || invaders.countAliveInvaders() == 0) {
+		return;
+	}
+
 	invaders.update();
 	player.update();
 
