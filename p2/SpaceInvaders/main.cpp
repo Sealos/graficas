@@ -870,10 +870,7 @@ void render() {
 
 	glLoadIdentity();
 	//cuadriculaColision();
-	if (player.vivo) {
-		player.draw();
-	}
-
+	
 	invaders.draw();
 	barr[0].draw();
 	barr[1].draw();
@@ -903,6 +900,18 @@ void render() {
 	if (ufoShip) {
 		ufoShip -> draw();
 	}
+
+	if (player.vivo) {
+		player.draw();
+	}else{
+		glPushMatrix();
+		glColor3f(1.0f,1.0f,1.0f);
+		printw(1.0,50.0,"GAME OVER");
+		printw(40.0,50.0,"GAME OVER");
+		printw(75.0,50.0,"GAME OVER");
+		glPopMatrix();
+	}
+
 
 	glutSwapBuffers();
 	glutPostRedisplay();
