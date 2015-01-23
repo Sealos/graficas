@@ -882,6 +882,9 @@ void cuadriculaColision() {
 }
 
 void render() {
+	if (!player.vivo || invaders.countAliveInvaders() == 0) {
+		return;
+	}
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
