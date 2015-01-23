@@ -931,9 +931,10 @@ void render() {
 		printw(40.0, 50.0, "GAME OVER");
 		printw(75.0, 50.0, "GAME OVER");
 		glPopMatrix();
+
 	}
 
-	if(invaders.countAliveInvaders() == 0){
+	if(invaders.countAliveInvaders() == 0 && player.vivo){
 		glPushMatrix();
 		glColor3f(1.0f,1.0f,1.0f);
 		printw(1.0,50.0,"GANASTE!");
@@ -949,6 +950,7 @@ void render() {
 	glPopMatrix();
 
 	glutSwapBuffers();
+	if(player.vivo && invaders.countAliveInvaders() >0)
 	glutPostRedisplay();
 }
 
