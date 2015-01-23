@@ -39,6 +39,43 @@ void timerInvaderShoot(int);
 
 bool existsPlayerBullet = false;
 
+GLvoid* font_style = GLUT_BITMAP_TIMES_ROMAN_24;
+//  http://mycodelog.com/tag/printw/
+void printw(float x, float y, char* format, ...) {
+	va_list args;   //  Variable argument list
+	int len;        // String length
+	int i;          //  Iterator
+	char* text;     // Text
+
+	//  Initialize a variable argument list
+	va_start(args, format);
+
+	//  Return the number of characters in the string referenced the list of arguments.
+	// _vscprintf doesn't count terminating '\0' (that's why +1)
+	len = _vscprintf(format, args) + 1;
+
+	//  Allocate memory for a string of the specified size
+	text = static_cast<char*>(malloc(len * sizeof(char)));
+
+	//  Write formatted output using a pointer to the list of arguments
+	vsprintf_s(text, len, format, args);
+
+	//  End using variable argument list
+	va_end(args);
+
+	//  Specify the raster position for pixel operations.
+	glRasterPos2f(x, y);
+
+	//  Draw the characters one by one
+	for (i = 0; text[i] != '\0'; i++)
+	{ glutBitmapCharacter(font_style, text[i]); }
+
+	//  Free the allocated memory for the string
+	free(text);
+}
+
+
+
 inline pair<int, int> getQuadrant(float x, float y) {
 	return pair<int, int>(static_cast<int>(floor(x)) / 10, static_cast<int>(floor(y)) / 10);
 }
@@ -804,6 +841,8 @@ void cuadriculaColision() {
 	glEnd();
 }
 
+
+
 void render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -913,40 +952,6 @@ void timer(int value) {
 	}
 }
 
-GLvoid* font_style = GLUT_BITMAP_TIMES_ROMAN_24;
-//  http://mycodelog.com/tag/printw/
-void printw(float x, float y, float z, char* format, ...) {
-	va_list args;   //  Variable argument list
-	int len;        // String length
-	int i;          //  Iterator
-	char* text;     // Text
-
-	//  Initialize a variable argument list
-	va_start(args, format);
-
-	//  Return the number of characters in the string referenced the list of arguments.
-	// _vscprintf doesn't count terminating '\0' (that's why +1)
-	len = _vscprintf(format, args) + 1;
-
-	//  Allocate memory for a string of the specified size
-	text = static_cast<char*>(malloc(len * sizeof(char)));
-
-	//  Write formatted output using a pointer to the list of arguments
-	vsprintf_s(text, len, format, args);
-
-	//  End using variable argument list
-	va_end(args);
-
-	//  Specify the raster position for pixel operations.
-	glRasterPos3f(x, y, z);
-
-	//  Draw the characters one by one
-	for (i = 0; text[i] != '\0'; i++)
-	{ glutBitmapCharacter(font_style, text[i]); }
-
-	//  Free the allocated memory for the string
-	free(text);
-}
 
 int main(int argc, char** argv) {
 	srand(time(0));
