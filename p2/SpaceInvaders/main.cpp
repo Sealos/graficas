@@ -191,7 +191,9 @@ public:
 				--vida;
 
 				if (vida == 0)
-				{ points += strong ? 200 : 100; }
+				{
+					points += strong ? 200 : 100;
+				}
 
 				return true;
 			}
@@ -208,24 +210,38 @@ public:
 class Invaders {
 public:
 	int sentidoH;
+	int alive;
 
 	Invader enemies[DEF_numberColumns][DEF_numberRows];
 	Invaders() {
 		int vida;
+		alive = DEF_numInvaders;
 		for (int i = 0; i < DEF_numberRows ; ++i) {
 			for (int j = 0; j < DEF_numberColumns; ++j) {
 				vida = rand() % 4 == 0 ? 2 : 1;
-				if (i % 2  == 0)
-				{ enemies[j][i] = Invader(leftSidePadding + j * DEF_columnSeparation, upperSidePadding + i * DEF_rowSeparation, vida); }
+				if (i % 2  == 0) {
+					enemies[j][i] = Invader(leftSidePadding + j * DEF_columnSeparation, upperSidePadding + i * DEF_rowSeparation, vida);
+				}
 				else {
 					//DEF_invaderWidth/2 es el defase
 					enemies[j][i] = Invader(leftSidePadding + (DEF_invaderWidth / 2) + j * DEF_columnSeparation, upperSidePadding + i * DEF_rowSeparation, vida);
 				}
-
-
 			}
 		}
 		sentidoH = 1;
+	}
+
+	int countAliveInvaders() {
+		alive = 0;
+		for (int i = 0; i < DEF_numberColumns; ++i) {
+			for (int j = 0; j < DEF_numberRows; ++j) {
+				if (enemies[i][j].vivo()) {
+					++alive;
+				}
+			}
+		}
+
+		return alive;
 	}
 
 	void draw() {
@@ -273,9 +289,11 @@ public:
 	}
 
 	void updateInvaders(float dx, float dy) {
-		for (int i = 0; i < DEF_numberColumns; ++i)
-			for (int j = 0; j < DEF_numberRows; ++j)
-			{ enemies[i][j].update(dx, dy); }
+		for (int i = 0; i < DEF_numberColumns; ++i) {
+			for (int j = 0; j < DEF_numberRows; ++j) {
+				enemies[i][j].update(dx, dy);
+			}
+		}
 	}
 
 	bool checkCollisionWithPoint(float pX, float pY) {
@@ -322,9 +340,7 @@ public:
 		int limitF = fila;
 
 		do {
-
 			do {
-
 				if (enemies[columna][fila].vivo()) {
 					enemies[columna][fila].shoot();
 					return;
@@ -621,7 +637,9 @@ public:
 			return pointCollisionWithRectangle(pX, pY, x, y, width / 2, height / 2);
 		}
 		else
-		{ return false; }
+		{
+			return false;
+		}
 	}
 
 
@@ -661,7 +679,9 @@ bool collisionPlayer(float pX, float pY) {
 		return true;
 	}
 	else
-	{ return false; }
+	{
+		return false;
+	}
 }
 
 Bala::Bala(float startX, float startY, float dy, int tipoB): x(startX), y(startY), dy(dy), eraseMe(false) {
@@ -807,9 +827,13 @@ void changeViewport(int w, int h) {
 	GLfloat aspect = (GLfloat)h / (GLfloat)w;
 
 	if (w <= h)
-	{ glOrtho(0.0, 100.0, 100.0 * aspect, 0.0 * aspect, -1.0, 1.0); }
+	{
+		glOrtho(0.0, 100.0, 100.0 * aspect, 0.0 * aspect, -1.0, 1.0);
+	}
 	else
-	{ glOrtho(0.0 / aspect, 100.0 / aspect, 100.0, 0.0, -1.0, 1.0); }
+	{
+		glOrtho(0.0 / aspect, 100.0 / aspect, 100.0, 0.0, -1.0, 1.0);
+	}
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -842,7 +866,9 @@ void render() {
 	for (vector<Bala>::iterator it = balas.begin(); it != balas.end();) {
 		if (it->y <= 0.0f || it -> y >= 100.0f || it->eraseMe) {
 			if (it->tipo == 0)
-			{ existsPlayerBullet = false; }
+			{
+				existsPlayerBullet = false;
+			}
 			it = balas.erase(it);
 		}
 		else {
@@ -971,6 +997,7 @@ void printw(float x, float y, float z, char* format, ...) {
 }
 
 int main(int argc, char** argv) {
+
 	srand(static_cast<unsigned int>(time(0)));
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
@@ -985,7 +1012,6 @@ int main(int argc, char** argv) {
 	glutKeyboardUpFunc(keyboardRelease);
 
 	invaders = Invaders();
-
 
 	GLenum err = glewInit();
 	if (GLEW_OK != err) {
