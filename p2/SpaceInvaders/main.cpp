@@ -15,7 +15,7 @@
 
 //Invader definitions al reves
 #define DEF_numberColumns 6
-#define DEF_numberRows 8
+#define DEF_numberRows 1
 #define DEF_numInvaders DEF_numberRows*DEF_numberColumns
 
 #define DEF_rowSeparation 6.0f
@@ -1000,8 +1000,8 @@ void timer(int value) {
 	}
 
 	if (ufoShip) {
-		ufoShip -> update();
-		if (ufoShip -> x >= 100.0) {
+		ufoShip->update();
+		if (ufoShip->x - 5.0f >= 100.0) {
 			delete ufoShip;
 			ufoShip = nullptr;
 			glutTimerFunc(timeUFO, timerUFO, 20);
