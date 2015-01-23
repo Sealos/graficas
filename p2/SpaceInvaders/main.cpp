@@ -624,7 +624,7 @@ public:
 	{
 		if (vivo && !existsPlayerBullet)
 		{
-			balas.push_back(Bala(x, y-height/2, -1.f,0));
+			balas.push_back(Bala(x, y-height/2, -3.f,0));
 			existsPlayerBullet = true;
 		}
 	}
