@@ -7,6 +7,7 @@
 #include <vector>
 #include <math.h>
 #include <time.h>
+#include <string>
 
 #define GLEW_STATIC
 
@@ -43,7 +44,7 @@ bool existsPlayerBullet = false;
 
 GLvoid* font_style = GLUT_BITMAP_TIMES_ROMAN_24;
 //  http://mycodelog.com/tag/printw/
-void printw(float x, float y, char* format, ...) {
+void printw(float x, float y, const char* format, ...) {
 	va_list args;   //  Variable argument list
 	int len;        // String length
 	int i;          //  Iterator
@@ -932,6 +933,20 @@ void render() {
 		glPopMatrix();
 	}
 
+	if(invaders.countAliveInvaders() == 0){
+		glPushMatrix();
+		glColor3f(1.0f,1.0f,1.0f);
+		printw(1.0,50.0,"GANASTE!");
+		printw(40.0,50.0,"GANASTE!");
+		printw(75.0,50.0,"GANASTE!");
+		glPopMatrix();
+	}
+
+	glPushMatrix();
+	glColor3f(1.0f,1.0f,1.0f);
+	string puntos = to_string(points);
+	printw(1.0,90.0,puntos.c_str());
+	glPopMatrix();
 
 	glutSwapBuffers();
 	glutPostRedisplay();
