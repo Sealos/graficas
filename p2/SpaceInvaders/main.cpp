@@ -16,7 +16,7 @@
 
 //Invader definitions al reves
 #define DEF_numberColumns 6
-#define DEF_numberRows 1
+#define DEF_numberRows 5
 #define DEF_numInvaders DEF_numberRows*DEF_numberColumns
 
 #define DEF_rowSeparation 6.0f
@@ -31,7 +31,7 @@ static const float DEGREE = static_cast<float>(3.14159f / 180);
 static int points = 0;
 
 static const int timeUFO = 2000;
-static const int timeInvaderShoot = 1000;
+static const int timeInvaderShoot = 1500;
 
 float invaderSpeed = 0.05f;
 
