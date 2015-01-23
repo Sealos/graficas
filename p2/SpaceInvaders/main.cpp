@@ -70,7 +70,7 @@ void printw(float x, float y, const char* format, ...) {
 	glRasterPos2f(x, y);
 
 	//  Draw the characters one by one
-	for (i = 0; text[i] != '\0'; i++)
+	for (i = 0; text[i] != '\0'; ++i)
 	{ glutBitmapCharacter(font_style, text[i]); }
 
 	//  Free the allocated memory for the string
@@ -294,7 +294,7 @@ public:
 		bool found = false;
 		float x = 0.0;
 		for (int i = DEF_numberColumns - 1; i >= 0; i--) {
-			for (int j = 0; j < DEF_numberRows; j++) {
+			for (int j = 0; j < DEF_numberRows; ++j) {
 				if (enemies[i][j].vivo()) {
 					found = true;
 					x = max(x, enemies[i][j].x);
@@ -311,7 +311,7 @@ public:
 		bool found = false;
 		float x = 100.0;
 		for (int i = 0; i < DEF_numberColumns; ++i) {
-			for (int j = 0; j < DEF_numberRows; j++) {
+			for (int j = 0; j < DEF_numberRows; ++j) {
 				if (enemies[i][j].vivo()) {
 					found = true;
 					x = min(x, enemies[i][j].x);
@@ -334,7 +334,7 @@ public:
 
 	bool checkCollisionWithPoint(float pX, float pY) {
 		for (int i = DEF_numberColumns - 1; i >= 0; i--) {
-			for (int j = 0; j < DEF_numberRows; j++) {
+			for (int j = 0; j < DEF_numberRows; ++j) {
 				if (enemies[i][j].vivo()) {
 					if (enemies[i][j].pointCollision(pX, pY)) {
 						// matar invader
@@ -479,7 +479,7 @@ public:
 		x = 0.0;
 		y = 81.0;
 
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 8; ++i) {
 			barreras[i] = Barrier(bar[i][0] + x, bar[i][1] + y);
 		}
 	}
@@ -488,14 +488,14 @@ public:
 		x = xX;
 		y = yY;
 
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 8; ++i) {
 			barreras[i] = Barrier(bar[i][0] + x, bar[i][1] + y);
 			barreras[i].vivo = true;
 		}
 	}
 
 	void draw() {
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 8; ++i) {
 			if (barreras[i].vivo) {
 				barreras[i].draw();
 			}
