@@ -504,8 +504,8 @@ public:
 		for (int i = 0; i < 8; ++i) {
 			if (barreras[i].vivo) {
 				if (barreras[i].pointCollision(pX, pY)) {
-					// matar barrera
 					barreras[i].vivo = false;
+					points -= 30;
 					return true;
 				}
 			}
