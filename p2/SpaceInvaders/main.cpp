@@ -352,11 +352,12 @@ public:
 	{
 		int columna = rand() % DEF_numberColumns;
 		int limit = columna;
+		int fila = rand() % DEF_numberRows;
+		int limitF = fila;
 
 		do
 		{
-			int fila = rand() % DEF_numberRows;
-			int limitF = fila;
+			
 			do
 			{
 
@@ -365,6 +366,7 @@ public:
 					enemies[columna][fila].shoot();
 					return;
 				}
+				fila = (fila+1)% DEF_numberRows;
 			}
 			while ((fila% DEF_numberRows) != limitF);
 			columna = (columna+1)% DEF_numberColumns;
