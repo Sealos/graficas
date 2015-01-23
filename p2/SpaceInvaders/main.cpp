@@ -703,7 +703,6 @@ bool collisionUFO(float pX, float pY) {
 		points += 300;
 		glutTimerFunc(timeUFO, timerUFO, 20);
 		return true;
-
 	}
 	return false;
 }
@@ -882,8 +881,6 @@ void cuadriculaColision() {
 	glEnd();
 }
 
-
-
 void render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -990,7 +987,8 @@ void timerInvaderShoot(int value) {
 }
 
 void timerUFO(int value) {
-	ufoShip = new UFO(0.0, 5.0);
+	if (invaders.countAliveInvaders() > 0)
+		ufoShip = new UFO(0.0, 5.0);
 }
 
 void timer(int value) {
