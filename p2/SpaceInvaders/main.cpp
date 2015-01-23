@@ -195,6 +195,7 @@ public:
 
 	Invader(float xX, float yY, int vid): vida(vid) {
 		x = xX;
+		y = yY;
 		strong = vida > 1;
 	}
 
