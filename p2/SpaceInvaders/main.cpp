@@ -25,7 +25,7 @@
 
 static const float leftSidePadding = 5.0f;
 static const float upperSidePadding = 10.0f;
-static const float DEGREE = static_cast<float>(3.14159f/180);
+static const float DEGREE = static_cast<float>(3.14159f / 180);
 
 static const int timeUFO = 2000;
 static const int timeInvaderShoot = 1000;
@@ -41,25 +41,25 @@ bool existsPlayerBullet = false;
 
 inline pair<int, int> getQuadrant(float x, float y)
 {
-	return pair<int, int>(static_cast<int>(floor(x))/10, static_cast<int>(floor(y))/10);
+	return pair<int, int>(static_cast<int>(floor(x)) / 10, static_cast<int>(floor(y)) / 10);
 }
 
 inline void renderRect(float height, float width, float x, float y)
 {
 
-	float x_sup = x + width/2;
-	float x_low = x - width/2;
-	float y_sup = y + height/2;
-	float y_low = y - height/2;
+	float x_sup = x + width / 2;
+	float x_low = x - width / 2;
+	float y_sup = y + height / 2;
+	float y_low = y - height / 2;
 	glBegin(GL_POLYGON);
 	{
 
-		glVertex2f(x_low,y_sup);
-		glVertex2f(x_low,y_low);
-		glColor3f(0.0f,0.5f,0.5f);
-		glVertex2f(x_sup,y_low);
-		glColor3f(0.0f,0.5f,0.5f);
-		glVertex2f(x_sup,y_sup);
+		glVertex2f(x_low, y_sup);
+		glVertex2f(x_low, y_low);
+		glColor3f(0.0f, 0.5f, 0.5f);
+		glVertex2f(x_sup, y_low);
+		glColor3f(0.0f, 0.5f, 0.5f);
+		glVertex2f(x_sup, y_sup);
 	}
 	glEnd();
 }
@@ -67,11 +67,11 @@ inline void renderRect(float height, float width, float x, float y)
 inline void renderCircle(float xx, float yy, float radius)
 {
 	glBegin(GL_POLYGON);
-	for (int i=0; i < 360; i = i + 10)
+	for (int i = 0; i < 360; i = i + 10)
 	{
-		float degInRad = i*DEGREE;
-		float x = xx + cos(degInRad)*radius;
-		float y = yy + sin(degInRad)*radius;
+		float degInRad = i * DEGREE;
+		float x = xx + cos(degInRad) * radius;
+		float y = yy + sin(degInRad) * radius;
 		glVertex2f(x, y);
 	}
 	glEnd();
@@ -79,7 +79,7 @@ inline void renderCircle(float xx, float yy, float radius)
 
 inline float crossProductLinePoint(float x1, float y1, float x2, float y2, float x3, float y3)
 {
-	return (x2 - x1)*(y3 - y1) - (y2 - y1)*(x3 - x1);
+	return (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1);
 };
 
 bool pointCollisionWithRectangle(float pX, float pY, float rX, float rY, float halfWidth, float halfHeight)
@@ -93,13 +93,13 @@ bool pointCollisionWithRectangle(float pX, float pY, float rX, float rY, float h
 	};
 
 	if (crossProductLinePoint(recPoints[0][0], recPoints[0][1], recPoints[1][0], recPoints[1][1], pX, pY) > 0)
-		return false;
+	{ return false; }
 	if (crossProductLinePoint(recPoints[1][0], recPoints[1][1], recPoints[2][0], recPoints[2][1], pX, pY) > 0)
-		return false;
+	{ return false; }
 	if (crossProductLinePoint(recPoints[2][0], recPoints[2][1], recPoints[3][0], recPoints[3][1], pX, pY) > 0)
-		return false;
+	{ return false; }
 	if (crossProductLinePoint(recPoints[3][0], recPoints[3][1], recPoints[0][0], recPoints[0][1], pX, pY) > 0)
-		return false;
+	{ return false; }
 
 	return true;
 };
@@ -117,13 +117,13 @@ bool isInSameQuadrant(float pX, float pY, float rX, float rY, float halfWidth, f
 	pair<int, int> qP = getQuadrant(pX, pY);
 
 	if (qP == getQuadrant(recPoints[0][0], recPoints[0][1]))
-		return true;
+	{ return true; }
 	if (qP == getQuadrant(recPoints[1][0], recPoints[1][1]))
-		return true;
+	{ return true; }
 	if (qP == getQuadrant(recPoints[2][0], recPoints[2][1]))
-		return true;
+	{ return true; }
 	if (qP == getQuadrant(recPoints[3][0], recPoints[3][1]))
-		return true;
+	{ return true; }
 
 	return false;
 }
@@ -156,7 +156,7 @@ public:
 
 	Invader() {}
 
-	Invader(float xX, float yY, int vid):vida(vid)
+	Invader(float xX, float yY, int vid): vida(vid)
 	{
 		x = xX;
 		y = yY;
@@ -167,14 +167,14 @@ public:
 		glPushMatrix();
 		if (vida != 1)
 		{
-			glColor3f(1.0f,0.0f,0.3f);
+			glColor3f(1.0f, 0.0f, 0.3f);
 		}
 		else
 		{
-			glColor3f(0.0f,1.0f,0.0f);
+			glColor3f(0.0f, 1.0f, 0.0f);
 		}
 
-		renderRect(DEF_invaderHeight,DEF_invaderWidth,x,y);
+		renderRect(DEF_invaderHeight, DEF_invaderWidth, x, y);
 		glPopMatrix();
 	}
 
@@ -186,14 +186,14 @@ public:
 
 	inline bool vivo()
 	{
-		return vida >0;
+		return vida > 0;
 	}
 
 	bool pointCollision(float pX, float pY)
 	{
-		if (isInSameQuadrant(pX, pY, x, y, DEF_invaderWidth/2, DEF_invaderHeight/2))
+		if (isInSameQuadrant(pX, pY, x, y, DEF_invaderWidth / 2, DEF_invaderHeight / 2))
 		{
-			if (pointCollisionWithRectangle(pX, pY, x, y, DEF_invaderWidth/2, DEF_invaderHeight/2))
+			if (pointCollisionWithRectangle(pX, pY, x, y, DEF_invaderWidth / 2, DEF_invaderHeight / 2))
 			{
 				--vida;
 				return true;
@@ -201,12 +201,12 @@ public:
 		}
 
 		else
-			return false;
+		{ return false; }
 	}
 
 	void shoot()
 	{
-		balasInvader.push_back(Bala(x, y+DEF_invaderHeight/2+1.0f, 1.f,1));
+		balasInvader.push_back(Bala(x, y + DEF_invaderHeight / 2 + 1.0f, 1.f, 1));
 	}
 };
 
@@ -219,17 +219,17 @@ public:
 	Invaders()
 	{
 		int vida;
-		for (int i=0; i <DEF_numberRows ; ++i)
+		for (int i = 0; i < DEF_numberRows ; ++i)
 		{
-			for (int j=0; j<DEF_numberColumns; ++j)
+			for (int j = 0; j < DEF_numberColumns; ++j)
 			{
 				vida = rand() % 4 == 0 ? 2 : 1;
 				if (i % 2  == 0)
-					enemies[j][i] = Invader(leftSidePadding + j*DEF_columnSeparation,upperSidePadding + i*DEF_rowSeparation,vida);
+				{ enemies[j][i] = Invader(leftSidePadding + j * DEF_columnSeparation, upperSidePadding + i * DEF_rowSeparation, vida); }
 				else
 				{
 					//DEF_invaderWidth/2 es el defase
-					enemies[j][i] = Invader(leftSidePadding+(DEF_invaderWidth/2)+j*DEF_columnSeparation,upperSidePadding+i*DEF_rowSeparation,vida);
+					enemies[j][i] = Invader(leftSidePadding + (DEF_invaderWidth / 2) + j * DEF_columnSeparation, upperSidePadding + i * DEF_rowSeparation, vida);
 				}
 
 
@@ -240,9 +240,9 @@ public:
 
 	void draw()
 	{
-		for (int i=0; i < DEF_numberColumns; ++i)
+		for (int i = 0; i < DEF_numberColumns; ++i)
 		{
-			for (int j=0; j< DEF_numberRows; ++j)
+			for (int j = 0; j < DEF_numberRows; ++j)
 			{
 				if (enemies[i][j].vivo())
 				{
@@ -255,20 +255,20 @@ public:
 	float getRightMostX()
 	{
 		bool found = false;
-		float x= 0.0;
-		for (int i = DEF_numberColumns -1; i>=0; i--)
+		float x = 0.0;
+		for (int i = DEF_numberColumns - 1; i >= 0; i--)
 		{
-			for (int j =0; j < DEF_numberRows; j++)
+			for (int j = 0; j < DEF_numberRows; j++)
 			{
 				if (enemies[i][j].vivo())
 				{
 					found = true;
-					x = max(x,enemies[i][j].x);
+					x = max(x, enemies[i][j].x);
 				}
 			}
 			if (found)
 			{
-				return x + DEF_invaderWidth/2;
+				return x + DEF_invaderWidth / 2;
 			}
 		}
 		return x;
@@ -277,20 +277,20 @@ public:
 	float getLeftMostX()
 	{
 		bool found = false;
-		float x= 100.0;
+		float x = 100.0;
 		for (int i = 0; i < DEF_numberColumns; ++i)
 		{
-			for (int j =0; j < DEF_numberRows; j++)
+			for (int j = 0; j < DEF_numberRows; j++)
 			{
 				if (enemies[i][j].vivo())
 				{
 					found = true;
-					x = min(x,enemies[i][j].x);
+					x = min(x, enemies[i][j].x);
 				}
 			}
 			if (found)
 			{
-				return x - DEF_invaderWidth/2;
+				return x - DEF_invaderWidth / 2;
 			}
 		}
 		return x;
@@ -300,14 +300,14 @@ public:
 	{
 		for (int i = 0; i < DEF_numberColumns; ++i)
 			for (int j = 0; j < DEF_numberRows; ++j)
-				enemies[i][j].update(dx, dy);
+			{ enemies[i][j].update(dx, dy); }
 	}
 
 	bool checkCollisionWithPoint(float pX, float pY)
 	{
-		for (int i = DEF_numberColumns -1; i>=0; i--)
+		for (int i = DEF_numberColumns - 1; i >= 0; i--)
 		{
-			for (int j =0; j < DEF_numberRows; j++)
+			for (int j = 0; j < DEF_numberRows; j++)
 			{
 				if (enemies[i][j].vivo())
 				{
@@ -324,7 +324,7 @@ public:
 
 	void update()
 	{
-		float dx = invaderSpeed*sentidoH;
+		float dx = invaderSpeed * sentidoH;
 		updateInvaders(dx, 0);
 		float borde;
 		if (sentidoH == 1)
@@ -368,10 +368,10 @@ public:
 					enemies[columna][fila].shoot();
 					return;
 				}
-				fila = (fila+1)% DEF_numberRows;
+				fila = (fila + 1) % DEF_numberRows;
 			}
-			while ((fila% DEF_numberRows) != limitF);
-			columna = (columna+1)% DEF_numberColumns;
+			while ((fila % DEF_numberRows) != limitF);
+			columna = (columna + 1) % DEF_numberColumns;
 		}
 		while ((columna % DEF_numberColumns) != limit);
 	}
@@ -410,8 +410,8 @@ public:
 	{
 		glPushMatrix();
 		{
-			glColor3f(0.5f,0.5f,0.5f);
-			renderRect(height,width,x,y);
+			glColor3f(0.5f, 0.5f, 0.5f);
+			renderRect(height, width, x, y);
 		}
 		glPopMatrix();
 	}
@@ -419,33 +419,33 @@ public:
 	bool pointCollision(float pX, float pY)
 	{
 
-		if (isInSameQuadrant(pX, pY, x, y, width/2, height/2))
-			return pointCollisionWithRectangle(pX, pY, x, y, width/2, height/2);
+		if (isInSameQuadrant(pX, pY, x, y, width / 2, height / 2))
+		{ return pointCollisionWithRectangle(pX, pY, x, y, width / 2, height / 2); }
 		else
-			return false;
+		{ return false; }
 	}
 
 	void update()
 	{
-		if (invaders.checkCollisionWithPoint(x+width/2,y-height/2))
+		if (invaders.checkCollisionWithPoint(x + width / 2, y - height / 2))
 		{
 			vivo = false;
 			return;
 		}
 
-		if (invaders.checkCollisionWithPoint(x-width/2,y-height/2))
+		if (invaders.checkCollisionWithPoint(x - width / 2, y - height / 2))
 		{
 			vivo = false;
 			return;
 		}
 
-		if (invaders.checkCollisionWithPoint(x+width/2,y+height/2))
+		if (invaders.checkCollisionWithPoint(x + width / 2, y + height / 2))
 		{
 			vivo = false;
 			return;
 		}
 
-		if (invaders.checkCollisionWithPoint(x-width/2,y+height/2))
+		if (invaders.checkCollisionWithPoint(x - width / 2, y + height / 2))
 		{
 			vivo = false;
 			return;
@@ -453,7 +453,7 @@ public:
 	}
 };
 
-float bar[8][2]=
+float bar[8][2] =
 {
 	{12.f, -8.0f}, {18.f, -8.0f},
 	{9.f, -4.0f}, {21.f, -4.0f},
@@ -473,9 +473,9 @@ public:
 		x = 0.0;
 		y = 81.0;
 
-		for (int i =0; i < 8; i++)
+		for (int i = 0; i < 8; i++)
 		{
-			barreras[i] = Barrier(bar[i][0]+x,bar[i][1]+y);
+			barreras[i] = Barrier(bar[i][0] + x, bar[i][1] + y);
 		}
 	}
 
@@ -484,16 +484,16 @@ public:
 		x = xX;
 		y = yY;
 
-		for (int i =0; i < 8; i++)
+		for (int i = 0; i < 8; i++)
 		{
-			barreras[i] = Barrier(bar[i][0]+x,bar[i][1]+y);
+			barreras[i] = Barrier(bar[i][0] + x, bar[i][1] + y);
 			barreras[i].vivo = true;
 		}
 	}
 
 	void draw()
 	{
-		for (int i =0; i < 8; i++)
+		for (int i = 0; i < 8; i++)
 		{
 			if (barreras[i].vivo)
 			{
@@ -551,7 +551,7 @@ public:
 		height = 2.5f;
 	}
 
-	UFO(float xX,float yY)
+	UFO(float xX, float yY)
 	{
 		x = xX;
 		y = yY;
@@ -563,24 +563,24 @@ public:
 	{
 		glPushMatrix();
 		{
-			glColor3f(0.3f,0.5f,0.8f);
-			renderRect(height,width,x,y);
+			glColor3f(0.3f, 0.5f, 0.8f);
+			renderRect(height, width, x, y);
 		}
 		glPopMatrix();
 	}
 
 	void update()
 	{
-		x+=1.0;
+		x += 1.0;
 	}
 
 	bool pointCollision(float pX, float pY)
 	{
 
-		if (isInSameQuadrant(pX, pY, x, y, width/2, height/2))
-			return pointCollisionWithRectangle(pX, pY, x, y, width/2, height/2);
+		if (isInSameQuadrant(pX, pY, x, y, width / 2, height / 2))
+		{ return pointCollisionWithRectangle(pX, pY, x, y, width / 2, height / 2); }
 		else
-			return false;
+		{ return false; }
 	}
 };
 
@@ -604,7 +604,7 @@ public:
 		width = 7.0f;
 		height = 2.5f;
 		keys[0] = false;
-		keys[1]=false;
+		keys[1] = false;
 		vivo = true;
 	}
 
@@ -612,10 +612,10 @@ public:
 	{
 		glPushMatrix();
 		{
-			glColor3f(0.9f,0.1f,0.1f);
-			renderRect(height,width,x,y);
-			glColor3f(0.9f,0.1f,0.1f);
-			renderRect(height*1.5f,width/4.f,x,y-height/4.f);
+			glColor3f(0.9f, 0.1f, 0.1f);
+			renderRect(height, width, x, y);
+			glColor3f(0.9f, 0.1f, 0.1f);
+			renderRect(height * 1.5f, width / 4.f, x, y - height / 4.f);
 		}
 		glPopMatrix();
 	}
@@ -624,7 +624,7 @@ public:
 	{
 		if (vivo && !existsPlayerBullet)
 		{
-			balas.push_back(Bala(x, y-height/2, -3.f,0));
+			balas.push_back(Bala(x, y - height / 2, -3.f, 0));
 			existsPlayerBullet = true;
 		}
 	}
@@ -633,49 +633,49 @@ public:
 	{
 		//Colisiones con invaders
 		if (!vivo)
-			return;
+		{ return; }
 
 		if (keys[0])
 		{
-			x-=1.f;
+			x -= 1.f;
 		}
 		else
 			if (keys[1])
 			{
-				x+=1.f;
+				x += 1.f;
 			}
 
-		if (invaders.checkCollisionWithPoint(x+width/2,y-height/2))
+		if (invaders.checkCollisionWithPoint(x + width / 2, y - height / 2))
 		{
 			vivo = false;
 			return;
 		}
 
-		if (invaders.checkCollisionWithPoint(x-width/2,y-height/2))
+		if (invaders.checkCollisionWithPoint(x - width / 2, y - height / 2))
 		{
 			vivo = false;
 			return;
 		}
 
-		if (invaders.checkCollisionWithPoint(x+width/2,y+height/2))
+		if (invaders.checkCollisionWithPoint(x + width / 2, y + height / 2))
 		{
 			vivo = false;
 			return;
 		}
 
-		if (invaders.checkCollisionWithPoint(x-width/2,y+height/2))
+		if (invaders.checkCollisionWithPoint(x - width / 2, y + height / 2))
 		{
 			vivo = false;
 			return;
 		}
 
-		if (invaders.checkCollisionWithPoint(x+width/8,y-height/2-((height*1.5)/2)))
+		if (invaders.checkCollisionWithPoint(x + width / 8, y - height / 2 - ((height * 1.5) / 2)))
 		{
 			vivo = false;
 			return;
 		}
 
-		if (invaders.checkCollisionWithPoint(x-width/8,y-height/2-((height*1.5)/2)))
+		if (invaders.checkCollisionWithPoint(x - width / 8, y - height / 2 - ((height * 1.5) / 2)))
 		{
 			vivo = false;
 			return;
@@ -684,8 +684,8 @@ public:
 
 	bool pointCollision(float pX, float pY)
 	{
-		if (isInSameQuadrant(pX, pY, x, y, width/2, height/2))
-			return pointCollisionWithRectangle(pX, pY, x, y, width/2, height/2);
+		if (isInSameQuadrant(pX, pY, x, y, width / 2, height / 2))
+		{ return pointCollisionWithRectangle(pX, pY, x, y, width / 2, height / 2); }
 		return false;
 	}
 
@@ -695,15 +695,15 @@ public:
 UFO* ufoShip;
 PlayerShip player;
 
-BarrierWall barr[3] = { BarrierWall(0.0f,80.0f), BarrierWall(35.1f, 80.0f), BarrierWall(70.0f,80.0f)};
+BarrierWall barr[3] = { BarrierWall(0.0f, 80.0f), BarrierWall(35.1f, 80.0f), BarrierWall(70.0f, 80.0f)};
 
 bool collisionWall(float pX, float pY)
 {
-	for (int i =0; i < 3 ; ++i)
+	for (int i = 0; i < 3 ; ++i)
 	{
 
-		if (barr[i].checkCollisionWithPoint(pX,pY))
-			return true;
+		if (barr[i].checkCollisionWithPoint(pX, pY))
+		{ return true; }
 	}
 
 	return false;
@@ -712,11 +712,11 @@ bool collisionWall(float pX, float pY)
 
 bool collisionUFO(float pX, float pY)
 {
-	if (ufoShip && ufoShip ->pointCollision(pX,pY))
+	if (ufoShip && ufoShip ->pointCollision(pX, pY))
 	{
 		delete ufoShip;
 		ufoShip = nullptr;
-		glutTimerFunc(timeUFO,timerUFO,20);
+		glutTimerFunc(timeUFO, timerUFO, 20);
 		return true;
 
 	}
@@ -725,14 +725,14 @@ bool collisionUFO(float pX, float pY)
 
 bool collisionPlayer(float pX, float pY)
 {
-	if (player.pointCollision(pX,pY))
+	if (player.pointCollision(pX, pY))
 	{
 		player.vivo = false;
 		return true;
 	}
 }
 
-Bala::Bala(float startX, float startY, float dy,int tipoB): x(startX), y(startY), dy(dy), eraseMe(false)
+Bala::Bala(float startX, float startY, float dy, int tipoB): x(startX), y(startY), dy(dy), eraseMe(false)
 {
 	diferenciales[0] = 0.6f;
 	diferenciales[1] = 0.31519f;
@@ -744,11 +744,11 @@ void Bala::draw()
 {
 	if (tipo == 0)
 	{
-		glColor3f(0.8f,0.1f,0.1f);
+		glColor3f(0.8f, 0.1f, 0.1f);
 	}
 	else
 	{
-		glColor3f(0.8f,0.3f,0.8f);
+		glColor3f(0.8f, 0.3f, 0.8f);
 	}
 	renderCircle(x, y, 0.6f);
 }
@@ -764,7 +764,7 @@ void Bala::update()
 
 	if (tipo == 0)
 	{
-		if (invaders.checkCollisionWithPoint(pX, pY) || collisionWall(pX,pY) || collisionUFO(pX,pY))
+		if (invaders.checkCollisionWithPoint(pX, pY) || collisionWall(pX, pY) || collisionUFO(pX, pY))
 		{
 			eraseMe = true;
 			return;
@@ -773,23 +773,23 @@ void Bala::update()
 		pY = y + diferenciales[0];
 
 
-		if (invaders.checkCollisionWithPoint(pX, pY) || collisionWall(pX,pY)|| collisionUFO(pX,pY))
+		if (invaders.checkCollisionWithPoint(pX, pY) || collisionWall(pX, pY) || collisionUFO(pX, pY))
 		{
 			eraseMe = true;
 			return;
 		}
-		pX = x+ diferenciales[0];
+		pX = x + diferenciales[0];
 		pY = y;
 
-		if (invaders.checkCollisionWithPoint(pX , pY) || collisionWall(pX,pY)|| collisionUFO(pX,pY))
+		if (invaders.checkCollisionWithPoint(pX , pY) || collisionWall(pX, pY) || collisionUFO(pX, pY))
 		{
 			eraseMe = true;
 			return;
 		}
-		pX = x-diferenciales[0];
+		pX = x - diferenciales[0];
 		pY = y;
 
-		if (invaders.checkCollisionWithPoint(pX, pY) || collisionWall(pX,pY)|| collisionUFO(pX,pY))
+		if (invaders.checkCollisionWithPoint(pX, pY) || collisionWall(pX, pY) || collisionUFO(pX, pY))
 		{
 			eraseMe = true;
 			return;
@@ -797,14 +797,14 @@ void Bala::update()
 
 		pX = x + diferenciales[1];
 		pY = y  + diferenciales[1];
-		if (invaders.checkCollisionWithPoint(pX, pY) || collisionWall(pX,pY)|| collisionUFO(pX,pY))
+		if (invaders.checkCollisionWithPoint(pX, pY) || collisionWall(pX, pY) || collisionUFO(pX, pY))
 		{
 			eraseMe = true;
 			return;
 		}
 		pX = x + diferenciales[1];
 		pY = y - diferenciales[1];
-		if (invaders.checkCollisionWithPoint(pX , pY) || collisionWall(pX,pY)|| collisionUFO(pX,pY))
+		if (invaders.checkCollisionWithPoint(pX , pY) || collisionWall(pX, pY) || collisionUFO(pX, pY))
 		{
 			eraseMe = true;
 			return;
@@ -812,7 +812,7 @@ void Bala::update()
 
 		pX = x - diferenciales[1];
 		pY = y + diferenciales[1];
-		if (invaders.checkCollisionWithPoint(pX, pY) || collisionWall(pX,pY)|| collisionUFO(pX,pY))
+		if (invaders.checkCollisionWithPoint(pX, pY) || collisionWall(pX, pY) || collisionUFO(pX, pY))
 		{
 			eraseMe = true;
 			return;
@@ -820,7 +820,7 @@ void Bala::update()
 
 		pX = x - diferenciales[1];
 		pY = y - diferenciales[1];
-		if (invaders.checkCollisionWithPoint(pX, pY) || collisionWall(pX,pY)|| collisionUFO(pX,pY))
+		if (invaders.checkCollisionWithPoint(pX, pY) || collisionWall(pX, pY) || collisionUFO(pX, pY))
 		{
 			eraseMe = true;
 			return;
@@ -828,7 +828,7 @@ void Bala::update()
 	}
 	else
 	{
-		if (collisionWall(pX,pY) || collisionPlayer(pX,pY))
+		if (collisionWall(pX, pY) || collisionPlayer(pX, pY))
 		{
 			eraseMe = true;
 			return;
@@ -837,23 +837,23 @@ void Bala::update()
 		pY = y + diferenciales[0];
 
 
-		if (collisionWall(pX,pY) || collisionPlayer(pX,pY))
+		if (collisionWall(pX, pY) || collisionPlayer(pX, pY))
 		{
 			eraseMe = true;
 			return;
 		}
-		pX = x+ diferenciales[0];
+		pX = x + diferenciales[0];
 		pY = y;
 
-		if (collisionWall(pX,pY) || collisionPlayer(pX,pY))
+		if (collisionWall(pX, pY) || collisionPlayer(pX, pY))
 		{
 			eraseMe = true;
 			return;
 		}
-		pX = x-diferenciales[0];
+		pX = x - diferenciales[0];
 		pY = y;
 
-		if (collisionWall(pX,pY) || collisionPlayer(pX,pY))
+		if (collisionWall(pX, pY) || collisionPlayer(pX, pY))
 		{
 			eraseMe = true;
 			return;
@@ -861,14 +861,14 @@ void Bala::update()
 
 		pX = x + diferenciales[1];
 		pY = y  + diferenciales[1];
-		if (collisionWall(pX,pY) || collisionPlayer(pX,pY))
+		if (collisionWall(pX, pY) || collisionPlayer(pX, pY))
 		{
 			eraseMe = true;
 			return;
 		}
 		pX = x + diferenciales[1];
 		pY = y - diferenciales[1];
-		if (collisionWall(pX,pY) || collisionPlayer(pX,pY))
+		if (collisionWall(pX, pY) || collisionPlayer(pX, pY))
 		{
 			eraseMe = true;
 			return;
@@ -876,7 +876,7 @@ void Bala::update()
 
 		pX = x - diferenciales[1];
 		pY = y + diferenciales[1];
-		if (collisionWall(pX,pY) || collisionPlayer(pX,pY))
+		if (collisionWall(pX, pY) || collisionPlayer(pX, pY))
 		{
 			eraseMe = true;
 			return;
@@ -884,7 +884,7 @@ void Bala::update()
 
 		pX = x - diferenciales[1];
 		pY = y - diferenciales[1];
-		if (collisionWall(pX,pY) || collisionPlayer(pX,pY))
+		if (collisionWall(pX, pY) || collisionPlayer(pX, pY))
 		{
 			eraseMe = true;
 			return;
@@ -897,26 +897,26 @@ void changeViewport(int w, int h)
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	GLfloat aspect = (GLfloat)h/(GLfloat)w;
+	GLfloat aspect = (GLfloat)h / (GLfloat)w;
 
 	if (w <= h)
-		glOrtho(0.0, 100.0, 100.0*aspect,0.0*aspect, -1.0, 1.0);
+	{ glOrtho(0.0, 100.0, 100.0 * aspect, 0.0 * aspect, -1.0, 1.0); }
 	else
-		glOrtho(0.0/aspect, 100.0/aspect, 100.0, 0.0, -1.0, 1.0);
+	{ glOrtho(0.0 / aspect, 100.0 / aspect, 100.0, 0.0, -1.0, 1.0); }
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
 
 void cuadriculaColision()
 {
-	glColor3f(1.0f,0.0f,0.0f);
+	glColor3f(1.0f, 0.0f, 0.0f);
 	glBegin(GL_LINES);
-	for (float i = 0; i <=100; i+=10)
+	for (float i = 0; i <= 100; i += 10)
 	{
-		glVertex2f(0.0,i);
-		glVertex2f(100.0,i);
-		glVertex2f(i,0.0);
-		glVertex2f(i,100.0);
+		glVertex2f(0.0, i);
+		glVertex2f(100.0, i);
+		glVertex2f(i, 0.0);
+		glVertex2f(i, 100.0);
 	}
 	glEnd();
 }
@@ -941,7 +941,7 @@ void render()
 		if (it->y <= 0.0f || it -> y >= 100.0f || it->eraseMe)
 		{
 			if (it->tipo == 0)
-				existsPlayerBullet = false;
+			{ existsPlayerBullet = false; }
 			it = balas.erase(it);
 		}
 		else
@@ -987,7 +987,7 @@ void getKeyPress(unsigned char key, int x, int y)
 			player.keys[0] = true;
 			break;
 		case 's':
-			player.keys[1] =true;
+			player.keys[1] = true;
 			break;
 		default:
 			break;
@@ -1010,12 +1010,12 @@ void keyboardRelease(unsigned char key, int x, int y)
 void timerInvaderShoot(int value)
 {
 	invaders.shoot();
-	glutTimerFunc(timeInvaderShoot,timerInvaderShoot,20);
+	glutTimerFunc(timeInvaderShoot, timerInvaderShoot, 20);
 }
 
 void timerUFO(int value)
 {
-	ufoShip = new UFO(0.0,5.0);
+	ufoShip = new UFO(0.0, 5.0);
 }
 
 void timer(int value)
@@ -1045,7 +1045,7 @@ void timer(int value)
 		{
 			delete ufoShip;
 			ufoShip = nullptr;
-			glutTimerFunc(timeUFO,timerUFO,20);
+			glutTimerFunc(timeUFO, timerUFO, 20);
 		}
 	}
 }
@@ -1080,7 +1080,7 @@ void printw(float x, float y, float z, char* format, ...)
 
 	//  Draw the characters one by one
 	for (i = 0; text[i] != '\0'; i++)
-		glutBitmapCharacter(font_style, text[i]);
+	{ glutBitmapCharacter(font_style, text[i]); }
 
 	//  Free the allocated memory for the string
 	free(text);
@@ -1096,8 +1096,8 @@ int main(int argc, char** argv)
 	glutReshapeFunc(changeViewport);
 	glutDisplayFunc(render);
 	glutTimerFunc(50, timer, 20);
-	glutTimerFunc(timeInvaderShoot,timerInvaderShoot,20);
-	glutTimerFunc(timeUFO,timerUFO,20);
+	glutTimerFunc(timeInvaderShoot, timerInvaderShoot, 20);
+	glutTimerFunc(timeUFO, timerUFO, 20);
 	glutKeyboardFunc(getKeyPress);
 	glutKeyboardUpFunc(keyboardRelease);
 
