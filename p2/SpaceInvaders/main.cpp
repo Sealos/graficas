@@ -27,6 +27,8 @@ static const float leftSidePadding = 5.0f;
 static const float upperSidePadding = 10.0f;
 static const float DEGREE = static_cast<float>(3.14159f / 180);
 
+static int points = 0;
+
 static const int timeUFO = 2000;
 static const int timeInvaderShoot = 1000;
 
@@ -122,14 +124,18 @@ bool pointCollisionWithRectangle(float pX, float pY, float rX, float rY, float h
 		{rX + halfWidth, rY - halfHeight},
 	};
 
-	if (crossProductLinePoint(recPoints[0][0], recPoints[0][1], recPoints[1][0], recPoints[1][1], pX, pY) > 0)
-	{ return false; }
-	if (crossProductLinePoint(recPoints[1][0], recPoints[1][1], recPoints[2][0], recPoints[2][1], pX, pY) > 0)
-	{ return false; }
-	if (crossProductLinePoint(recPoints[2][0], recPoints[2][1], recPoints[3][0], recPoints[3][1], pX, pY) > 0)
-	{ return false; }
-	if (crossProductLinePoint(recPoints[3][0], recPoints[3][1], recPoints[0][0], recPoints[0][1], pX, pY) > 0)
-	{ return false; }
+	if (crossProductLinePoint(recPoints[0][0], recPoints[0][1], recPoints[1][0], recPoints[1][1], pX, pY) > 0) {
+		return false;
+	}
+	if (crossProductLinePoint(recPoints[1][0], recPoints[1][1], recPoints[2][0], recPoints[2][1], pX, pY) > 0) {
+		return false;
+	}
+	if (crossProductLinePoint(recPoints[2][0], recPoints[2][1], recPoints[3][0], recPoints[3][1], pX, pY) > 0) {
+		return false;
+	}
+	if (crossProductLinePoint(recPoints[3][0], recPoints[3][1], recPoints[0][0], recPoints[0][1], pX, pY) > 0) {
+		return false;
+	}
 
 	return true;
 };
@@ -183,12 +189,15 @@ public:
 	float x;
 	float y;
 	int vida;
+	bool strong;
 
 	Invader() {}
 
 	Invader(float xX, float yY, int vid): vida(vid) {
 		x = xX;
 		y = yY;
+
+		strong = vida >= 1;
 	}
 
 	inline void draw() {
@@ -217,12 +226,15 @@ public:
 		if (isInSameQuadrant(pX, pY, x, y, DEF_invaderWidth / 2, DEF_invaderHeight / 2)) {
 			if (pointCollisionWithRectangle(pX, pY, x, y, DEF_invaderWidth / 2, DEF_invaderHeight / 2)) {
 				--vida;
+
+				if (vida == 0)
+				{ points += strong ? 200 : 100; }
+
 				return true;
 			}
 		}
 
-		else
-		{ return false; }
+		return false;
 	}
 
 	void shoot() {
@@ -400,30 +412,36 @@ public:
 
 	bool pointCollision(float pX, float pY) {
 
-		if (isInSameQuadrant(pX, pY, x, y, width / 2, height / 2))
-		{ return pointCollisionWithRectangle(pX, pY, x, y, width / 2, height / 2); }
-		else
-		{ return false; }
+		if (isInSameQuadrant(pX, pY, x, y, width / 2, height / 2)) {
+			return pointCollisionWithRectangle(pX, pY, x, y, width / 2, height / 2);
+		}
+		else {
+			return false;
+		}
 	}
 
 	void update() {
 		if (invaders.checkCollisionWithPoint(x + width / 2, y - height / 2)) {
 			vivo = false;
+			points -= 30;
 			return;
 		}
 
 		if (invaders.checkCollisionWithPoint(x - width / 2, y - height / 2)) {
 			vivo = false;
+			points -= 30;
 			return;
 		}
 
 		if (invaders.checkCollisionWithPoint(x + width / 2, y + height / 2)) {
 			vivo = false;
+			points -= 30;
 			return;
 		}
 
 		if (invaders.checkCollisionWithPoint(x - width / 2, y + height / 2)) {
 			vivo = false;
+			points -= 30;
 			return;
 		}
 	}
@@ -604,41 +622,43 @@ public:
 				}
 			}
 
-		if (invaders.checkCollisionWithPoint(x + width / 2, y - height / 2)) {
+		if (invaders.checkCollisionWithPoint(x + width / 2.f, y - height / 2.f)) {
 			vivo = false;
 			return;
 		}
 
-		if (invaders.checkCollisionWithPoint(x - width / 2, y - height / 2)) {
+		if (invaders.checkCollisionWithPoint(x - width / 2.f, y - height / 2.f)) {
 			vivo = false;
 			return;
 		}
 
-		if (invaders.checkCollisionWithPoint(x + width / 2, y + height / 2)) {
+		if (invaders.checkCollisionWithPoint(x + width / 2.f, y + height / 2.f)) {
 			vivo = false;
 			return;
 		}
 
-		if (invaders.checkCollisionWithPoint(x - width / 2, y + height / 2)) {
+		if (invaders.checkCollisionWithPoint(x - width / 2.f, y + height / 2.f)) {
 			vivo = false;
 			return;
 		}
 
-		if (invaders.checkCollisionWithPoint(x + width / 8, y - height / 2 - ((height * 1.5) / 2))) {
+		if (invaders.checkCollisionWithPoint(x + width / 8.f, y - height / 2.f - ((height * 1.5f) / 2.f))) {
 			vivo = false;
 			return;
 		}
 
-		if (invaders.checkCollisionWithPoint(x - width / 8, y - height / 2 - ((height * 1.5) / 2))) {
+		if (invaders.checkCollisionWithPoint(x - width / 8.f, y - height / 2.f - ((height * 1.5f) / 2.f))) {
 			vivo = false;
 			return;
 		}
 	}
 
 	bool pointCollision(float pX, float pY) {
-		if (isInSameQuadrant(pX, pY, x, y, width / 2, height / 2))
-		{ return pointCollisionWithRectangle(pX, pY, x, y, width / 2, height / 2); }
-		return false;
+		if (isInSameQuadrant(pX, pY, x, y, width / 2, height / 2)) {
+			return pointCollisionWithRectangle(pX, pY, x, y, width / 2, height / 2);
+		}
+		else
+		{ return false; }
 	}
 
 
@@ -651,9 +671,9 @@ BarrierWall barr[3] = { BarrierWall(0.0f, 80.0f), BarrierWall(35.1f, 80.0f), Bar
 
 bool collisionWall(float pX, float pY) {
 	for (int i = 0; i < 3 ; ++i) {
-
-		if (barr[i].checkCollisionWithPoint(pX, pY))
-		{ return true; }
+		if (barr[i].checkCollisionWithPoint(pX, pY)) {
+			return true;
+		}
 	}
 
 	return false;
@@ -664,6 +684,7 @@ bool collisionUFO(float pX, float pY) {
 	if (ufoShip && ufoShip ->pointCollision(pX, pY)) {
 		delete ufoShip;
 		ufoShip = nullptr;
+		points += 300;
 		glutTimerFunc(timeUFO, timerUFO, 20);
 		return true;
 
@@ -676,6 +697,8 @@ bool collisionPlayer(float pX, float pY) {
 		player.vivo = false;
 		return true;
 	}
+	else
+	{ return false; }
 }
 
 Bala::Bala(float startX, float startY, float dy, int tipoB): x(startX), y(startY), dy(dy), eraseMe(false) {
@@ -710,7 +733,6 @@ void Bala::update() {
 		}
 		pX = x;
 		pY = y + diferenciales[0];
-
 
 		if (invaders.checkCollisionWithPoint(pX, pY) || collisionWall(pX, pY) || collisionUFO(pX, pY)) {
 			eraseMe = true;
@@ -954,7 +976,7 @@ void timer(int value) {
 
 
 int main(int argc, char** argv) {
-	srand(time(0));
+	srand(static_cast<unsigned int>(time(0)));
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 	glutInitWindowSize(DEF_heightWindow, DEF_widthWindow);
