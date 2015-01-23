@@ -37,6 +37,8 @@ using namespace std;
 void timerUFO(int);
 void timerInvaderShoot(int);
 
+bool existsPlayerBullet = false;
+
 inline pair<int, int> getQuadrant(float x, float y)
 {
 	return pair<int, int>(static_cast<int>(floor(x))/10, static_cast<int>(floor(y))/10);
@@ -620,9 +622,10 @@ public:
 
 	void shoot()
 	{
-		if (vivo)
+		if (vivo && !existsPlayerBullet)
 		{
 			balas.push_back(Bala(x, y-height/2, -1.f,0));
+			existsPlayerBullet = true;
 		}
 	}
 
@@ -759,7 +762,7 @@ void Bala::update()
 	float pX = x;
 	float pY = y - diferenciales[0];
 
-	if (tipo ==0)
+	if (tipo == 0)
 	{
 		if (invaders.checkCollisionWithPoint(pX, pY) || collisionWall(pX,pY) || collisionUFO(pX,pY))
 		{
@@ -937,12 +940,14 @@ void render()
 	{
 		if (it->y <= 0.0f || it -> y >= 100.0f || it->eraseMe)
 		{
+			if (it->tipo == 0)
+				existsPlayerBullet = false;
 			it = balas.erase(it);
 		}
 		else
 		{
 			it->draw();
-			it++;
+			++it;
 		}
 	}
 
