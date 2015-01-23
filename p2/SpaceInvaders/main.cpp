@@ -16,7 +16,7 @@
 
 //Invader definitions al reves
 #define DEF_numberColumns 6
-#define DEF_numberRows 8
+#define DEF_numberRows 1
 #define DEF_numInvaders DEF_numberRows*DEF_numberColumns
 
 #define DEF_rowSeparation 6.0f
@@ -196,9 +196,7 @@ public:
 
 	Invader(float xX, float yY, int vid): vida(vid) {
 		x = xX;
-		y = yY;
-
-		strong = vida >= 1;
+		strong = vida > 1;
 	}
 
 	inline void draw() {
@@ -228,8 +226,7 @@ public:
 			if (pointCollisionWithRectangle(pX, pY, x, y, DEF_invaderWidth / 2, DEF_invaderHeight / 2)) {
 				--vida;
 
-				if (vida == 0)
-				{
+				if (vida == 0) {
 					points += strong ? 200 : 100;
 				}
 
@@ -508,8 +505,8 @@ public:
 		for (int i = 0; i < 8; ++i) {
 			if (barreras[i].vivo) {
 				if (barreras[i].pointCollision(pX, pY)) {
-					// matar barrera
 					barreras[i].vivo = false;
+					points -= 30;
 					return true;
 				}
 			}
@@ -674,8 +671,7 @@ public:
 		if (isInSameQuadrant(pX, pY, x, y, width / 2, height / 2)) {
 			return pointCollisionWithRectangle(pX, pY, x, y, width / 2, height / 2);
 		}
-		else
-		{
+		else {
 			return false;
 		}
 	}
@@ -716,8 +712,7 @@ bool collisionPlayer(float pX, float pY) {
 		player.vivo = false;
 		return true;
 	}
-	else
-	{
+	else {
 		return false;
 	}
 }
@@ -864,12 +859,10 @@ void changeViewport(int w, int h) {
 	glLoadIdentity();
 	GLfloat aspect = (GLfloat)h / (GLfloat)w;
 
-	if (w <= h)
-	{
+	if (w <= h) {
 		glOrtho(0.0, 100.0, 100.0 * aspect, 0.0 * aspect, -1.0, 1.0);
 	}
-	else
-	{
+	else {
 		glOrtho(0.0 / aspect, 100.0 / aspect, 100.0, 0.0, -1.0, 1.0);
 	}
 	glMatrixMode(GL_MODELVIEW);
@@ -895,15 +888,14 @@ void render() {
 
 	glLoadIdentity();
 	//cuadriculaColision();
-	
+
 	invaders.draw();
 	barr[0].draw();
 	barr[1].draw();
 	barr[2].draw();
 	for (vector<Bala>::iterator it = balas.begin(); it != balas.end();) {
 		if (it->y <= 0.0f || it -> y >= 100.0f || it->eraseMe) {
-			if (it->tipo == 0)
-			{
+			if (it->tipo == 0) {
 				existsPlayerBullet = false;
 			}
 			it = balas.erase(it);
@@ -930,12 +922,13 @@ void render() {
 
 	if (player.vivo) {
 		player.draw();
-	}else{
+	}
+	else {
 		glPushMatrix();
-		glColor3f(1.0f,1.0f,1.0f);
-		printw(1.0,50.0,"GAME OVER");
-		printw(40.0,50.0,"GAME OVER");
-		printw(75.0,50.0,"GAME OVER");
+		glColor3f(1.0f, 1.0f, 1.0f);
+		printw(1.0, 50.0, "GAME OVER");
+		printw(40.0, 50.0, "GAME OVER");
+		printw(75.0, 50.0, "GAME OVER");
 		glPopMatrix();
 	}
 
@@ -1006,17 +999,17 @@ void timer(int value) {
 	barr[2].update();
 	glutTimerFunc(50, timer, 20);
 
-	for (std::vector<Bala>::iterator it = balas.begin(); it != balas.end(); ++it) {
+	for (vector<Bala>::iterator it = balas.begin(); it != balas.end(); ++it) {
 		it->update();
 	}
 
-	for (std::vector<Bala>::iterator it = balasInvader.begin(); it != balasInvader.end(); ++it) {
+	for (vector<Bala>::iterator it = balasInvader.begin(); it != balasInvader.end(); ++it) {
 		it->update();
 	}
 
 	if (ufoShip) {
-		ufoShip -> update();
-		if (ufoShip -> x >= 100.0) {
+		ufoShip->update();
+		if (ufoShip->x - 5.0f >= 100.0) {
 			delete ufoShip;
 			ufoShip = nullptr;
 			glutTimerFunc(timeUFO, timerUFO, 20);
