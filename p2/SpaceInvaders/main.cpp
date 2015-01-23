@@ -184,8 +184,7 @@ public:
 			}
 		}
 
-		else
-		{ return false; }
+		return false;
 	}
 
 	void shoot() {
@@ -567,41 +566,43 @@ public:
 				}
 			}
 
-		if (invaders.checkCollisionWithPoint(x + width / 2, y - height / 2)) {
+		if (invaders.checkCollisionWithPoint(x + width / 2.f, y - height / 2.f)) {
 			vivo = false;
 			return;
 		}
 
-		if (invaders.checkCollisionWithPoint(x - width / 2, y - height / 2)) {
+		if (invaders.checkCollisionWithPoint(x - width / 2.f, y - height / 2.f)) {
 			vivo = false;
 			return;
 		}
 
-		if (invaders.checkCollisionWithPoint(x + width / 2, y + height / 2)) {
+		if (invaders.checkCollisionWithPoint(x + width / 2.f, y + height / 2.f)) {
 			vivo = false;
 			return;
 		}
 
-		if (invaders.checkCollisionWithPoint(x - width / 2, y + height / 2)) {
+		if (invaders.checkCollisionWithPoint(x - width / 2.f, y + height / 2.f)) {
 			vivo = false;
 			return;
 		}
 
-		if (invaders.checkCollisionWithPoint(x + width / 8, y - height / 2 - ((height * 1.5) / 2))) {
+		if (invaders.checkCollisionWithPoint(x + width / 8.f, y - height / 2.f - ((height * 1.5f) / 2.f))) {
 			vivo = false;
 			return;
 		}
 
-		if (invaders.checkCollisionWithPoint(x - width / 8, y - height / 2 - ((height * 1.5) / 2))) {
+		if (invaders.checkCollisionWithPoint(x - width / 8.f, y - height / 2.f - ((height * 1.5f) / 2.f))) {
 			vivo = false;
 			return;
 		}
 	}
 
 	bool pointCollision(float pX, float pY) {
-		if (isInSameQuadrant(pX, pY, x, y, width / 2, height / 2))
-		{ return pointCollisionWithRectangle(pX, pY, x, y, width / 2, height / 2); }
-		return false;
+		if (isInSameQuadrant(pX, pY, x, y, width / 2, height / 2)) {
+			return pointCollisionWithRectangle(pX, pY, x, y, width / 2, height / 2);
+		}
+		else
+		{ return false; }
 	}
 
 
@@ -639,6 +640,8 @@ bool collisionPlayer(float pX, float pY) {
 		player.vivo = false;
 		return true;
 	}
+	else
+	{ return false; }
 }
 
 Bala::Bala(float startX, float startY, float dy, int tipoB): x(startX), y(startY), dy(dy), eraseMe(false) {
@@ -949,7 +952,7 @@ void printw(float x, float y, float z, char* format, ...) {
 }
 
 int main(int argc, char** argv) {
-	srand(time(0));
+	srand(static_cast<unsigned int>(time(0)));
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 	glutInitWindowSize(DEF_heightWindow, DEF_widthWindow);
