@@ -3,6 +3,7 @@
 #include <GL\glew.h>
 #include <GL\freeglut.h>
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
@@ -10,8 +11,24 @@ using namespace std;
 #define DEF_floorGridXSteps	10.0
 #define DEF_floorGridZSteps	10.0
 
+float pi = 3.14159f;
+float amplitud = 1.f;
+float longitud = 3.0f;
+float velocidad = -0.2f;
+
+float w = (2*pi)/longitud;
+float constV = velocidad *((2*pi)/longitud);
+
 
 GLUnurbsObj *theNurb;
+GLfloat variableKnots[25] = {
+0.0f,0.0f,0.0f,0.0f,1.0f,
+2.0f,3.0f,4.0f,5.0f,6.0f,
+7.0f,8.0f,9.0f,10.0f,11.0f,
+12.0f,13.0f,14.0f,15.0f,16.0f,
+17.0f,18.0f,18.0f,18.0f,18.0f
+};
+GLfloat ctlpoints [21][21][3];
 
 void ejesCoordenada() {
 	
@@ -71,7 +88,13 @@ void changeViewport(int w, int h) {
 
 void init_surface() {
 	
-	
+	for(int i = 0; i <21; ++i){
+		for(int j = 0; j<21; ++j){
+			ctlpoints[i][j][0] = i-10.0;
+			ctlpoints[i][j][1] = 0.0f;
+			ctlpoints[i][j][2] = j-10.0;
+		}
+	}
 	
 }
 
@@ -135,16 +158,17 @@ void render(){
     GLfloat light_ambient[] = { 0.0, 0.0, 0.2, 1.0 };
 	GLfloat light_diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
 	GLfloat light_specular[] = { 0.6, 0.6, 0.6, 1.0 };
-	GLfloat light_position[] = { -10.0, 5.0, 0.0, 1.0 };
+	GLfloat light_position[] = { -6.0, -2.0, 0.0, 1.0 };
 
 	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);   
 
-
+	
 	
 	// Render Grid 
+	/*
 	glDisable(GL_LIGHTING);
 	glLineWidth(1.0);
 	glPushMatrix();
@@ -168,10 +192,12 @@ void render(){
     glEnd();
 	ejesCoordenada();
     glPopMatrix();
-	glEnable(GL_LIGHTING);
-	// Fin Grid
 	
+	glEnable(GL_LIGHTING);
 
+	// Fin Grid
+	*/
+	
 
 	//Suaviza las lineas
 	glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -182,10 +208,10 @@ void render(){
 
 	gluBeginSurface(theNurb);
     
-	/*gluNurbsSurface(theNurb, 
+	gluNurbsSurface(theNurb, 
                    25, variableKnots, 25, variableKnots,
-                   21 * 3, 3, variablePuntosControl, 
-                   4, 4, GL_MAP2_VERTEX_3);*/
+                   21 * 3, 3, &ctlpoints[0][0][0], 
+                   4, 4, GL_MAP2_VERTEX_3);
 	/*
 
 		No cambien los numeros de la funcion, solo deben de poner los nombres de las variables correspondiente.
@@ -212,19 +238,31 @@ void render(){
 		}
 		glEnd();
 		glEnable(GL_LIGHTING);
-	*/
+	
 		
-
+		*/
 	glDisable(GL_BLEND);
 	glDisable(GL_LINE_SMOOTH);
 
 	glutSwapBuffers();
 }
+float tiempo=0;
+void calcularOla(){
+	for(int i = 0; i <21; ++i){
+		for(int j = 0; j < 21; ++ j){
+			float longitudV = sqrt((ctlpoints[i][j][0]*ctlpoints[i][j][0]) +(ctlpoints[i][j][2]*ctlpoints[i][j][2]) );
+
+
+			ctlpoints[i][j][1] = amplitud * sin((longitudV * w) + (tiempo*constV));
+		}
+	}
+}
 
 void animacion(int value) {
-	
-	glutTimerFunc(10,animacion,1);
+	calcularOla();
+	tiempo++;
     glutPostRedisplay();
+	glutTimerFunc(10,animacion,1);
 	
 }
 
@@ -243,6 +281,8 @@ int main (int argc, char** argv) {
 	glutReshapeFunc(changeViewport);
 	glutDisplayFunc(render);
 	glutKeyboardFunc (Keyboard);
+	calcularOla();
+	glutTimerFunc(10,animacion,1);
 		
 	GLenum err = glewInit();
 	if (GLEW_OK != err) {
