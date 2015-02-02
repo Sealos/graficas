@@ -13,11 +13,13 @@ using namespace std;
 
 float pi = 3.14159f;
 float amplitud = 1.f;
-float longitud = 3.0f;
-float velocidad = -0.2f;
+float longitud = 3.f;
+float velocidad = -0.1f;
 
 float w = (2*pi)/longitud;
 float constV = velocidad *((2*pi)/longitud);
+
+float decaimiento = amplitud;
 
 
 GLUnurbsObj *theNurb;
@@ -147,8 +149,8 @@ void render(){
 	// Luz y material
 
 	GLfloat mat_diffuse[] = { 0.6, 0.6, 0.9, 1.0 };
-	GLfloat mat_specular[] = { 0.8, 0.8, 1.0, 1.0 };
-	GLfloat mat_shininess[] = { 60.0 };
+	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+	GLfloat mat_shininess[] = {10 };
 	
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
 	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
@@ -157,8 +159,8 @@ void render(){
 
     GLfloat light_ambient[] = { 0.0, 0.0, 0.2, 1.0 };
 	GLfloat light_diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
-	GLfloat light_specular[] = { 0.6, 0.6, 0.6, 1.0 };
-	GLfloat light_position[] = { -6.0, -2.0, 0.0, 1.0 };
+	GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+	GLfloat light_position[] = { 3, -5, 3, 1.0 };
 
 	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
@@ -248,19 +250,26 @@ void render(){
 }
 float tiempo=0;
 void calcularOla(){
-	for(int i = 0; i <21; ++i){
-		for(int j = 0; j < 21; ++ j){
+	for(int i = 0; i <21; i++){
+		for(int j = 0; j < 21; j++){
 			float longitudV = sqrt((ctlpoints[i][j][0]*ctlpoints[i][j][0]) +(ctlpoints[i][j][2]*ctlpoints[i][j][2]) );
+			float ampl = amplitud;
+			if(longitudV!=0)
+				ampl = amplitud/(longitudV*1.5);
 
+			if(ampl < 0){
+				ampl = 0;
+			}
 
-			ctlpoints[i][j][1] = amplitud * sin((longitudV * w) + (tiempo*constV));
+			ctlpoints[i][j][1] = (ampl * sin((longitudV * w) + (tiempo*constV)));
 		}
 	}
 }
 
 void animacion(int value) {
 	calcularOla();
-	tiempo++;
+	++tiempo;
+	
     glutPostRedisplay();
 	glutTimerFunc(10,animacion,1);
 	
