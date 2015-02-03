@@ -322,16 +322,16 @@ void Keyboard(unsigned char key, int x, int y) {
 
 			break;
 		case 'q':
-			centroX += 0.1;
+			centroX += 0.1f;
 			break;
 		case 'w':
-			centroX -= 0.1;
+			centroX -= 0.1f;
 			break;
 		case 'e':
-			centroZ += 0.1;
+			centroZ += 0.1f;
 			break;
 		case 'r':
-			centroZ -= 0.1;
+			centroZ -= 0.1f;
 			break;
 		case '1':
 			pausa = true;
