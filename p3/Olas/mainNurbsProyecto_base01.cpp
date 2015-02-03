@@ -16,7 +16,7 @@ using namespace std;
 float pi = 3.14159f;
 float amplitud = 2.f;
 float longitud = 3.f;
-float velocidad = -0.1f;
+float velocidad = 0.1f;
 
 float w = (2*pi)/longitud;
 float constV = velocidad *((2*pi)/longitud);
@@ -28,6 +28,12 @@ float offset_ruido = 0.8f;
 float alturaRuido = 1.f;
 float factorTurb = 10.f;
 
+float centroX = 0.0f;
+float centroZ = 0.0f;
+
+bool pausa = false;
+bool desactivarRuido = false;
+bool desactivarOla = false;
 
 GLUnurbsObj *theNurb;
 GLfloat variableKnots[25] = {
@@ -264,7 +270,87 @@ void Keyboard(unsigned char key, int x, int y)
 	case 27:             
 		exit (0);
 		break;
+	case 'a':
+		amplitud += 0.1f;
+		break;
+	case 'z':
+		amplitud -= 0.1f;
+		break;
+	case 's':
+		w += 0.1f;
+		break;
+	case 'x':
+		w -= 0.1f;
+		break;
+	case 'd':
+		constV -=0.1f;
+		break;
+	case 'c':
+		constV +=0.1f;
+		break;
+	case 'f':
+		decaimiento += 0.01f;
+		break;
+	case 'v':
+		decaimiento -= 0.01f;
+		break;
+	case 'g':
+		amplitud_ruido += 0.01f;
+		break;
+	case 'b':
+		amplitud_ruido -= 0.01f;
+		break;
+	case 'h':
+		offset_ruido += 0.01f;
+		break;
+	case 'n':
+		offset_ruido -= 0.01f;
+		break;
+	case 'j':
+		alturaRuido += 0.01f;
+		break;
+	case 'm':
+		alturaRuido -= 0.01f;
+		break;
+	case 't':
+		factorTurb += 1;
+		break;
+	case 'y':
+		factorTurb -=1;
+		break;
+	case 'u':
 
+		break;
+	case 'i':
+
+		break;
+	case 'o':
+
+		break;
+	case 'l':
+
+		break;
+	case 'q':
+		centroX += 0.1;
+		break;
+	case 'w':
+		centroX -= 0.1;
+		break;
+	case 'e':
+		centroZ += 0.1;
+		break;
+	case 'r':
+		centroZ -=0.1;
+		break;
+	case '1':
+		pausa = true;
+		break;
+	case '2':
+		desactivarRuido = true;
+		break;
+	case '3':
+		desactivarOla = true;
+		break;
 	}
 }
 
@@ -388,28 +474,38 @@ float tiempo=0;
 void calcularOla(){
 	for(int i = 0; i <21; i++){
 		for(int j = 0; j < 21; j++){
-			float longitudV = sqrt((ctlpoints[i][j][0]*ctlpoints[i][j][0]) +(ctlpoints[i][j][2]*ctlpoints[i][j][2]) );
+			float dx = ctlpoints[i][j][0] - centroX;
+			float dz = ctlpoints[i][j][2] - centroZ;
+			float longitudV = sqrt(dx*dx + dz*dz);
 			float ampl = amplitud;
-			if(longitudV!=0)
-				ampl = amplitud/(longitudV*1.5f);
 
-			if(ampl < 0){
-				ampl = 0;
-			}
 			float noise[2];
 			noise [0] = ctlpoints[i][j][0] * amplitud_ruido + offset_ruido;
 			noise [1] = ctlpoints[i][j][2] * amplitud_ruido + offset_ruido;
-
-			float ruido = alturaRuido*0.005f*turbulence(noise[0],noise[1],factorTurb);
-			ctlpoints[i][j][1] = (ampl * sin((longitudV * w) + (tiempo*constV))) + ruido;
+			float ruido;
+			if(desactivarRuido){
+				ruido = 1;
+			}else{
+				ruido = alturaRuido*0.005f*turbulence(noise[0],noise[1],factorTurb);
+			}
+			float ola;
+			if(desactivarOla){
+				ola = 1;
+			}else{
+				ola = (ampl * sin((longitudV * w) + (tiempo*constV)));
+			}
+			ctlpoints[i][j][1] = ola * ruido;
 		}
 	}
 }
 
 void animacion(int value) {
 	calcularOla();
-	++tiempo;
+	if(!pausa){
+		++tiempo;
 
+	}
+	
 	glutPostRedisplay();
 	glutTimerFunc(10,animacion,1);
 
