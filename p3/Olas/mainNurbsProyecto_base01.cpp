@@ -13,14 +13,14 @@ using namespace std;
 #define DEF_floorGridXSteps 10.0
 #define DEF_floorGridZSteps 10.0
 
-float pi = 3.14159f;
-float amplitud = 2.f;
-float longitud = 3.f;
-float velocidad = 0.1f;
+const float pi = 3.14159f;
+const float longitud = 3.f;
+const float velocidad = 0.1f;
 
-float w = (2 * pi) / longitud;
-float constV = velocidad * ((2 * pi) / longitud);
+static float w = (2 * pi) / longitud;
+static float constV = velocidad * ((2 * pi) / longitud);
 
+float amplitud = 2.0f;
 float decaimiento = amplitud;
 
 float amplitud_ruido = 3.f;
@@ -75,7 +75,6 @@ static void init(void);
     b1 = (b0+1) & BM;\
     r0 = t - (int)t;\
     r1 = r0 - 1.f;
-
 
 float noise2(float vec[2]) {
 	int bx0, bx1, by0, by1, b00, b10, b01, b11;
@@ -235,7 +234,6 @@ void init_surface() {
 			ctlpoints[i][j][2] = j - 10.0f;
 		}
 	}
-
 }
 
 void init() {
@@ -333,13 +331,13 @@ void Keyboard(unsigned char key, int x, int y) {
 			centroZ -= 0.1f;
 			break;
 		case '1':
-			pausa = true;
+			pausa = !pausa;
 			break;
 		case '2':
-			desactivarRuido = true;
+			desactivarRuido = !desactivarRuido;
 			break;
 		case '3':
-			desactivarOla = true;
+			desactivarOla = !desactivarOla;
 			break;
 	}
 }
