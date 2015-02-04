@@ -14,14 +14,14 @@ using namespace std;
 #define DEF_floorGridZSteps 10.0
 
 float pi = 3.14159f;
-float amplitud = 2.f;
+float amplitud = 1.f;
 float longitud = 3.f;
-float velocidad = 0.1f;
+float velocidad = -0.1f;
 
 float w = (2 * pi) / longitud;
 float constV = velocidad * ((2 * pi) / longitud);
 
-float decaimiento = amplitud;
+float decaimiento = 0.f;
 
 float amplitud_ruido = 3.f;
 float offset_ruido = 0.8f;
@@ -467,7 +467,13 @@ void calcularOla() {
 			float dz = ctlpoints[i][j][2] - centroZ;
 			float longitudV = sqrt(dx * dx + dz * dz);
 			float ampl = amplitud;
-
+			
+			if(longitudV>=1)
+				ampl = (amplitud/(longitudV) )- decaimiento;
+			if(ampl < 0){
+				ampl = 0;
+			}
+			
 			float noise[2];
 			noise [0] = ctlpoints[i][j][0] * amplitud_ruido + offset_ruido;
 			noise [1] = ctlpoints[i][j][2] * amplitud_ruido + offset_ruido;
