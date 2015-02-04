@@ -31,11 +31,13 @@ float factorTurb = 10.f;
 float centroX = 0.0f;
 float centroZ = 0.0f;
 
+float centroZParabola = 0.0f;
+
 float factor_cuadratico = 0.0f;
 
-bool pausa = true;
-bool desactivarRuido = true;
-bool desactivarOla = true;
+bool pausa = false;
+bool desactivarRuido = false;
+bool desactivarOla = false;
 
 GLUnurbsObj* theNurb;
 GLfloat variableKnots[25] = {
@@ -314,16 +316,14 @@ void Keyboard(unsigned char key, int x, int y) {
 			break;
 		case 'i':
 			factor_cuadratico -= 0.01f;
-			if (factor_cuadratico <= 0.0f) {
-				factor_cuadratico = 0.0f;
-			}
+
 			cout << factor_cuadratico << endl;
 			break;
 		case 'o':
-			centroX -= 0.1f;
+			centroZParabola -= 0.1f;
 			break;
 		case 'l':
-			centroX += 0.1f;
+			centroZParabola += 0.1f;
 			break;
 		case 'q':
 			centroX += 0.1f;
@@ -430,8 +430,9 @@ void render() {
 	
 	glPopMatrix();
 
-
+	
 	/* Muestra los puntos de control */
+	/*
 	int i, j;
 	glPointSize(5.0);
 	glDisable(GL_LIGHTING);
@@ -442,7 +443,9 @@ void render() {
 			glVertex3f(ctlpoints[i][j][0],  ctlpoints[i][j][1], ctlpoints[i][j][2]);
 		}
 	}
+	
 	glEnd();
+	*/
 	glEnable(GL_LIGHTING);
 
 
@@ -489,7 +492,7 @@ void calcularOla() {
 			//cout << "Factor: " <<factor_cuadratico <<" New: " << ctlpoints[i][j][2] << " Old: " << j - 10.0f << endl;
 
 			//y -> altura
-			ctlpoints[i][j][1] = ola * ruido + pow(factor_cuadratico*abs(j - 10.0f - centroZ), 2.0f);
+			ctlpoints[i][j][1] = ola * ruido + (factor_cuadratico*pow((ctlpoints[i][j][2])+centroZParabola, 2.0f));
 			//ctlpoints[i][j][1] = ola * ruido + cosh(ctlpoints[i][j][2]) - (factor_cuadratico*10 + 1);
 
 			//z -> ancho 
