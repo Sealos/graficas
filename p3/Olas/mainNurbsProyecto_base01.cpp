@@ -33,9 +33,9 @@ float centroZ = 0.0f;
 
 float factor_cuadratico = 0.0f;
 
-bool pausa = false;
-bool desactivarRuido = false;
-bool desactivarOla = false;
+bool pausa = true;
+bool desactivarRuido = true;
+bool desactivarOla = true;
 
 GLUnurbsObj* theNurb;
 GLfloat variableKnots[25] = {
@@ -382,7 +382,7 @@ void render() {
 
 
 	// Render Grid
-
+	/*
 	GLfloat zExtent, xExtent, xLocal, zLocal;
 	int loopX, loopZ;
 	glDisable(GL_LIGHTING);
@@ -408,7 +408,7 @@ void render() {
 	glPopMatrix();
 
 	glEnable(GL_LIGHTING);
-
+	*/
 	// Fin Grid
 
 	//Suaviza las lineas
@@ -418,7 +418,7 @@ void render() {
 
 
 	glPushMatrix();
-
+	
 	gluBeginSurface(theNurb);
 
 	gluNurbsSurface(theNurb,
@@ -468,12 +468,7 @@ void calcularOla() {
 			}
 			
 			float noise[2];
-			ctlpoints[i][j][2] = j - 10.0f;
-			float sign = ctlpoints[i][j][2] >= 0 ? 1.f : -1.f;
 
-			ctlpoints[i][j][2] = sign * pow(abs(ctlpoints[i][j][2]), 1.0f/(factor_cuadratico + 1.f));
-
-			//cout << "Factor: " <<factor_cuadratico <<" New: " << ctlpoints[i][j][2] << " Old: " << j - 10.0f << endl;
 			noise [0] = ctlpoints[i][j][0] * amplitud_ruido + offset_ruido;
 			noise [1] = ctlpoints[i][j][2] * amplitud_ruido + offset_ruido;
 			float ruido;
@@ -490,8 +485,18 @@ void calcularOla() {
 			else {
 				ola = (ampl * sin((longitudV * w) + (tiempo * constV)));
 			}
-			ctlpoints[i][j][1] = ola * ruido + pow(abs(ctlpoints[i][j][2] - centroZ), factor_cuadratico);
-			//cout << "Factor: " << factor_cuadratico << "   New:   " << ctlpoints[i][j][1] << "   Punto Z:   " << ctlpoints[i][j][2] - centroZ << "  Pow   " << pow(abs(ctlpoints[i][j][2] - centroZ), factor_cuadratico) << endl;
+			
+			//cout << "Factor: " <<factor_cuadratico <<" New: " << ctlpoints[i][j][2] << " Old: " << j - 10.0f << endl;
+
+			//y -> altura
+			ctlpoints[i][j][1] = ola * ruido + pow(factor_cuadratico*abs(j - 10.0f - centroZ), 2.0f);
+			//ctlpoints[i][j][1] = ola * ruido + cosh(ctlpoints[i][j][2]) - (factor_cuadratico*10 + 1);
+
+			//z -> ancho 
+			//ctlpoints[i][j][2] = j - 10.0f;
+			//float sign = ctlpoints[i][j][2] >= 0 ? 1.f : -1.f;
+			//ctlpoints[i][j][2] = sign * abs(j-10) *sqrt((j - 10)*(j - 10) - ctlpoints[i][j][1]*ctlpoints[i][j][1])/10 ;
+			//cout << "Y: " << ctlpoints[i][j][1] << "    X: " << ctlpoints[i][j][2] << endl;
 		}
 	}
 }
@@ -503,7 +508,7 @@ void animacion(int value) {
 	}
 
 	glutPostRedisplay();
-	glutTimerFunc(10, animacion, 1);
+	glutTimerFunc(100, animacion, 1);
 
 }
 
@@ -518,7 +523,7 @@ int main(int argc, char** argv) {
 	glutCreateWindow("Test Opengl");
 
 	init();
-
+	calcularOla();
 	glutReshapeFunc(changeViewport);
 	glutDisplayFunc(render);
 	glutKeyboardFunc(Keyboard);
