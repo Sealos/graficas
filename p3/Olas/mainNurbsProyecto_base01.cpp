@@ -31,6 +31,8 @@ float factorTurb = 10.f;
 float centroX = 0.0f;
 float centroZ = 0.0f;
 
+float factor_cuadratico = 0.0f;
+
 bool pausa = false;
 bool desactivarRuido = false;
 bool desactivarOla = false;
@@ -214,7 +216,7 @@ void ejesCoordenada() {
 
 void changeViewport(int w, int h) {
 
-	if (h == 0){
+	if (h == 0) {
 		h = 1;
 	}
 	glViewport(0, 0, (GLsizei) w, (GLsizei) h);
@@ -226,7 +228,6 @@ void changeViewport(int w, int h) {
 }
 
 void init_surface() {
-
 	for (int i = 0; i < 21; ++i) {
 		for (int j = 0; j < 21; ++j) {
 			ctlpoints[i][j][0] = i - 10.0f;
@@ -308,15 +309,21 @@ void Keyboard(unsigned char key, int x, int y) {
 			break;
 		case 'u':
 
+			factor_cuadratico += 0.01f;
+			cout << factor_cuadratico << endl;
 			break;
 		case 'i':
-
+			factor_cuadratico -= 0.01f;
+			if (factor_cuadratico <= 0.0f) {
+				factor_cuadratico = 0.0f;
+			}
+			cout << factor_cuadratico << endl;
 			break;
 		case 'o':
-
+			centroX -= 0.1f;
 			break;
 		case 'l':
-
+			centroX += 0.1f;
 			break;
 		case 'q':
 			centroX += 0.1f;
@@ -375,28 +382,26 @@ void render() {
 
 
 	// Render Grid
-	/*
+
 	GLfloat zExtent, xExtent, xLocal, zLocal;
 	int loopX, loopZ;
 	glDisable(GL_LIGHTING);
 	glLineWidth(1.0);
 	glPushMatrix();
-	glRotatef(90,1.0,0.0,0.0);
-	glColor3f( 0.0, 0.7, 0.7 );
-	glBegin( GL_LINES );
+	glRotatef(90, 1.0, 0.0, 0.0);
+	glColor3f(0.0f, 0.7f, 0.7f);
+	glBegin(GL_LINES);
 	zExtent = DEF_floorGridScale * DEF_floorGridZSteps;
-	for(loopX = -DEF_floorGridXSteps; loopX <= DEF_floorGridXSteps; loopX++ )
-	{
-	xLocal = DEF_floorGridScale * loopX;
-	glVertex3f( xLocal, -zExtent, 0.0 );
-	glVertex3f( xLocal, zExtent,  0.0 );
+	for (loopX = -DEF_floorGridXSteps; loopX <= DEF_floorGridXSteps; loopX++) {
+		xLocal = DEF_floorGridScale * loopX;
+		glVertex3f(xLocal, -zExtent, 0.0);
+		glVertex3f(xLocal, zExtent,  0.0);
 	}
 	xExtent = DEF_floorGridScale * DEF_floorGridXSteps;
-	for(loopZ = -DEF_floorGridZSteps; loopZ <= DEF_floorGridZSteps; loopZ++ )
-	{
-	zLocal = DEF_floorGridScale * loopZ;
-	glVertex3f( -xExtent, zLocal, 0.0 );
-	glVertex3f(  xExtent, zLocal, 0.0 );
+	for (loopZ = -DEF_floorGridZSteps; loopZ <= DEF_floorGridZSteps; loopZ++) {
+		zLocal = DEF_floorGridScale * loopZ;
+		glVertex3f(-xExtent, zLocal, 0.0);
+		glVertex3f(xExtent, zLocal, 0.0);
 	}
 	glEnd();
 	ejesCoordenada();
@@ -405,7 +410,6 @@ void render() {
 	glEnable(GL_LIGHTING);
 
 	// Fin Grid
-	*/
 
 	//Suaviza las lineas
 	glEnable(GL_BLEND);
@@ -421,34 +425,27 @@ void render() {
 	                25, variableKnots, 25, variableKnots,
 	                21 * 3, 3, &ctlpoints[0][0][0],
 	                4, 4, GL_MAP2_VERTEX_3);
-	/*
-
-	No cambien los numeros de la funcion, solo deben de poner los nombres de las variables correspondiente.
-
-	*/
 
 	gluEndSurface(theNurb);
-
+	
 	glPopMatrix();
 
 
 	/* Muestra los puntos de control */
-	/*
-	int i,j;
+	int i, j;
 	glPointSize(5.0);
 	glDisable(GL_LIGHTING);
 	glColor3f(1.0, 1.0, 0.0);
 	glBegin(GL_POINTS);
-	for (i = 0; i <21; i++) {
-	for (j = 0; j < 21; j++) {
-	glVertex3f(ctlpoints[i][j][0],  ctlpoints[i][j][1], ctlpoints[i][j][2]);
-	}
+	for (i = 0; i < 21; i++) {
+		for (j = 0; j < 21; j++) {
+			glVertex3f(ctlpoints[i][j][0],  ctlpoints[i][j][1], ctlpoints[i][j][2]);
+		}
 	}
 	glEnd();
 	glEnable(GL_LIGHTING);
 
 
-	*/
 	glDisable(GL_BLEND);
 	glDisable(GL_LINE_SMOOTH);
 
@@ -465,6 +462,12 @@ void calcularOla() {
 			float ampl = amplitud;
 
 			float noise[2];
+			ctlpoints[i][j][2] = j - 10.0f;
+			float sign = ctlpoints[i][j][2] >= 0 ? 1.f : -1.f;
+
+			ctlpoints[i][j][2] = sign * pow(abs(ctlpoints[i][j][2]), 1.0f/(factor_cuadratico + 1.f));
+
+			//cout << "Factor: " <<factor_cuadratico <<" New: " << ctlpoints[i][j][2] << " Old: " << j - 10.0f << endl;
 			noise [0] = ctlpoints[i][j][0] * amplitud_ruido + offset_ruido;
 			noise [1] = ctlpoints[i][j][2] * amplitud_ruido + offset_ruido;
 			float ruido;
@@ -481,7 +484,8 @@ void calcularOla() {
 			else {
 				ola = (ampl * sin((longitudV * w) + (tiempo * constV)));
 			}
-			ctlpoints[i][j][1] = ola * ruido;
+			ctlpoints[i][j][1] = ola * ruido + pow(abs(ctlpoints[i][j][2] - centroZ), factor_cuadratico);
+			//cout << "Factor: " << factor_cuadratico << "   New:   " << ctlpoints[i][j][1] << "   Punto Z:   " << ctlpoints[i][j][2] - centroZ << "  Pow   " << pow(abs(ctlpoints[i][j][2] - centroZ), factor_cuadratico) << endl;
 		}
 	}
 }
@@ -512,8 +516,7 @@ int main(int argc, char** argv) {
 	glutReshapeFunc(changeViewport);
 	glutDisplayFunc(render);
 	glutKeyboardFunc(Keyboard);
-	calcularOla();
-	glutTimerFunc(10, animacion, 1);
+	glutTimerFunc(1000, animacion, 1);
 
 	GLenum err = glewInit();
 	if (GLEW_OK != err) {
