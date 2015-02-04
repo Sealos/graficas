@@ -215,10 +215,9 @@ void ejesCoordenada() {
 
 void changeViewport(int w, int h) {
 
-	float aspectratio;
-
-	if (h == 0)
-	{ h = 1; }
+	if (h == 0){
+		h = 1;
+	}
 	glViewport(0, 0, (GLsizei) w, (GLsizei) h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -322,16 +321,16 @@ void Keyboard(unsigned char key, int x, int y) {
 
 			break;
 		case 'q':
-			centroX += 0.1;
+			centroX += 0.1f;
 			break;
 		case 'w':
-			centroX -= 0.1;
+			centroX -= 0.1f;
 			break;
 		case 'e':
-			centroZ += 0.1;
+			centroZ += 0.1f;
 			break;
 		case 'r':
-			centroZ -= 0.1;
+			centroZ -= 0.1f;
 			break;
 		case '1':
 			pausa = true;
@@ -348,9 +347,6 @@ void Keyboard(unsigned char key, int x, int y) {
 void render() {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	GLfloat zExtent, xExtent, xLocal, zLocal;
-	int loopX, loopZ;
 
 	glLoadIdentity();
 	gluLookAt(25.0, 12.0, 4.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
@@ -382,6 +378,8 @@ void render() {
 
 	// Render Grid
 	/*
+	GLfloat zExtent, xExtent, xLocal, zLocal;
+	int loopX, loopZ;
 	glDisable(GL_LIGHTING);
 	glLineWidth(1.0);
 	glPushMatrix();
