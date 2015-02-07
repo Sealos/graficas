@@ -312,12 +312,10 @@ void Keyboard(unsigned char key, int x, int y) {
 		case 'u':
 
 			factor_cuadratico += 0.01f;
-			cout << factor_cuadratico << endl;
 			break;
 		case 'i':
 			factor_cuadratico -= 0.01f;
 
-			cout << factor_cuadratico << endl;
 			break;
 		case 'o':
 			centroZParabola -= 0.1f;
@@ -359,25 +357,24 @@ void render() {
 
 	// Luz y material
 
-	GLfloat mat_diffuse[] = { 0.6f, 0.6f, 0.9f, 1.0f };
-	GLfloat mat_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	GLfloat mat_shininess[] = {10.f };
-
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
-	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-
-
-	GLfloat light_ambient[] = { 0.0f, 0.0f, 0.2f, 1.0f };
-	GLfloat light_diffuse[] = { 0.8f, 0.8f, 0.8f, 1.0f };
-	GLfloat light_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	GLfloat light_position[] = { -10.0f, -5.0f, 0.0f, 1.0f };
-
-
-	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	GLfloat mat_diffuse[] = { 0.6, 0.6, 0.9, 1.0 };
+GLfloat mat_specular[] = { 0.8, 0.8, 1.0, 1.0 };
+ GLfloat mat_shininess[] = {60.0 };
+ 
+ glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
+ glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+ glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+ 
+ 
+ GLfloat light_ambient[] = { 0.0, 0.0, 0.2, 1.0 };
+ GLfloat light_diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
+ GLfloat light_specular[] = { 0.6, 0.6, 0.6, 1.0 };
+  GLfloat light_position[] = { -10.0, -5.0, 0.0, 1.0 };
+ 
+  glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+ glLightfv(GL_LIGHT0, GL_POSITION, light_position); 
 
 
 
@@ -465,7 +462,9 @@ void calcularOla() {
 			float ampl = amplitud;
 			
 			if(longitudV>=1)
-				ampl = (amplitud/(longitudV) )- decaimiento;
+				ampl = amplitud* pow((1/(longitudV) ),decaimiento);
+			/*else if(longitudV < 1 && longitudV >=0)
+				ampl =amplitud*pow((longitudV) ,decaimiento);*/
 			if(ampl < 0){
 				ampl = 0;
 			}
@@ -511,7 +510,7 @@ void animacion(int value) {
 	}
 
 	glutPostRedisplay();
-	glutTimerFunc(100, animacion, 1);
+	glutTimerFunc(10, animacion, 1);
 
 }
 
@@ -530,7 +529,7 @@ int main(int argc, char** argv) {
 	glutReshapeFunc(changeViewport);
 	glutDisplayFunc(render);
 	glutKeyboardFunc(Keyboard);
-	glutTimerFunc(1000, animacion, 1);
+	glutTimerFunc(10, animacion, 1);
 
 	GLenum err = glewInit();
 	if (GLEW_OK != err) {
