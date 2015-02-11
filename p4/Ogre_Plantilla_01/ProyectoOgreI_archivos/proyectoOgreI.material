@@ -1,0 +1,16 @@
+material shOgreMat01
+{
+	technique
+	{
+		pass
+		{
+
+			texture_unit
+			{
+				texture texCC_proyectoOgre01.tga
+			}
+		}
+
+	}
+
+}

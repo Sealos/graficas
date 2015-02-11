@@ -10,9 +10,13 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="mainProyectoOgreI_base.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{56FF2693-AC05-4CE6-ABC8-9881C8FF94BA}</ProjectGuid>
     <RootNamespace>Ogre_Plantilla_01</RootNamespace>
+    <ProjectName>Proyecto1Ogre</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -42,6 +46,7 @@
     <IntDir>obj\$(Configuration)\</IntDir>
     <OutDir>bin\$(Configuration)\</OutDir>
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(OGRE_HOME)\include\OGRE\Overlay;include;$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IntDir>obj\$(Configuration)\</IntDir>
@@ -115,9 +120,6 @@
       <Command>copy "$(OutDir)\$(TargetFileName)" "$(OGRE_HOME)\Bin\$(Configuration)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\Downloads\mainProyectoOgreI_base.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
