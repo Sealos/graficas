@@ -1,5 +1,65 @@
 #include "Ogre\ExampleApplication.h"
-Ogre::SceneNode *torretas [8];
+#include <vector>
+Ogre::SceneNode* torretas [8];
+
+Ogre::Real ultimaFila = -23354;
+Ogre::Real penultimaFila = -19095;
+Ogre::Real altura = -332;
+
+Ogre::Vector3 posicionesT[8]=
+{Ogre::Vector3(-1615,altura,-8573),
+Ogre::Vector3(1615,altura,-15240),
+Ogre::Vector3(8135,altura,ultimaFila),
+Ogre::Vector3(15296,altura,penultimaFila),
+Ogre::Vector3(23894,altura,ultimaFila),
+Ogre::Vector3(-10229,altura,ultimaFila),
+Ogre::Vector3(-16939,altura,penultimaFila),
+Ogre::Vector3(-23027,altura,ultimaFila)
+};
+
+Ogre::SceneManager* mainSceneMgr;
+
+class Laser{
+public:
+	Ogre::SceneNode* laserNodo;
+	Ogre::Entity* laserEnt;
+	Ogre::Vector3 direccionP;
+	float velocidad;
+
+	Laser(){
+		laserNodo = nullptr;
+		laserEnt = nullptr;
+		velocidad = 1.f;
+	}
+
+	Laser(Ogre::Vector3 vec, Ogre::Vector3 playerDir){
+		laserEnt = mainSceneMgr -> createEntity("usb_laser.mesh");
+		laserNodo = mainSceneMgr -> createSceneNode();
+		laserNodo -> attachObject(laserEnt);
+		Ogre::Vector3 src = laserNodo -> getOrientation() * Vector3::UNIT_Y;
+		Ogre::Quaternion dir = src.getRotationTo(-playerDir);
+		laserNodo -> rotate(dir);
+		laserNodo -> translate(vec);
+		direccionP = playerDir;
+		velocidad = 25.f;
+	}
+
+	void move(){
+		laserNodo -> translate(direccionP * velocidad);
+	}
+
+	~Laser(){
+		if(laserNodo){
+			delete laserNodo;
+		}
+		if(laserEnt){
+			delete laserEnt;
+		}
+	}
+
+};
+
+std::vector<Laser*> laseres;
 Ogre::SceneNode *helices[2];
 
 float helicesLoc[2][3] = {
@@ -8,12 +68,15 @@ float helicesLoc[2][3] = {
 
 float bordesSuperiores[2] = {1368, -1229};
 
+
 class TorretasFrameListener : public FrameListener {
 public:
+	Ogre::SceneNode* _playerNode;
 	Ogre::Timer laserTimes[8];
 	unsigned int tiempos[8];
 
-	TorretasFrameListener() {
+	TorretasFrameListener(SceneNode* player){
+		_playerNode = player;
 		//Hacer RANDOM
 		for (int i = 0; i < 8; ++i) {
 			laserTimes[i].reset();
@@ -21,15 +84,23 @@ public:
 		}
 	}
 
-	bool frameStarted(const Ogre::FrameEvent &evt) {
-		for (int i = 0; i < 8; ++i) {
-			if (laserTimes[i].getMilliseconds() > tiempos[i]) {
+	bool frameStarted(const Ogre::FrameEvent &evt){
+		for(int i = 0; i < 8; ++i){
+			if(laserTimes[i].getMilliseconds() > tiempos[i]){
+				Ogre::Vector3 playerDirection = posicionesT[i] - _playerNode -> getPosition();
+				Ogre::Real distance = playerDirection.normalise();
 				laserTimes[i].reset();
-				std::cout << "BAM!\n";
+				Laser* las = new Laser(posicionesT[i], -playerDirection);
+				mainSceneMgr -> getRootSceneNode() -> addChild(las -> laserNodo);
+				laseres.push_back(las);
 				//DISPARAR LASER
+				std::cout << "BAM\n";
 			}
 		}
 
+		for(int i =0; i < laseres.size(); ++i){
+			laseres[i] -> move();
+		}
 		return true;
 	}
 };
@@ -226,21 +297,38 @@ public:
 			delete TorretaListener;
 	}
 
-	void createFrameListener() {
-		FrameListener = new Example25FrameListener(player, padre, mWindow, mCamera);
-		TorretaListener = new TorretasFrameListener();
-		mRoot->addFrameListener(FrameListener);
-		//mRoot->addFrameListener(TorretaListener);
+	void createFrameListener(){
+		FrameListener = new Example25FrameListener(player,padre,mWindow,mCamera);
+		TorretaListener = new TorretasFrameListener(padre);
+		mRoot -> addFrameListener(FrameListener);
+		mRoot -> addFrameListener(TorretaListener);
+
+
 	}
+
+
 
 	void createCamera() {
 		mCamera = mSceneMgr->createCamera("MyCamera1");
-		mCamera->setPosition(0, 50, 300);
-		mCamera->lookAt(0, 0, 0);
+		mCamera->setPosition(0,50,300);
+		mCamera->lookAt(0,0,0);
+
 		mCamera->setNearClipDistance(5);
 	}
 
-	void createScene() {
+
+	void chooseSceneManager()
+    {
+        // Create the SceneManager, in this case a generic one
+		mainSceneMgr = mRoot->createSceneManager(ST_GENERIC, "ExampleSMInstance");
+		mSceneMgr = mainSceneMgr;
+
+		if(mOverlaySystem)
+			 mSceneMgr->addRenderQueueListener(mOverlaySystem);
+    }
+
+	void createScene()
+	{
 		cameraNode = mSceneMgr->createSceneNode("CameraNodo");
 		cameraNode->attachObject(mCamera);
 		mSceneMgr->setAmbientLight(Ogre::ColourValue(1.0, 1.0, 1.0));
@@ -253,18 +341,33 @@ public:
 		Ogre::SceneNode *nodeEscenario01 = mSceneMgr->createSceneNode("NodeMesh01");
 		mSceneMgr->getRootSceneNode()->addChild(nodeEscenario01);
 		nodeEscenario01->attachObject(entEscenario01);
-		Ogre::Entity *torus = mSceneMgr->createEntity("ObjetoPrueba", "usb_torus.mesh");
-		Ogre::Entity *cilindro =  mSceneMgr->createEntity("ObjetoPrueba1", "RZR-002.mesh");
-		player = mSceneMgr->createSceneNode("player");
+
+		Ogre::Entity* torus = mSceneMgr->createEntity("ObjetoPrueba","usb_torus.mesh");
+		Ogre::Entity* cilindro =  mSceneMgr->createEntity("ObjetoPrueba1","usb_cubomod01.mesh");
+		torus -> setMaterialName("lambert3");
+		player = mSceneMgr -> createSceneNode("player");
+		player -> showBoundingBox(true);
+
+
+		
+
+
+		player -> attachObject(torus);
+		player -> attachObject(cilindro);
+		player -> scale(3.0,3.0,3.0);
+		//player -> rotate(Ogre::Quaternion(Degree(90),Vector3::UNIT_Y));
+
+		for(int i =0 ; i < 8 ; ++i){
+			torretas[i] = crearTorreta(mSceneMgr,posicionesT[i]);
+			mSceneMgr -> getRootSceneNode() -> addChild(torretas[i]);
+		}
+
+
+		padre = mSceneMgr -> createSceneNode();
+		padre -> addChild(cameraNode);
+
 		mSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
-		player->showBoundingBox(true);
-		player->attachObject(torus);
-		player->attachObject(cilindro);
-		player->scale(3.0, 3.0, 3.0);
-		//Ogre::SceneNode* nodo = crearTorreta(mSceneMgr,Ogre::Vector3(0.0,0.0,0.0));
-		//mSceneMgr->getRootSceneNode()->addChild(nodo);
-		padre = mSceneMgr->createSceneNode();
-		padre->addChild(cameraNode);
+		
 		padre-> addChild(player);
 		SceneNode *helice = crearHelice(mSceneMgr, Vector3(0.0, 0.0, 0.0));
 		mSceneMgr->getRootSceneNode()->addChild(helice);
