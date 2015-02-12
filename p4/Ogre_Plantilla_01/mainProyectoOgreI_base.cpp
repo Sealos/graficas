@@ -222,8 +222,9 @@ public:
 		mSceneMgr->getRootSceneNode()->addChild(nodeEscenario01);
 		nodeEscenario01->attachObject(entEscenario01);
 		Ogre::Entity *torus = mSceneMgr->createEntity("ObjetoPrueba", "usb_torus.mesh");
-		Ogre::Entity *cilindro =  mSceneMgr->createEntity("ObjetoPrueba1", "usb_cubomod01.mesh");
+		Ogre::Entity *cilindro =  mSceneMgr->createEntity("ObjetoPrueba1", "RZR-002.mesh");
 		player = mSceneMgr->createSceneNode("player");
+		mSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
 		player->showBoundingBox(true);
 		player->attachObject(torus);
 		player->attachObject(cilindro);
