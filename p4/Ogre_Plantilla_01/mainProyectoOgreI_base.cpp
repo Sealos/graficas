@@ -1,8 +1,44 @@
 #include "Ogre\ExampleApplication.h"
+Ogre::SceneNode* torretas [8];
+
+
+class TorretasFrameListener : public FrameListener{
+public:
+	Ogre::Timer laserTimes[8];
+	int tiempos[8];
+
+	TorretasFrameListener(){
+		//Hacer RANDOM
+		for(int i = 0; i < 8; ++i){
+			laserTimes[i].reset();
+			tiempos[i] = 2000;
+		}
+	}
+
+	bool frameStarted(const Ogre::FrameEvent &evt){
+		for(int i = 0; i < 8; ++i){
+			if(laserTimes[i].getMilliseconds() > tiempos[i]){
+				laserTimes[i].reset();
+				std::cout << "BAM!\n";
+				//DISPARAR LASER
+			}
+		}
+		return true;
+	}
+};
+
+inline SceneNode* crearTorreta(SceneManager* mSceneMgr,Vector3 vec){
+	Ogre::Entity* ent = mSceneMgr -> createEntity("usb_cilindro.mesh");
+	Ogre::SceneNode* nodo = mSceneMgr -> createSceneNode();
+	nodo -> attachObject(ent);
+	nodo -> translate(vec);
+	return nodo;
+}
 
 class Example25FrameListener : public FrameListener{
 private:
 	Ogre::SceneNode* _playerNode;
+	Ogre::SceneNode* _padreNode;
 	Ogre::Camera* _cam;
 	OIS::InputManager* _man;
 	OIS::Keyboard* _key;
@@ -11,8 +47,9 @@ private:
 
 public:
 
-	Example25FrameListener(Ogre::SceneNode* playerNode, RenderWindow* win, Ogre::Camera* cam){
+	Example25FrameListener(Ogre::SceneNode* playerNode, Ogre::SceneNode* padre, RenderWindow* win, Ogre::Camera* cam){
 		_playerNode = playerNode;
+		_padreNode = padre;
 		//Helper variables for extracting the window handle
 		size_t windowHnd =0;
 		std::stringstream windowHndStr;
@@ -38,11 +75,14 @@ public:
 	bool frameStarted(const Ogre::FrameEvent &evt){
 		Ogre::Vector3 translateCam(0.0,0.0,0.0);
 		Ogre::Vector3 translatePlayer(0.0,0.0,0.0);
-		Ogre::Quaternion rotatePlayer(Degree(0),Vector3::UNIT_Z);
+		Ogre::Quaternion rotatePlayer(Degree(0),Vector3::UNIT_Y);
+		Ogre::Quaternion strafePlayer(Degree(0),Vector3::UNIT_X);
 		float speedFactor = 2000.0f;
-		float playerSpeed = 200.f;
+		float playerSpeed = 500.f;
 		float rotationSpeed = 50.f;
-		float rotationAmount = 5.f;
+		float rotationAmount = 1.f;
+		float strafeRotSpeed = 200.f;
+
 		bool reiniciarPosicion = false;
 		_key->capture();
 		_mouse -> capture();
@@ -50,7 +90,7 @@ public:
 			return false;
 		}
 		//Camera Controls
-		if(_key->isKeyDown(OIS::KC_T)){
+		/*if(_key->isKeyDown(OIS::KC_T)){
 			translateCam+=Ogre::Vector3(0.0,0.0,-1.0);
 		}
 		if(_key->isKeyDown(OIS::KC_G)){
@@ -67,36 +107,60 @@ public:
 		_cam -> yaw(Ogre::Radian(rotX));
 		_cam -> pitch(Ogre::Radian(rotY));
 		_cam ->moveRelative(translateCam*evt.timeSinceLastFrame*speedFactor);
+*/
+		if(_key->isKeyDown(OIS::KC_1)){
+			std::cout << _padreNode->getPosition() << "\n";
+		}
 
+		Ogre::Quaternion q;
 		//Player Controls
+
+		if(_key -> isKeyDown(OIS::KC_UP)){
+			translatePlayer+=Ogre::Vector3(0.0,1.0,0.0);
+
+		}
+		if(_key -> isKeyDown(OIS::KC_DOWN)){
+			translatePlayer+=Ogre::Vector3(0.0,-1.0,0.0);
+		}
+
+		if(_key->isKeyDown(OIS::KC_LEFT)){
+			rotatePlayer = rotatePlayer * Ogre::Quaternion(Degree((rotationAmount*rotationSpeed*evt.timeSinceLastFrame)),Vector3::UNIT_Y);
+		}
+
+		if(_key->isKeyDown(OIS::KC_RIGHT)){
+			rotatePlayer = rotatePlayer * Ogre::Quaternion(Degree(-(rotationAmount*rotationSpeed*evt.timeSinceLastFrame)),Vector3::UNIT_Y);
+		}
+
 		if(_key->isKeyDown(OIS::KC_W)){
-			translatePlayer+=Ogre::Vector3(0.0,0.0,-1.0);
+			q =_playerNode -> _getDerivedOrientation();
+			Ogre::Radian angulo = q.getYaw();
+			translatePlayer+=Ogre::Vector3(cos(angulo.valueRadians()),0.0,-sin(angulo.valueRadians()));
 			
 		}
 		if(_key->isKeyDown(OIS::KC_A)){
 			translatePlayer+=Ogre::Vector3(-1.0,0.0,0.0);
 			if(_playerNode->getOrientation().getRoll().valueDegrees() < 45.0){
-				rotatePlayer = rotatePlayer * Ogre::Quaternion(Degree(rotationAmount*rotationSpeed*evt.timeSinceLastFrame),Vector3::UNIT_Z);
+				strafePlayer = strafePlayer * Ogre::Quaternion(Degree(strafeRotSpeed*evt.timeSinceLastFrame),Vector3::UNIT_Z);
 			}
 		}else{
 			if(_playerNode->getOrientation().getRoll().valueDegrees() > 0.1f){
-				rotatePlayer = rotatePlayer * Ogre::Quaternion(Degree(-(rotationAmount*rotationSpeed*evt.timeSinceLastFrame)),Vector3::UNIT_Z);
+				strafePlayer = strafePlayer * Ogre::Quaternion(Degree(-(strafeRotSpeed*evt.timeSinceLastFrame)),Vector3::UNIT_Z);
 
 			}
-
 		}
 		if(_key->isKeyDown(OIS::KC_D)){
 			translatePlayer+=Ogre::Vector3(1,0.0,0.0);
 			if(_playerNode->getOrientation().getRoll().valueDegrees() > -45.f){
-				rotatePlayer = rotatePlayer * Ogre::Quaternion(Degree(-(rotationAmount*rotationSpeed*evt.timeSinceLastFrame)),Vector3::UNIT_Z);
+				strafePlayer = strafePlayer * Ogre::Quaternion(Degree(-(strafeRotSpeed*evt.timeSinceLastFrame)),Vector3::UNIT_Z);
 			}
 		}else{
 			if(_playerNode->getOrientation().getRoll().valueDegrees() < -0.1f){
-				rotatePlayer = rotatePlayer * Ogre::Quaternion(Degree(rotationAmount*rotationSpeed*evt.timeSinceLastFrame),Vector3::UNIT_Z);
+				strafePlayer = strafePlayer * Ogre::Quaternion(Degree(strafeRotSpeed*evt.timeSinceLastFrame),Vector3::UNIT_Z);
 
 			}
-
 		}
+
+		
 		/*if(!(_key->isKeyDown(OIS::KC_A) || _key->isKeyDown(OIS::KC_D))){
 			if(_playerNode->getOrientation().getRoll().valueDegrees() > 0.f){
 				rotatePlayer = rotatePlayer * Ogre::Quaternion(Degree(-(rotationAmount*rotationSpeed*evt.timeSinceLastFrame)),Vector3::UNIT_Z);
@@ -107,14 +171,16 @@ public:
 			}
 
 		}*/
-		_playerNode -> translate(translatePlayer*evt.timeSinceLastFrame*playerSpeed);
+		_padreNode -> translate(translatePlayer*evt.timeSinceLastFrame*playerSpeed);
+		//_cam->move(translatePlayer*evt.timeSinceLastFrame*playerSpeed);
+		//_cam->rotate(rotatePlayer);
 		/*if(_playerNode->getOrientation().getRoll().valueDegrees() > -1.f && _playerNode->getOrientation().getRoll().valueDegrees() < 1.f){
 			Ogre::Vector3 orientacionActual = _playerNode -> getOrientation() * Vector3::UNIT_Z;
 			Ogre::Quaternion reset = orientacionActual.getRotationTo(Vector3::UNIT_Z);
 			_playerNode -> rotate(reset);
 		}else{*/
-		
-			_playerNode -> rotate(rotatePlayer);
+			_padreNode -> rotate(rotatePlayer);
+			_playerNode -> rotate(strafePlayer);
 		
 		//}
 		return true;
@@ -126,28 +192,37 @@ class Example1 : public ExampleApplication
 
 public:
 	Ogre::FrameListener* FrameListener;
+	Ogre::FrameListener* TorretaListener;
 	Ogre::SceneNode* player;
+	Ogre::SceneNode* padre;
+	Ogre::SceneNode* cameraNode;
 
 	Example1(){
-		FrameListener = NULL;
+		FrameListener = nullptr;
+		TorretaListener = nullptr;
 	}
 
 	~Example1(){
 		if(FrameListener){
 			delete FrameListener;
 		}
+		if(TorretaListener){
+			delete TorretaListener;
+		}
 	}
 
 	void createFrameListener(){
-		FrameListener = new Example25FrameListener(player,mWindow,mCamera);
+		FrameListener = new Example25FrameListener(player,padre,mWindow,mCamera);
+		TorretaListener = new TorretasFrameListener();
 		mRoot -> addFrameListener(FrameListener);
+		mRoot -> addFrameListener(TorretaListener);
 
 	}
 
 	void createCamera() {
 
 		mCamera = mSceneMgr->createCamera("MyCamera1");
-		mCamera->setPosition(100,50,100);
+		mCamera->setPosition(0,200,200);
 		mCamera->lookAt(0,0,0);
 		mCamera->setNearClipDistance(5);
 
@@ -155,6 +230,13 @@ public:
 
 	void createScene()
 	{
+
+		
+
+		cameraNode = mSceneMgr->createSceneNode("CameraNodo");
+		cameraNode -> attachObject(mCamera);
+	
+
 
 		mSceneMgr->setAmbientLight(Ogre::ColourValue(1.0, 1.0, 1.0));
 		mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
@@ -172,9 +254,28 @@ public:
 		nodeEscenario01->attachObject(entEscenario01);
 
 		Ogre::Entity* torus = mSceneMgr->createEntity("ObjetoPrueba","usb_torus.mesh");
+		Ogre::Entity* cilindro =  mSceneMgr->createEntity("ObjetoPrueba1","usb_cubomod01.mesh");
 		player = mSceneMgr -> createSceneNode("player");
-		mSceneMgr -> getRootSceneNode() -> addChild(player);
+		player -> showBoundingBox(true);
+
+
+		
+
+
 		player -> attachObject(torus);
+		player -> attachObject(cilindro);
+		player -> scale(3.0,3.0,3.0);
+		player -> rotate(Ogre::Quaternion(Degree(90),Vector3::UNIT_Y));
+
+		//Ogre::SceneNode* nodo = crearTorreta(mSceneMgr,Ogre::Vector3(0.0,0.0,0.0));
+		//mSceneMgr -> getRootSceneNode() -> addChild(nodo);
+
+
+		padre = mSceneMgr -> createSceneNode();
+		padre -> addChild(cameraNode);
+		padre-> addChild(player);
+		mSceneMgr -> getRootSceneNode() -> addChild(padre);
+
 
 
 	}
