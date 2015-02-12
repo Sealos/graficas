@@ -1,38 +1,39 @@
 #include "Ogre\ExampleApplication.h"
 #include <vector>
-Ogre::SceneNode* torretas [8];
+Ogre::SceneNode *torretas [8];
+Ogre::SceneNode *helices[2];
 
 Ogre::Real ultimaFila = -23354;
 Ogre::Real penultimaFila = -19095;
 Ogre::Real altura = -332;
 
-Ogre::Vector3 posicionesT[8]=
-{Ogre::Vector3(-1615,altura,-8573),
-Ogre::Vector3(1615,altura,-15240),
-Ogre::Vector3(8135,altura,ultimaFila),
-Ogre::Vector3(15296,altura,penultimaFila),
-Ogre::Vector3(23894,altura,ultimaFila),
-Ogre::Vector3(-10229,altura,ultimaFila),
-Ogre::Vector3(-16939,altura,penultimaFila),
-Ogre::Vector3(-23027,altura,ultimaFila)
+Ogre::Vector3 posicionesT[8] = {
+	Ogre::Vector3(-1615, altura, -8573),
+	Ogre::Vector3(1615, altura, -15240),
+	Ogre::Vector3(8135, altura, ultimaFila),
+	Ogre::Vector3(15296, altura, penultimaFila),
+	Ogre::Vector3(23894, altura, ultimaFila),
+	Ogre::Vector3(-10229, altura, ultimaFila),
+	Ogre::Vector3(-16939, altura, penultimaFila),
+	Ogre::Vector3(-23027, altura, ultimaFila)
 };
 
-Ogre::SceneManager* mainSceneMgr;
+Ogre::SceneManager *mainSceneMgr;
 
-class Laser{
+class Laser {
 public:
-	Ogre::SceneNode* laserNodo;
-	Ogre::Entity* laserEnt;
+	Ogre::SceneNode *laserNodo;
+	Ogre::Entity *laserEnt;
 	Ogre::Vector3 direccionP;
 	float velocidad;
 
-	Laser(){
+	Laser() {
 		laserNodo = nullptr;
 		laserEnt = nullptr;
 		velocidad = 1.f;
 	}
 
-	Laser(Ogre::Vector3 vec, Ogre::Vector3 playerDir){
+	Laser(Ogre::Vector3 vec, Ogre::Vector3 playerDir) {
 		laserEnt = mainSceneMgr -> createEntity("usb_laser.mesh");
 		laserNodo = mainSceneMgr -> createSceneNode();
 		laserNodo -> attachObject(laserEnt);
@@ -44,26 +45,25 @@ public:
 		velocidad = 25.f;
 	}
 
-	void move(){
+	void move() {
 		laserNodo -> translate(direccionP * velocidad);
 	}
 
-	~Laser(){
-		if(laserNodo){
+	~Laser() {
+		if (laserNodo) {
 			delete laserNodo;
 		}
-		if(laserEnt){
+		if (laserEnt) {
 			delete laserEnt;
 		}
 	}
 
 };
 
-std::vector<Laser*> laseres;
-Ogre::SceneNode *helices[2];
+std::vector<Laser *> laseres;
 
 float helicesLoc[2][3] = {
-	{-4904, 593, -23645}, {15151, 321, -23728}
+	{ -13315, 321, -23728}, {15151, 321, -23728}
 };
 
 float bordesSuperiores[2] = {1368, -1229};
@@ -71,11 +71,11 @@ float bordesSuperiores[2] = {1368, -1229};
 
 class TorretasFrameListener : public FrameListener {
 public:
-	Ogre::SceneNode* _playerNode;
+	Ogre::SceneNode *_playerNode;
 	Ogre::Timer laserTimes[8];
 	unsigned int tiempos[8];
 
-	TorretasFrameListener(SceneNode* player){
+	TorretasFrameListener(SceneNode *player) {
 		_playerNode = player;
 		//Hacer RANDOM
 		for (int i = 0; i < 8; ++i) {
@@ -84,13 +84,13 @@ public:
 		}
 	}
 
-	bool frameStarted(const Ogre::FrameEvent &evt){
-		for(int i = 0; i < 8; ++i){
-			if(laserTimes[i].getMilliseconds() > tiempos[i]){
+	bool frameStarted(const Ogre::FrameEvent &evt) {
+		for (int i = 0; i < 8; ++i) {
+			if (laserTimes[i].getMilliseconds() > tiempos[i]) {
 				Ogre::Vector3 playerDirection = posicionesT[i] - _playerNode -> getPosition();
 				Ogre::Real distance = playerDirection.normalise();
 				laserTimes[i].reset();
-				Laser* las = new Laser(posicionesT[i], -playerDirection);
+				Laser *las = new Laser(posicionesT[i], -playerDirection);
 				mainSceneMgr -> getRootSceneNode() -> addChild(las -> laserNodo);
 				laseres.push_back(las);
 				//DISPARAR LASER
@@ -98,8 +98,28 @@ public:
 			}
 		}
 
-		for(int i =0; i < laseres.size(); ++i){
+		for (unsigned int i = 0; i < laseres.size(); ++i) {
 			laseres[i] -> move();
+		}
+		return true;
+	}
+};
+
+class HelicesFrameListener : public FrameListener {
+public:
+	Ogre::Timer time;
+	unsigned int tiempos[8];
+
+	HelicesFrameListener() {
+		//Hacer RANDOM
+		time.reset();
+	}
+
+	bool frameStarted(const Ogre::FrameEvent &evt) {
+		if (time.getMilliseconds() > 50) {
+			Quaternion q(Degree(evt.timeSinceLastFrame * 20), Vector3::UNIT_Z);
+			helices[0]->rotate(q);
+			helices[1]->rotate(q);
 		}
 		return true;
 	}
@@ -113,42 +133,40 @@ inline SceneNode *crearTorreta(SceneManager *mSceneMgr, Vector3 vec) {
 	return nodo;
 }
 
-ManualObject *helice(SceneManager *mSceneMgr) {
-	ManualObject * h = mSceneMgr->createManualObject();
-	h->begin("Examples/Chrome", RenderOperation::OT_TRIANGLE_FAN);
- 
-	// define vertex position of index 0..3
-	h->position(-100.0, -100.0, 0.0);
-	h->position( 100.0, -100.0, 0.0);
-	h->position( 100.0,  100.0, 0.0);
-	h->position(-100.0,  100.0, 0.0);
- 
-	// define usage of vertices by refering to the indexes
-	h->index(0);
-	h->index(1);
-	h->index(2);
-	h->index(3);
-	h->index(0);
- 
-	h->end();
-	return h;
-}
-
 inline SceneNode *crearHelice(SceneManager *mSceneMgr, Vector3 vec) {
 	Ogre::SceneNode *nodoRaiz = mSceneMgr->createSceneNode();
 
-	Ogre::Entity *ent = mSceneMgr->createEntity("usb_formacurva.mesh");
-	Ogre::SceneNode *centro = mSceneMgr->createSceneNode();
-	centro->attachObject(ent);
+	Ogre::Entity *ent;
+	Ogre::SceneNode *nodo;
 
-	Ogre::SceneNode *nodoH = mSceneMgr->createSceneNode();
-	ManualObject *h = helice(mSceneMgr);
-	nodoH->translate(100, 100, 100);
-	nodoH->attachObject(h);
+	nodo = mSceneMgr->createSceneNode();
+	ent = mSceneMgr->createEntity("spine.mesh");
+	ent->setMaterialName("Examples/GrassFloor");
+	nodo->attachObject(ent);
+	nodoRaiz->addChild(nodo);
 
-	nodoRaiz->addChild(centro);
-	nodoRaiz->addChild(nodoH);
-	nodoRaiz->scale(10, 10, 10);
+	nodo = mSceneMgr->createSceneNode();
+	ent = mSceneMgr->createEntity("spine.mesh");
+	ent->setMaterialName("Examples/GrassFloor");
+	nodo->attachObject(ent);
+	nodo->rotate(Quaternion(Degree(180.0), Vector3::UNIT_Z));
+	nodoRaiz->addChild(nodo);
+
+	nodo = mSceneMgr->createSceneNode();
+	ent = mSceneMgr->createEntity("spine.mesh");
+	ent->setMaterialName("Examples/GrassFloor");
+	nodo->attachObject(ent);
+	nodo->rotate(Quaternion(Degree(270.0), Vector3::UNIT_Z));
+	nodoRaiz->addChild(nodo);
+
+	nodo = mSceneMgr->createSceneNode();
+	ent = mSceneMgr->createEntity("spine.mesh");
+	ent->setMaterialName("Examples/GrassFloor");
+	nodo->attachObject(ent);
+	nodo->rotate(Quaternion(Degree(90.0), Vector3::UNIT_Z));
+	nodoRaiz->addChild(nodo);
+
+	nodoRaiz->scale(35, 35, 35);
 	nodoRaiz->translate(vec);
 	return nodoRaiz;
 }
@@ -280,6 +298,7 @@ class Example1 : public ExampleApplication {
 public:
 	Ogre::FrameListener *FrameListener;
 	Ogre::FrameListener *TorretaListener;
+	Ogre::FrameListener *HeliceListener;
 	Ogre::SceneNode *player;
 	Ogre::SceneNode *padre;
 	Ogre::SceneNode *cameraNode;
@@ -287,6 +306,7 @@ public:
 	Example1() {
 		FrameListener = nullptr;
 		TorretaListener = nullptr;
+		HeliceListener = nullptr;
 	}
 
 	~Example1() {
@@ -295,13 +315,18 @@ public:
 
 		if (TorretaListener)
 			delete TorretaListener;
+
+		if (HeliceListener)
+			delete HeliceListener;
 	}
 
-	void createFrameListener(){
-		FrameListener = new Example25FrameListener(player,padre,mWindow,mCamera);
+	void createFrameListener() {
+		FrameListener = new Example25FrameListener(player, padre, mWindow, mCamera);
 		TorretaListener = new TorretasFrameListener(padre);
+		HeliceListener = new HelicesFrameListener();
 		mRoot -> addFrameListener(FrameListener);
 		mRoot -> addFrameListener(TorretaListener);
+		mRoot->addFrameListener(HeliceListener);
 
 
 	}
@@ -310,25 +335,23 @@ public:
 
 	void createCamera() {
 		mCamera = mSceneMgr->createCamera("MyCamera1");
-		mCamera->setPosition(0,50,300);
-		mCamera->lookAt(0,0,0);
+		mCamera->setPosition(0, 50, 300);
+		mCamera->lookAt(0, 0, 0);
 
 		mCamera->setNearClipDistance(5);
 	}
 
 
-	void chooseSceneManager()
-    {
-        // Create the SceneManager, in this case a generic one
+	void chooseSceneManager() {
+		// Create the SceneManager, in this case a generic one
 		mainSceneMgr = mRoot->createSceneManager(ST_GENERIC, "ExampleSMInstance");
 		mSceneMgr = mainSceneMgr;
 
-		if(mOverlaySystem)
-			 mSceneMgr->addRenderQueueListener(mOverlaySystem);
-    }
+		if (mOverlaySystem)
+			mSceneMgr->addRenderQueueListener(mOverlaySystem);
+	}
 
-	void createScene()
-	{
+	void createScene() {
 		cameraNode = mSceneMgr->createSceneNode("CameraNodo");
 		cameraNode->attachObject(mCamera);
 		mSceneMgr->setAmbientLight(Ogre::ColourValue(1.0, 1.0, 1.0));
@@ -342,23 +365,22 @@ public:
 		mSceneMgr->getRootSceneNode()->addChild(nodeEscenario01);
 		nodeEscenario01->attachObject(entEscenario01);
 
-		Ogre::Entity* torus = mSceneMgr->createEntity("ObjetoPrueba","usb_torus.mesh");
-		Ogre::Entity* cilindro =  mSceneMgr->createEntity("ObjetoPrueba1","usb_cubomod01.mesh");
+		Ogre::Entity *torus = mSceneMgr->createEntity("ObjetoPrueba", "usb_torus.mesh");
+		Ogre::Entity *cilindro =  mSceneMgr->createEntity("ObjetoPrueba1", "usb_cubomod01.mesh");
 		torus -> setMaterialName("lambert3");
 		player = mSceneMgr -> createSceneNode("player");
 		player -> showBoundingBox(true);
 
 
-		
+
 
 
 		player -> attachObject(torus);
 		player -> attachObject(cilindro);
-		player -> scale(3.0,3.0,3.0);
-		//player -> rotate(Ogre::Quaternion(Degree(90),Vector3::UNIT_Y));
+		player -> scale(3.0, 3.0, 3.0);
 
-		for(int i =0 ; i < 8 ; ++i){
-			torretas[i] = crearTorreta(mSceneMgr,posicionesT[i]);
+		for (int i = 0 ; i < 8 ; ++i) {
+			torretas[i] = crearTorreta(mSceneMgr, posicionesT[i]);
 			mSceneMgr -> getRootSceneNode() -> addChild(torretas[i]);
 		}
 
@@ -367,9 +389,15 @@ public:
 		padre -> addChild(cameraNode);
 
 		mSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
-		
+
 		padre-> addChild(player);
-		SceneNode *helice = crearHelice(mSceneMgr, Vector3(0.0, 0.0, 0.0));
+		SceneNode *helice = crearHelice(mSceneMgr, Vector3(helicesLoc[0][0], helicesLoc[0][1], helicesLoc[0][2]));
+		helices[0] = helice;
+		helice->rotate(Quaternion(Degree(90), Vector3::UNIT_Y));
+		mSceneMgr->getRootSceneNode()->addChild(helice);
+		helice = crearHelice(mSceneMgr, Vector3(helicesLoc[1][0], helicesLoc[1][1], helicesLoc[1][2]));
+		helices[1] = helice;
+		helice->rotate(Quaternion(Degree(90), Vector3::UNIT_Y));
 		mSceneMgr->getRootSceneNode()->addChild(helice);
 		//padre->rotate(Ogre::Quaternion(Degree(90), Vector3::UNIT_Y));
 		mSceneMgr->getRootSceneNode()->addChild(padre);
