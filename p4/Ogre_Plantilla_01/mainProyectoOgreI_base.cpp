@@ -1,30 +1,36 @@
 #include "Ogre\ExampleApplication.h"
 #include <vector>
-Ogre::SceneNode *torretas [8];
-Ogre::SceneNode *helices[2];
+SceneNode *torretas [8];
+SceneNode *helices[2];
 
-Ogre::Real ultimaFila = -23354;
-Ogre::Real penultimaFila = -19095;
-Ogre::Real altura = -332;
-
-Ogre::Vector3 posicionesT[8] = {
-	Ogre::Vector3(-1615, altura, -8573),
-	Ogre::Vector3(1615, altura, -15240),
-	Ogre::Vector3(8135, altura, ultimaFila),
-	Ogre::Vector3(15296, altura, penultimaFila),
-	Ogre::Vector3(23894, altura, ultimaFila),
-	Ogre::Vector3(-10229, altura, ultimaFila),
-	Ogre::Vector3(-16939, altura, penultimaFila),
-	Ogre::Vector3(-23027, altura, ultimaFila)
+float helicesLoc[2][3] = {
+	{ -13315, 321, -23728}, {15151, 321, -23728}
 };
 
-Ogre::SceneManager *mainSceneMgr;
+float bordesSuperiores[2] = {1368, -1229};
+
+Real ultimaFila = -23354;
+Real penultimaFila = -19095;
+Real altura = -332;
+
+Vector3 posicionesT[8] = {
+	Vector3(-1615, altura, -8573),
+	Vector3(1615, altura, -15240),
+	Vector3(8135, altura, ultimaFila),
+	Vector3(15296, altura, penultimaFila),
+	Vector3(23894, altura, ultimaFila),
+	Vector3(-10229, altura, ultimaFila),
+	Vector3(-16939, altura, penultimaFila),
+	Vector3(-23027, altura, ultimaFila)
+};
+
+SceneManager *mainSceneMgr;
 
 class Laser {
 public:
-	Ogre::SceneNode *laserNodo;
-	Ogre::Entity *laserEnt;
-	Ogre::Vector3 direccionP;
+	SceneNode *laserNodo;
+	Entity *laserEnt;
+	Vector3 direccionP;
 	float velocidad;
 
 	Laser() {
@@ -33,12 +39,12 @@ public:
 		velocidad = 1.f;
 	}
 
-	Laser(Ogre::Vector3 vec, Ogre::Vector3 playerDir) {
+	Laser(Vector3 vec, Vector3 playerDir) {
 		laserEnt = mainSceneMgr -> createEntity("usb_laser.mesh");
 		laserNodo = mainSceneMgr -> createSceneNode();
 		laserNodo -> attachObject(laserEnt);
-		Ogre::Vector3 src = laserNodo -> getOrientation() * Vector3::UNIT_Y;
-		Ogre::Quaternion dir = src.getRotationTo(-playerDir);
+		Vector3 src = laserNodo -> getOrientation() * Vector3::UNIT_Y;
+		Quaternion dir = src.getRotationTo(-playerDir);
 		laserNodo -> rotate(dir);
 		laserNodo -> translate(vec);
 		direccionP = playerDir;
@@ -62,17 +68,10 @@ public:
 
 std::vector<Laser *> laseres;
 
-float helicesLoc[2][3] = {
-	{ -13315, 321, -23728}, {15151, 321, -23728}
-};
-
-float bordesSuperiores[2] = {1368, -1229};
-
-
 class TorretasFrameListener : public FrameListener {
 public:
-	Ogre::SceneNode *_playerNode;
-	Ogre::Timer laserTimes[8];
+	SceneNode *_playerNode;
+	Timer laserTimes[8];
 	unsigned int tiempos[8];
 
 	TorretasFrameListener(SceneNode *player) {
@@ -84,11 +83,11 @@ public:
 		}
 	}
 
-	bool frameStarted(const Ogre::FrameEvent &evt) {
+	bool frameStarted(const FrameEvent &evt) {
 		for (int i = 0; i < 8; ++i) {
 			if (laserTimes[i].getMilliseconds() > tiempos[i]) {
-				Ogre::Vector3 playerDirection = posicionesT[i] - _playerNode -> getPosition();
-				Ogre::Real distance = playerDirection.normalise();
+				Vector3 playerDirection = posicionesT[i] - _playerNode -> getPosition();
+				Real distance = playerDirection.normalise();
 				laserTimes[i].reset();
 				Laser *las = new Laser(posicionesT[i], -playerDirection);
 				mainSceneMgr -> getRootSceneNode() -> addChild(las -> laserNodo);
@@ -107,7 +106,7 @@ public:
 
 class HelicesFrameListener : public FrameListener {
 public:
-	Ogre::Timer time;
+	Timer time;
 	unsigned int tiempos[8];
 
 	HelicesFrameListener() {
@@ -115,7 +114,7 @@ public:
 		time.reset();
 	}
 
-	bool frameStarted(const Ogre::FrameEvent &evt) {
+	bool frameStarted(const FrameEvent &evt) {
 		if (time.getMilliseconds() > 50) {
 			Quaternion q(Degree(evt.timeSinceLastFrame * 20), Vector3::UNIT_Z);
 			helices[0]->rotate(q);
@@ -126,18 +125,18 @@ public:
 };
 
 inline SceneNode *crearTorreta(SceneManager *mSceneMgr, Vector3 vec) {
-	Ogre::Entity *ent = mSceneMgr->createEntity("usb_cilindro.mesh");
-	Ogre::SceneNode *nodo = mSceneMgr->createSceneNode();
+	Entity *ent = mSceneMgr->createEntity("usb_cilindro.mesh");
+	SceneNode *nodo = mSceneMgr->createSceneNode();
 	nodo->attachObject(ent);
 	nodo->translate(vec);
 	return nodo;
 }
 
 inline SceneNode *crearHelice(SceneManager *mSceneMgr, Vector3 vec) {
-	Ogre::SceneNode *nodoRaiz = mSceneMgr->createSceneNode();
+	SceneNode *nodoRaiz = mSceneMgr->createSceneNode();
 
-	Ogre::Entity *ent;
-	Ogre::SceneNode *nodo;
+	Entity *ent;
+	SceneNode *nodo;
 
 	nodo = mSceneMgr->createSceneNode();
 	ent = mSceneMgr->createEntity("spine.mesh");
@@ -173,9 +172,9 @@ inline SceneNode *crearHelice(SceneManager *mSceneMgr, Vector3 vec) {
 
 class Example25FrameListener : public FrameListener {
 private:
-	Ogre::SceneNode *_playerNode;
-	Ogre::SceneNode *_padreNode;
-	Ogre::Camera *_cam;
+	SceneNode *_playerNode;
+	SceneNode *_padreNode;
+	Camera *_cam;
 	OIS::InputManager *_man;
 	OIS::Keyboard *_key;
 	OIS::Mouse *_mouse;
@@ -183,7 +182,7 @@ private:
 
 public:
 
-	Example25FrameListener(Ogre::SceneNode *playerNode, Ogre::SceneNode *padre, RenderWindow *win, Ogre::Camera *cam) {
+	Example25FrameListener(SceneNode *playerNode, SceneNode *padre, RenderWindow *win, Camera *cam) {
 		_playerNode = playerNode;
 		_padreNode = padre;
 		//Helper variables for extracting the window handle
@@ -208,11 +207,11 @@ public:
 		OIS::InputManager::destroyInputSystem(_man);
 	}
 
-	bool frameStarted(const Ogre::FrameEvent &evt) {
-		Ogre::Vector3 translateCam(0.0, 0.0, 0.0);
-		Ogre::Vector3 translatePlayer(0.0, 0.0, 0.0);
-		Ogre::Quaternion rotatePlayer(Degree(0), Vector3::UNIT_Y);
-		Ogre::Quaternion strafePlayer(Degree(0), Vector3::UNIT_Z);
+	bool frameStarted(const FrameEvent &evt) {
+		Vector3 translateCam(0.0, 0.0, 0.0);
+		Vector3 translatePlayer(0.0, 0.0, 0.0);
+		Quaternion rotatePlayer(Degree(0), Vector3::UNIT_Y);
+		Quaternion strafePlayer(Degree(0), Vector3::UNIT_Z);
 		float speedFactor = 2000.0f;
 		float playerSpeed = 1000.f;
 		float rotationSpeed = 50.f;
@@ -228,39 +227,39 @@ public:
 		if (_key->isKeyDown(OIS::KC_1))
 			std::cout << _padreNode->getPosition() << "\n";
 
-		Ogre::Quaternion q;
+		Quaternion q;
 		//Player Controls
 
 		// Move player UP
 		if (_key->isKeyDown(OIS::KC_UP))
-			translatePlayer += Ogre::Vector3(0.0, 1.0, 0.0);
+			translatePlayer += Vector3(0.0, 1.0, 0.0);
 
 		// Move player DOWN
 		if (_key->isKeyDown(OIS::KC_DOWN))
-			translatePlayer += Ogre::Vector3(0.0, -1.0, 0.0);
+			translatePlayer += Vector3(0.0, -1.0, 0.0);
 
 		// Rotate player LEFT
 		if (_key->isKeyDown(OIS::KC_LEFT))
-			rotatePlayer = rotatePlayer * Ogre::Quaternion(Degree((rotationAmount * rotationSpeed * evt.timeSinceLastFrame)), Vector3::UNIT_Y);
+			rotatePlayer = rotatePlayer * Quaternion(Degree((rotationAmount * rotationSpeed * evt.timeSinceLastFrame)), Vector3::UNIT_Y);
 
 		// Rotate player RIGHT
 		if (_key->isKeyDown(OIS::KC_RIGHT))
-			rotatePlayer = rotatePlayer * Ogre::Quaternion(Degree(-(rotationAmount * rotationSpeed * evt.timeSinceLastFrame)), Vector3::UNIT_Y);
+			rotatePlayer = rotatePlayer * Quaternion(Degree(-(rotationAmount * rotationSpeed * evt.timeSinceLastFrame)), Vector3::UNIT_Y);
 
 		q = _playerNode->_getDerivedOrientation();
-		Ogre::Radian angulo = q.getYaw();
+		Radian angulo = q.getYaw();
 
 		// Move foward
 		if (_key->isKeyDown(OIS::KC_W))
-			translatePlayer += Ogre::Vector3(-sin(angulo.valueRadians()), 0.0, -cos(angulo.valueRadians()));
+			translatePlayer += Vector3(-sin(angulo.valueRadians()), 0.0, -cos(angulo.valueRadians()));
 
 		// Strafe Left
 		if (_key->isKeyDown(OIS::KC_A))
-			translatePlayer += Ogre::Vector3(-cos(angulo.valueRadians()), 0.0, sin(angulo.valueRadians()));
+			translatePlayer += Vector3(-cos(angulo.valueRadians()), 0.0, sin(angulo.valueRadians()));
 
 		// Strafe Right
 		if (_key->isKeyDown(OIS::KC_D))
-			translatePlayer += Ogre::Vector3(cos(angulo.valueRadians()), 0.0, -sin(angulo.valueRadians()));
+			translatePlayer += Vector3(cos(angulo.valueRadians()), 0.0, -sin(angulo.valueRadians()));
 
 		bool keyA = _key->isKeyDown(OIS::KC_A);
 		bool keyD = _key->isKeyDown(OIS::KC_D);
@@ -269,11 +268,11 @@ public:
 		// Strafe left
 		if (keyA && !keyD) {
 			if (_playerNode->getOrientation().getRoll().valueDegrees() < 45.f)
-				strafePlayer = strafePlayer * Ogre::Quaternion(Degree((rotationAmount * rotationSpeed * evt.timeSinceLastFrame)), Vector3::UNIT_Z);
+				strafePlayer = strafePlayer * Quaternion(Degree((rotationAmount * rotationSpeed * evt.timeSinceLastFrame)), Vector3::UNIT_Z);
 
 		} else if (keyD && !keyA) {
 			if (_playerNode->getOrientation().getRoll().valueDegrees() > -45.f)
-				strafePlayer = strafePlayer * Ogre::Quaternion(Degree(-(rotationAmount * rotationSpeed * evt.timeSinceLastFrame)), Vector3::UNIT_Z);
+				strafePlayer = strafePlayer * Quaternion(Degree(-(rotationAmount * rotationSpeed * evt.timeSinceLastFrame)), Vector3::UNIT_Z);
 
 		} else {
 			if (_playerNode->getOrientation().getRoll().valueDegrees() > 0.f)
@@ -283,7 +282,7 @@ public:
 			else
 				sign = 1;
 
-			strafePlayer = strafePlayer * Ogre::Quaternion(Degree(sign * (rotationAmount * rotationSpeed * evt.timeSinceLastFrame)), Vector3::UNIT_Z);
+			strafePlayer = strafePlayer * Quaternion(Degree(sign * (rotationAmount * rotationSpeed * evt.timeSinceLastFrame)), Vector3::UNIT_Z);
 		}
 
 		_padreNode->translate(translatePlayer * evt.timeSinceLastFrame * playerSpeed);
@@ -299,9 +298,9 @@ public:
 	Ogre::FrameListener *FrameListener;
 	Ogre::FrameListener *TorretaListener;
 	Ogre::FrameListener *HeliceListener;
-	Ogre::SceneNode *player;
-	Ogre::SceneNode *padre;
-	Ogre::SceneNode *cameraNode;
+	SceneNode *player;
+	SceneNode *padre;
+	SceneNode *cameraNode;
 
 	Example1() {
 		FrameListener = nullptr;
@@ -327,11 +326,7 @@ public:
 		mRoot -> addFrameListener(FrameListener);
 		mRoot -> addFrameListener(TorretaListener);
 		mRoot->addFrameListener(HeliceListener);
-
-
 	}
-
-
 
 	void createCamera() {
 		mCamera = mSceneMgr->createCamera("MyCamera1");
@@ -354,26 +349,22 @@ public:
 	void createScene() {
 		cameraNode = mSceneMgr->createSceneNode("CameraNodo");
 		cameraNode->attachObject(mCamera);
-		mSceneMgr->setAmbientLight(Ogre::ColourValue(1.0, 1.0, 1.0));
-		mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
-		Ogre::Entity *ent01 = mSceneMgr->createEntity("MyEntity1", "ejes01.mesh");
-		Ogre::SceneNode *node01 = mSceneMgr->createSceneNode("Node01");
+		mSceneMgr->setAmbientLight(ColourValue(1.0, 1.0, 1.0));
+		mSceneMgr->setShadowTechnique(SHADOWTYPE_STENCIL_ADDITIVE);
+		Entity *ent01 = mSceneMgr->createEntity("MyEntity1", "ejes01.mesh");
+		SceneNode *node01 = mSceneMgr->createSceneNode("Node01");
 		mSceneMgr->getRootSceneNode()->addChild(node01);
 		node01->attachObject(ent01);
-		Ogre::Entity *entEscenario01 = mSceneMgr->createEntity("EscenarioBase01", "proyectoOgreI.mesh");
-		Ogre::SceneNode *nodeEscenario01 = mSceneMgr->createSceneNode("NodeMesh01");
+		Entity *entEscenario01 = mSceneMgr->createEntity("EscenarioBase01", "proyectoOgreI.mesh");
+		SceneNode *nodeEscenario01 = mSceneMgr->createSceneNode("NodeMesh01");
 		mSceneMgr->getRootSceneNode()->addChild(nodeEscenario01);
 		nodeEscenario01->attachObject(entEscenario01);
 
-		Ogre::Entity *torus = mSceneMgr->createEntity("ObjetoPrueba", "usb_torus.mesh");
-		Ogre::Entity *cilindro =  mSceneMgr->createEntity("ObjetoPrueba1", "usb_cubomod01.mesh");
+		Entity *torus = mSceneMgr->createEntity("ObjetoPrueba", "usb_torus.mesh");
+		Entity *cilindro =  mSceneMgr->createEntity("ObjetoPrueba1", "usb_cubomod01.mesh");
 		torus -> setMaterialName("lambert3");
 		player = mSceneMgr -> createSceneNode("player");
 		player -> showBoundingBox(true);
-
-
-
-
 
 		player -> attachObject(torus);
 		player -> attachObject(cilindro);
@@ -392,14 +383,15 @@ public:
 
 		padre-> addChild(player);
 		SceneNode *helice = crearHelice(mSceneMgr, Vector3(helicesLoc[0][0], helicesLoc[0][1], helicesLoc[0][2]));
-		helices[0] = helice;
 		helice->rotate(Quaternion(Degree(90), Vector3::UNIT_Y));
+		helices[0] = helice;
+		
 		mSceneMgr->getRootSceneNode()->addChild(helice);
 		helice = crearHelice(mSceneMgr, Vector3(helicesLoc[1][0], helicesLoc[1][1], helicesLoc[1][2]));
-		helices[1] = helice;
 		helice->rotate(Quaternion(Degree(90), Vector3::UNIT_Y));
+		helices[1] = helice;
+		
 		mSceneMgr->getRootSceneNode()->addChild(helice);
-		//padre->rotate(Ogre::Quaternion(Degree(90), Vector3::UNIT_Y));
 		mSceneMgr->getRootSceneNode()->addChild(padre);
 	}
 
