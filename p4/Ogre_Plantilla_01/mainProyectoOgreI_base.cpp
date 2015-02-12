@@ -93,8 +93,6 @@ public:
 				Laser* las = new Laser(posicionesT[i], -playerDirection);
 				mainSceneMgr -> getRootSceneNode() -> addChild(las -> laserNodo);
 				laseres.push_back(las);
-				//DISPARAR LASER
-				std::cout << "BAM\n";
 			}
 		}
 
@@ -106,10 +104,45 @@ public:
 };
 
 inline SceneNode *crearTorreta(SceneManager *mSceneMgr, Vector3 vec) {
-	Ogre::Entity *ent = mSceneMgr->createEntity("usb_cilindro.mesh");
+	//Cargar entidades
+	Ogre::Entity* base = mSceneMgr->createEntity("usb_cubomod01.mesh");
+	Ogre::Entity* cuerpo = mSceneMgr-> createEntity("usb_cilindro.mesh");
+	Ogre::Entity* tapa = mSceneMgr-> createEntity("usb_formacurva.mesh");
+
+	//Crear escenas
+	Ogre::SceneNode *nodoBase = mSceneMgr->createSceneNode();
+	Ogre::SceneNode *nodoCuerpo = mSceneMgr->createSceneNode();
+	Ogre::SceneNode *nodoTapa = mSceneMgr->createSceneNode();
 	Ogre::SceneNode *nodo = mSceneMgr->createSceneNode();
-	nodo->attachObject(ent);
-	nodo->translate(vec);
+
+	nodoBase -> attachObject(base);
+	nodoCuerpo -> attachObject(cuerpo);
+	nodoTapa -> attachObject(tapa);
+
+	nodo -> addChild(nodoBase);
+	nodo -> addChild(nodoCuerpo);
+	nodo -> addChild(nodoTapa);
+
+	nodoBase -> scale(2.0,2.0,2.0);
+	nodoCuerpo -> scale(1.0,2.0,1.0);
+	nodoBase -> _updateBounds();
+	nodoCuerpo -> _updateBounds();
+
+	Ogre::AxisAlignedBox aab = nodoBase -> _getWorldAABB();
+	float alturaBase = aab.getSize().y;
+	std::cout << alturaBase << "\n";
+	aab = nodoCuerpo -> _getWorldAABB();
+	float alturaCuerpo = aab.getSize().y;
+	std::cout << alturaCuerpo << "\n";
+
+	nodoCuerpo -> translate(0.0,alturaBase,0.0);
+	nodoTapa -> translate(0.0,alturaCuerpo,0.0);
+
+	nodo -> translate(vec);
+	nodo -> scale (10.0,10.0,10.0);
+
+	
+	
 	return nodo;
 }
 
@@ -324,6 +357,9 @@ public:
 		player -> attachObject(cilindro);
 		player -> scale(3.0,3.0,3.0);
 		//player -> rotate(Ogre::Quaternion(Degree(90),Vector3::UNIT_Y));
+		Ogre::SceneNode* test = crearTorreta(mSceneMgr,Vector3(0.0,0.0,0.0));
+		mSceneMgr -> getRootSceneNode() -> addChild(test);
+
 
 		for(int i =0 ; i < 8 ; ++i){
 			torretas[i] = crearTorreta(mSceneMgr,posicionesT[i]);
