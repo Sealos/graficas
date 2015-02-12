@@ -139,25 +139,11 @@ public:
 		}
 		if(_key->isKeyDown(OIS::KC_A)){
 			translatePlayer+=Ogre::Vector3(-1.0,0.0,0.0);
-			if(_playerNode->getOrientation().getRoll().valueDegrees() < 45.0){
-				strafePlayer = strafePlayer * Ogre::Quaternion(Degree(strafeRotSpeed*evt.timeSinceLastFrame),Vector3::UNIT_Z);
-			}
-		}else{
-			if(_playerNode->getOrientation().getRoll().valueDegrees() > 0.1f){
-				strafePlayer = strafePlayer * Ogre::Quaternion(Degree(-(strafeRotSpeed*evt.timeSinceLastFrame)),Vector3::UNIT_Z);
-
-			}
+			
 		}
 		if(_key->isKeyDown(OIS::KC_D)){
 			translatePlayer+=Ogre::Vector3(1,0.0,0.0);
-			if(_playerNode->getOrientation().getRoll().valueDegrees() > -45.f){
-				strafePlayer = strafePlayer * Ogre::Quaternion(Degree(-(strafeRotSpeed*evt.timeSinceLastFrame)),Vector3::UNIT_Z);
-			}
-		}else{
-			if(_playerNode->getOrientation().getRoll().valueDegrees() < -0.1f){
-				strafePlayer = strafePlayer * Ogre::Quaternion(Degree(strafeRotSpeed*evt.timeSinceLastFrame),Vector3::UNIT_Z);
 
-			}
 		}
 
 		
@@ -215,7 +201,7 @@ public:
 		FrameListener = new Example25FrameListener(player,padre,mWindow,mCamera);
 		TorretaListener = new TorretasFrameListener();
 		mRoot -> addFrameListener(FrameListener);
-		mRoot -> addFrameListener(TorretaListener);
+		//mRoot -> addFrameListener(TorretaListener);
 
 	}
 
