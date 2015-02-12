@@ -1,13 +1,74 @@
 #include "Ogre\ExampleApplication.h"
+#include <vector>
 Ogre::SceneNode* torretas [8];
 
+Ogre::Real ultimaFila = -23354;
+Ogre::Real penultimaFila = -19095;
+Ogre::Real altura = -332;
+
+Ogre::Vector3 posicionesT[8]=
+{Ogre::Vector3(-1615,altura,-8573),
+Ogre::Vector3(1615,altura,-15240),
+Ogre::Vector3(8135,altura,ultimaFila),
+Ogre::Vector3(15296,altura,penultimaFila),
+Ogre::Vector3(23894,altura,ultimaFila),
+Ogre::Vector3(-10229,altura,ultimaFila),
+Ogre::Vector3(-16939,altura,penultimaFila),
+Ogre::Vector3(-23027,altura,ultimaFila)
+};
+
+Ogre::SceneManager* mainSceneMgr;
+
+class Laser{
+public:
+	Ogre::SceneNode* laserNodo;
+	Ogre::Entity* laserEnt;
+	Ogre::Vector3 direccionP;
+	float velocidad;
+
+	Laser(){
+		laserNodo = nullptr;
+		laserEnt = nullptr;
+		velocidad = 1.f;
+	}
+
+	Laser(Ogre::Vector3 vec, Ogre::Vector3 playerDir){
+		laserEnt = mainSceneMgr -> createEntity("usb_laser.mesh");
+		laserNodo = mainSceneMgr -> createSceneNode();
+		laserNodo -> attachObject(laserEnt);
+		Ogre::Vector3 src = laserNodo -> getOrientation() * Vector3::UNIT_Y;
+		Ogre::Quaternion dir = src.getRotationTo(-playerDir);
+		laserNodo -> rotate(dir);
+		laserNodo -> translate(vec);
+		direccionP = playerDir;
+		velocidad = 25.f;
+	}
+
+	void move(){
+		laserNodo -> translate(direccionP * velocidad);
+	}
+
+	~Laser(){
+		if(laserNodo){
+			delete laserNodo;
+		}
+		if(laserEnt){
+			delete laserEnt;
+		}
+	}
+
+};
+
+std::vector<Laser*> laseres;
 
 class TorretasFrameListener : public FrameListener{
 public:
+	Ogre::SceneNode* _playerNode;
 	Ogre::Timer laserTimes[8];
 	int tiempos[8];
 
-	TorretasFrameListener(){
+	TorretasFrameListener(SceneNode* player){
+		_playerNode = player;
 		//Hacer RANDOM
 		for(int i = 0; i < 8; ++i){
 			laserTimes[i].reset();
@@ -18,10 +79,19 @@ public:
 	bool frameStarted(const Ogre::FrameEvent &evt){
 		for(int i = 0; i < 8; ++i){
 			if(laserTimes[i].getMilliseconds() > tiempos[i]){
+				Ogre::Vector3 playerDirection = posicionesT[i] - _playerNode -> getPosition();
+				Ogre::Real distance = playerDirection.normalise();
 				laserTimes[i].reset();
-				std::cout << "BAM!\n";
+				Laser* las = new Laser(posicionesT[i], -playerDirection);
+				mainSceneMgr -> getRootSceneNode() -> addChild(las -> laserNodo);
+				laseres.push_back(las);
 				//DISPARAR LASER
+				std::cout << "BAM\n";
 			}
+		}
+
+		for(int i =0; i < laseres.size(); ++i){
+			laseres[i] -> move();
 		}
 		return true;
 	}
@@ -78,7 +148,7 @@ public:
 		Ogre::Quaternion rotatePlayer(Degree(0),Vector3::UNIT_Y);
 		Ogre::Quaternion strafePlayer(Degree(0),Vector3::UNIT_X);
 		float speedFactor = 2000.0f;
-		float playerSpeed = 500.f;
+		float playerSpeed = 1000.f;
 		float rotationSpeed = 50.f;
 		float rotationAmount = 1.f;
 		float strafeRotSpeed = 200.f;
@@ -199,25 +269,35 @@ public:
 
 	void createFrameListener(){
 		FrameListener = new Example25FrameListener(player,padre,mWindow,mCamera);
-		TorretaListener = new TorretasFrameListener();
+		TorretaListener = new TorretasFrameListener(padre);
 		mRoot -> addFrameListener(FrameListener);
-		//mRoot -> addFrameListener(TorretaListener);
+		mRoot -> addFrameListener(TorretaListener);
 
 	}
+
+
 
 	void createCamera() {
 
 		mCamera = mSceneMgr->createCamera("MyCamera1");
-		mCamera->setPosition(0,200,200);
+		mCamera->setPosition(0,50,300);
 		mCamera->lookAt(0,0,0);
 		mCamera->setNearClipDistance(5);
 
 	}
 
+	void chooseSceneManager()
+    {
+        // Create the SceneManager, in this case a generic one
+		mainSceneMgr = mRoot->createSceneManager(ST_GENERIC, "ExampleSMInstance");
+		mSceneMgr = mainSceneMgr;
+
+		if(mOverlaySystem)
+			 mSceneMgr->addRenderQueueListener(mOverlaySystem);
+    }
+
 	void createScene()
 	{
-
-		
 
 		cameraNode = mSceneMgr->createSceneNode("CameraNodo");
 		cameraNode -> attachObject(mCamera);
@@ -253,8 +333,12 @@ public:
 		player -> scale(3.0,3.0,3.0);
 		player -> rotate(Ogre::Quaternion(Degree(90),Vector3::UNIT_Y));
 
+		for(int i =0 ; i < 8 ; ++i){
+			torretas[i] = crearTorreta(mSceneMgr,posicionesT[i]);
+			mSceneMgr -> getRootSceneNode() -> addChild(torretas[i]);
+		}
 		//Ogre::SceneNode* nodo = crearTorreta(mSceneMgr,Ogre::Vector3(0.0,0.0,0.0));
-		//mSceneMgr -> getRootSceneNode() -> addChild(nodo);
+		
 
 
 		padre = mSceneMgr -> createSceneNode();
