@@ -42,12 +42,44 @@ inline SceneNode *crearTorreta(SceneManager *mSceneMgr, Vector3 vec) {
 	return nodo;
 }
 
+ManualObject *helice(SceneManager *mSceneMgr) {
+	ManualObject * h = mSceneMgr->createManualObject();
+	h->begin("Examples/Chrome", RenderOperation::OT_TRIANGLE_FAN);
+ 
+	// define vertex position of index 0..3
+	h->position(-100.0, -100.0, 0.0);
+	h->position( 100.0, -100.0, 0.0);
+	h->position( 100.0,  100.0, 0.0);
+	h->position(-100.0,  100.0, 0.0);
+ 
+	// define usage of vertices by refering to the indexes
+	h->index(0);
+	h->index(1);
+	h->index(2);
+	h->index(3);
+	h->index(0);
+ 
+	h->end();
+	return h;
+}
+
 inline SceneNode *crearHelice(SceneManager *mSceneMgr, Vector3 vec) {
-	Ogre::Entity *ent = mSceneMgr->createEntity("usb_cilindro.mesh");
-	Ogre::SceneNode *nodo = mSceneMgr->createSceneNode();
-	nodo->attachObject(ent);
-	nodo->translate(vec);
-	return nodo;
+	Ogre::SceneNode *nodoRaiz = mSceneMgr->createSceneNode();
+
+	Ogre::Entity *ent = mSceneMgr->createEntity("usb_formacurva.mesh");
+	Ogre::SceneNode *centro = mSceneMgr->createSceneNode();
+	centro->attachObject(ent);
+
+	Ogre::SceneNode *nodoH = mSceneMgr->createSceneNode();
+	ManualObject *h = helice(mSceneMgr);
+	nodoH->translate(100, 100, 100);
+	nodoH->attachObject(h);
+
+	nodoRaiz->addChild(centro);
+	nodoRaiz->addChild(nodoH);
+	nodoRaiz->scale(10, 10, 10);
+	nodoRaiz->translate(vec);
+	return nodoRaiz;
 }
 
 class Example25FrameListener : public FrameListener {
@@ -234,6 +266,8 @@ public:
 		padre = mSceneMgr->createSceneNode();
 		padre->addChild(cameraNode);
 		padre-> addChild(player);
+		SceneNode *helice = crearHelice(mSceneMgr, Vector3(0.0, 0.0, 0.0));
+		mSceneMgr->getRootSceneNode()->addChild(helice);
 		//padre->rotate(Ogre::Quaternion(Degree(90), Vector3::UNIT_Y));
 		mSceneMgr->getRootSceneNode()->addChild(padre);
 	}
