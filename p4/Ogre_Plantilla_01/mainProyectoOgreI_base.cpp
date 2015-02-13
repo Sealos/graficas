@@ -12,13 +12,13 @@ float bordes[2] = {1368, -1229};
 
 // x, z
 float centroPasillos[2][2] = {
-	{0.f, -9280.f}, {0.f, -21560.f}
+	{0.f, -9280.f}, {0.f, -21000.f}
 };
 
 
 // width, height
 float medidasPasillos[2][2] = {
-	{3500.f, 19000.f}, {52000.f, 4000.f}
+	{3500.f, 19000.f}, {52000.f, 5000.f}
 };
 
 float minMaxX[2][2] = {
