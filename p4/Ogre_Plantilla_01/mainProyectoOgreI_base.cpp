@@ -56,11 +56,13 @@ public:
 	Entity *laserEnt;
 	Vector3 direccionP;
 	float velocidad;
+	float aliveTime;
 
 	Laser() {
 		laserNodo = nullptr;
 		laserEnt = nullptr;
 		velocidad = 1.f;
+		aliveTime = 0.f;
 	}
 
 	Laser(Vector3 vec, Vector3 playerDir) {
@@ -75,13 +77,16 @@ public:
 		laserNodo -> scale(4.0, 4.0, 4.0);
 		direccionP = playerDir;
 		velocidad = 25.f;
+		aliveTime = 0.f;
 	}
 
-	void move() {
+	void move(float timeDiff) {
+		aliveTime += timeDiff;
 		laserNodo -> translate(direccionP * velocidad);
 	}
 
 	~Laser() {
+		mainSceneMgr->destroySceneNode(laserNodo);
 		if (laserNodo) {
 			delete laserNodo;
 		}
@@ -134,13 +139,20 @@ public:
 				Real distance = playerDirection.normalise();
 				laserTimes[i].reset();
 				Laser *las = new Laser((posicionesT[i] + Vector3(0.0, alturaBarril, 0.0)), -playerDirection);
-				mainSceneMgr -> getRootSceneNode() -> addChild(las -> laserNodo);
+				mainSceneMgr -> getRootSceneNode() -> addChild(las->laserNodo);
 				laseres.push_back(las);
 			}
 		}
 
-		for (unsigned int i = 0; i < laseres.size(); ++i) {
-			laseres[i] -> move();
+		for (vector<Laser *>::iterator it = laseres.begin(); it != laseres.end();) {
+			if ((*it)->aliveTime > 10000){
+				it = laseres.erase(it);
+				delete (*it);
+			}
+			else {
+				(*it)-> move(evt.timeSinceLastFrame);
+				++it;
+			}
 		}
 		return true;
 	}
@@ -283,7 +295,7 @@ inline SceneNode *crearHelice(SceneManager *mSceneMgr, Vector3 vec) {
 	mat->setShininess(0.1);
 	mat->setSpecular(Ogre::ColourValue(0.1, 0.1, 0.1, 0.2));
 
-	nodoRaiz->scale(400, 400, 400);
+	nodoRaiz->scale(350, 350, 350);
 	nodoRaiz->translate(vec);
 	return nodoRaiz;
 }
@@ -338,7 +350,7 @@ public:
 		bool reiniciarPosicion = false;
 		_key->capture();
 		_mouse->capture();
-		_playerNode->_updateBounds();
+		//_playerNode->_updateBounds();
 
 		if (_key->isKeyDown(OIS::KC_ESCAPE))
 			return false;
@@ -429,26 +441,26 @@ public:
 		if (deltaY < 0.0f && newBottom < bordes[1])
 			translatePlayer.y = 0.0;
 
-		if (newPosition.z > -18700 && newPosition.x > minMaxX[0][0] && newPosition.x < minMaxX[0][1])
+		if (newPosition.z > -18700 && newPosition.x > (minMaxX[0][0] - 50.f) && newPosition.x < (minMaxX[0][1] + 50.f))
 			pasillo = 0;
 		else
 			pasillo = 1;
 
 		//std::cout << pasillo << std::endl;
 
-		if (deltaX > 0.0f && newRight > minMaxX[pasillo][1]) {
+		if (deltaX > 0.0f && (newRight > minMaxX[pasillo][1])) {
 			translatePlayer.x = 0.0;
 		}
 
-		if (deltaX < 0.0f && newLeft < minMaxX[pasillo][0]) {
+		if (deltaX < 0.0f && (newLeft < minMaxX[pasillo][0])) {
 			translatePlayer.x = 0.0;
 		}
 
-		if (deltaZ > 0.0f && newNear > minMaxZ[pasillo][0]) {
-			translatePlayer.z = 0.0;
+		if (deltaZ > 0.0f && (newNear > minMaxZ[pasillo][0])) {
+				translatePlayer.z = 0.0;
 		}
 
-		if (deltaZ < 0.0f && newFar < minMaxZ[pasillo][1]) {
+		if (deltaZ < 0.0f && (newFar < minMaxZ[pasillo][1])) {
 			translatePlayer.z = 0.0;
 		}
 
@@ -523,310 +535,310 @@ public:
 		nodeEscenario01->attachObject(entEscenario01);
 
 
-ManualObject* ala = mSceneMgr -> createManualObject("manual");
+		ManualObject *ala = mSceneMgr -> createManualObject("manual");
 		ala -> begin("lambert3", RenderOperation::OT_TRIANGLE_LIST);
-			
-			//Primer Cuadrado (0,3)
-			float primerCuad = 0.5;
-			ala-> position(0.0,primerCuad,primerCuad);
-			ala-> position(0.0,primerCuad,-primerCuad);
-			ala-> position(0.0,-primerCuad,-primerCuad);
-			ala-> position(0.0,-primerCuad,primerCuad);
 
-			//Segundo cuadrado (4,7)
-			float segundoCuad = 1.0;
-			float interiorAlaX = 3.5;
-			ala -> position(interiorAlaX,segundoCuad,segundoCuad);
-			ala -> position(interiorAlaX,segundoCuad,-segundoCuad);
-			ala -> position(interiorAlaX,-segundoCuad,-segundoCuad);
-			ala -> position(interiorAlaX,-segundoCuad,segundoCuad);
+		//Primer Cuadrado (0,3)
+		float primerCuad = 0.5;
+		ala-> position(0.0, primerCuad, primerCuad);
+		ala-> position(0.0, primerCuad, -primerCuad);
+		ala-> position(0.0, -primerCuad, -primerCuad);
+		ala-> position(0.0, -primerCuad, primerCuad);
 
-			//Bordes del Interior de la ala (8,15)
-			ala -> position(interiorAlaX-(interiorAlaX/4),2*segundoCuad,segundoCuad);
-			ala -> position(interiorAlaX,segundoCuad,2*segundoCuad);
-			ala -> position(interiorAlaX,-segundoCuad,2*segundoCuad);
-			ala -> position(interiorAlaX-(interiorAlaX/4), 2*-segundoCuad, segundoCuad);
-			
-			ala -> position(interiorAlaX-(interiorAlaX/4),2*-segundoCuad,-segundoCuad);
-			ala -> position(interiorAlaX-(interiorAlaX/4),2*segundoCuad, -segundoCuad);
+		//Segundo cuadrado (4,7)
+		float segundoCuad = 1.0;
+		float interiorAlaX = 3.5;
+		ala -> position(interiorAlaX, segundoCuad, segundoCuad);
+		ala -> position(interiorAlaX, segundoCuad, -segundoCuad);
+		ala -> position(interiorAlaX, -segundoCuad, -segundoCuad);
+		ala -> position(interiorAlaX, -segundoCuad, segundoCuad);
 
-			float puntaAlaZ = 6.0;
-			ala -> position(interiorAlaX,segundoCuad,-segundoCuad-puntaAlaZ);
-			ala -> position(interiorAlaX,-segundoCuad,-segundoCuad-puntaAlaZ);
+		//Bordes del Interior de la ala (8,15)
+		ala -> position(interiorAlaX - (interiorAlaX / 4), 2 * segundoCuad, segundoCuad);
+		ala -> position(interiorAlaX, segundoCuad, 2 * segundoCuad);
+		ala -> position(interiorAlaX, -segundoCuad, 2 * segundoCuad);
+		ala -> position(interiorAlaX - (interiorAlaX / 4), 2 * -segundoCuad, segundoCuad);
 
-			//Grosor de alas
-			float grosor = 0.5;
+		ala -> position(interiorAlaX - (interiorAlaX / 4), 2 * -segundoCuad, -segundoCuad);
+		ala -> position(interiorAlaX - (interiorAlaX / 4), 2 * segundoCuad, -segundoCuad);
 
-			//Bordes del Exterior de la ala (16,23)
-			ala -> position(interiorAlaX-(interiorAlaX/4)+grosor,2*segundoCuad,segundoCuad);
-			ala -> position(interiorAlaX+grosor,segundoCuad,2*segundoCuad);
-			ala -> position(interiorAlaX+grosor,-segundoCuad,2*segundoCuad);
-			ala -> position(interiorAlaX-(interiorAlaX/4)+grosor, 2*-segundoCuad, segundoCuad);
-			
-			ala -> position(interiorAlaX-(interiorAlaX/4)+grosor,2*-segundoCuad,-segundoCuad);
-			ala -> position(interiorAlaX-(interiorAlaX/4)+grosor,2*segundoCuad, -segundoCuad);
+		float puntaAlaZ = 6.0;
+		ala -> position(interiorAlaX, segundoCuad, -segundoCuad - puntaAlaZ);
+		ala -> position(interiorAlaX, -segundoCuad, -segundoCuad - puntaAlaZ);
 
-			ala -> position(interiorAlaX+grosor,segundoCuad,-segundoCuad-puntaAlaZ);
-			ala -> position(interiorAlaX+grosor,-segundoCuad,-segundoCuad-puntaAlaZ);
+		//Grosor de alas
+		float grosor = 0.5;
 
+		//Bordes del Exterior de la ala (16,23)
+		ala -> position(interiorAlaX - (interiorAlaX / 4) + grosor, 2 * segundoCuad, segundoCuad);
+		ala -> position(interiorAlaX + grosor, segundoCuad, 2 * segundoCuad);
+		ala -> position(interiorAlaX + grosor, -segundoCuad, 2 * segundoCuad);
+		ala -> position(interiorAlaX - (interiorAlaX / 4) + grosor, 2 * -segundoCuad, segundoCuad);
 
-			//Segundo cuadrado grosor (24,27)
-			ala -> position(interiorAlaX+grosor,segundoCuad,segundoCuad);
-			ala -> position(interiorAlaX+grosor,segundoCuad,-segundoCuad);
-			ala -> position(interiorAlaX+grosor,-segundoCuad,-segundoCuad);
-			ala -> position(interiorAlaX+grosor,-segundoCuad,segundoCuad);
-			//INDICES
-			//Indices primer cuadrado
-			ala -> index(0);
-			ala -> index(1);
-			ala -> index(2);
-			
-			ala -> index(2);
-			ala -> index(3);
-			ala ->index(0);
-			//Indices segundo cuadrado
-			ala -> index(4);
-			ala -> index(5);
-			ala -> index(6);
+		ala -> position(interiorAlaX - (interiorAlaX / 4) + grosor, 2 * -segundoCuad, -segundoCuad);
+		ala -> position(interiorAlaX - (interiorAlaX / 4) + grosor, 2 * segundoCuad, -segundoCuad);
 
-			ala -> index(6);
-			ala -> index(7);
-			ala -> index(4);
-
-			//Indices que conectan estos cuadrados
-			//Parte de atras
-			ala -> index(4);
-			ala -> index(0);
-			ala -> index(3);
-
-			ala -> index(7);
-			ala -> index(4);
-			ala -> index(3);
-			//Parte de arriba
-			ala -> index(4);
-			ala -> index(1);
-			ala -> index(0);
-
-			ala -> index(5);
-			ala -> index(1);
-			ala -> index(4);
-			//Parte de abajo
-			ala -> index(3);
-			ala -> index(6);
-			ala -> index(7);
-
-			ala -> index(3);
-			ala -> index(2);
-			ala -> index(6);
-
-			//Parte de adelante
-			ala -> index(1);
-			ala -> index(5);
-			ala -> index(6);
-
-			ala -> index(1);
-			ala -> index(6);
-			ala -> index(2);
-
-			//Indices Ala interna
-			ala -> index(4);
-			ala -> index(9);
-			ala -> index(8);
-
-			ala -> index(9);
-			ala -> index(4);
-			ala -> index(7);
-
-			ala -> index(9);
-			ala -> index(7);
-			ala -> index(10);
-
-			ala -> index(10);
-			ala ->index(7);
-			ala -> index(11);
-
-			ala -> index(7);
-			ala -> index(6);
-			ala -> index(11);
-
-			ala -> index(11);
-			ala -> index(6);
-			ala -> index(12);
-
-			ala -> index(6);
-			ala -> index(15);
-			ala -> index(12);
-
-			ala -> index(5);
-			ala -> index(13);
-			ala -> index(14);
-
-			ala -> index(5);
-			ala -> index(8);
-			ala -> index(13);
-
-			ala -> index(5);
-			ala -> index(4);
-			ala -> index(8);
-
-			//Indices para el grosor de las alas
-			ala -> index(8);
-			ala -> index(9);
-			ala -> index(16);
-
-			ala -> index(16);
-			ala -> index(9);
-			ala -> index(17);
-
-			ala -> index(9);
-			ala -> index(10);
-			ala -> index(17);
-
-			ala -> index(17);
-			ala -> index(10);
-			ala -> index(18);
-
-			ala -> index(10);
-			ala -> index(11);
-			ala -> index(18);
-
-			ala -> index(18);
-			ala -> index(11);
-			ala -> index(19);
-
-			ala -> index(11);
-			ala -> index(12);
-			ala -> index(19);
-
-			ala -> index(19);
-			ala -> index(12);
-			ala -> index(20);
-
-			ala -> index(12);
-			ala -> index(15);
-			ala -> index(20);
-
-			ala -> index(20);
-			ala -> index(15);
-			ala -> index(23);
-
-			ala -> index(15);
-			ala -> index(6);
-			ala -> index(26);
-
-			ala -> index(26);
-			ala -> index(23);
-			ala -> index(15);
-
-			ala -> index(6);
-			ala -> index(5);
-			ala -> index(26);
-			
-			ala -> index(26);
-			ala -> index(5);
-			ala -> index(25);
-
-			ala -> index(5);
-			ala -> index(14);
-			ala -> index(25);
-			
-			ala -> index(25);
-			ala -> index(14);
-			ala -> index(22);
-
-			ala -> index(14);
-			ala -> index(13);
-			ala -> index(21);
-
-			ala -> index(21);
-			ala -> index(22);
-			ala -> index(14);
-
-			ala -> index(13);
-			ala -> index(8);
-			ala -> index(21);
-
-			ala -> index(21);
-			ala -> index(8);
-			ala -> index(16);
-
-			//Indices de la ala exterior
-
-			ala -> index(24);
-			ala -> index(16);
-			ala -> index(17);
-
-			ala -> index(24);
-			ala -> index(17);
-			ala -> index(18);
-
-			ala -> index(18);
-			ala -> index(27);
-			ala -> index(24);
-
-			ala -> index(18);
-			ala -> index(19);
-			ala -> index(27);
-
-			ala -> index(27);
-			ala -> index(19);
-			ala -> index(20);
-
-			ala -> index(20);
-			ala -> index(26);
-			ala -> index(27);
-
-			ala -> index(20);
-			ala -> index(23);
-			ala -> index(26);
-
-			ala -> index(25);
-			ala -> index(22);
-			ala -> index(21);
-
-			ala -> index(25);
-			ala -> index(21);
-			ala -> index(24);
-
-			ala -> index(24);
-			ala -> index(21);
-			ala -> index(16);
-			
+		ala -> position(interiorAlaX + grosor, segundoCuad, -segundoCuad - puntaAlaZ);
+		ala -> position(interiorAlaX + grosor, -segundoCuad, -segundoCuad - puntaAlaZ);
 
 
-			
-			ala -> index(25);
-			ala -> index(24);
-			ala -> index(26);
+		//Segundo cuadrado grosor (24,27)
+		ala -> position(interiorAlaX + grosor, segundoCuad, segundoCuad);
+		ala -> position(interiorAlaX + grosor, segundoCuad, -segundoCuad);
+		ala -> position(interiorAlaX + grosor, -segundoCuad, -segundoCuad);
+		ala -> position(interiorAlaX + grosor, -segundoCuad, segundoCuad);
+		//INDICES
+		//Indices primer cuadrado
+		ala -> index(0);
+		ala -> index(1);
+		ala -> index(2);
 
-			ala -> index(27);
-			ala -> index(26);
-			ala -> index(24);
-			
+		ala -> index(2);
+		ala -> index(3);
+		ala ->index(0);
+		//Indices segundo cuadrado
+		ala -> index(4);
+		ala -> index(5);
+		ala -> index(6);
+
+		ala -> index(6);
+		ala -> index(7);
+		ala -> index(4);
+
+		//Indices que conectan estos cuadrados
+		//Parte de atras
+		ala -> index(4);
+		ala -> index(0);
+		ala -> index(3);
+
+		ala -> index(7);
+		ala -> index(4);
+		ala -> index(3);
+		//Parte de arriba
+		ala -> index(4);
+		ala -> index(1);
+		ala -> index(0);
+
+		ala -> index(5);
+		ala -> index(1);
+		ala -> index(4);
+		//Parte de abajo
+		ala -> index(3);
+		ala -> index(6);
+		ala -> index(7);
+
+		ala -> index(3);
+		ala -> index(2);
+		ala -> index(6);
+
+		//Parte de adelante
+		ala -> index(1);
+		ala -> index(5);
+		ala -> index(6);
+
+		ala -> index(1);
+		ala -> index(6);
+		ala -> index(2);
+
+		//Indices Ala interna
+		ala -> index(4);
+		ala -> index(9);
+		ala -> index(8);
+
+		ala -> index(9);
+		ala -> index(4);
+		ala -> index(7);
+
+		ala -> index(9);
+		ala -> index(7);
+		ala -> index(10);
+
+		ala -> index(10);
+		ala ->index(7);
+		ala -> index(11);
+
+		ala -> index(7);
+		ala -> index(6);
+		ala -> index(11);
+
+		ala -> index(11);
+		ala -> index(6);
+		ala -> index(12);
+
+		ala -> index(6);
+		ala -> index(15);
+		ala -> index(12);
+
+		ala -> index(5);
+		ala -> index(13);
+		ala -> index(14);
+
+		ala -> index(5);
+		ala -> index(8);
+		ala -> index(13);
+
+		ala -> index(5);
+		ala -> index(4);
+		ala -> index(8);
+
+		//Indices para el grosor de las alas
+		ala -> index(8);
+		ala -> index(9);
+		ala -> index(16);
+
+		ala -> index(16);
+		ala -> index(9);
+		ala -> index(17);
+
+		ala -> index(9);
+		ala -> index(10);
+		ala -> index(17);
+
+		ala -> index(17);
+		ala -> index(10);
+		ala -> index(18);
+
+		ala -> index(10);
+		ala -> index(11);
+		ala -> index(18);
+
+		ala -> index(18);
+		ala -> index(11);
+		ala -> index(19);
+
+		ala -> index(11);
+		ala -> index(12);
+		ala -> index(19);
+
+		ala -> index(19);
+		ala -> index(12);
+		ala -> index(20);
+
+		ala -> index(12);
+		ala -> index(15);
+		ala -> index(20);
+
+		ala -> index(20);
+		ala -> index(15);
+		ala -> index(23);
+
+		ala -> index(15);
+		ala -> index(6);
+		ala -> index(26);
+
+		ala -> index(26);
+		ala -> index(23);
+		ala -> index(15);
+
+		ala -> index(6);
+		ala -> index(5);
+		ala -> index(26);
+
+		ala -> index(26);
+		ala -> index(5);
+		ala -> index(25);
+
+		ala -> index(5);
+		ala -> index(14);
+		ala -> index(25);
+
+		ala -> index(25);
+		ala -> index(14);
+		ala -> index(22);
+
+		ala -> index(14);
+		ala -> index(13);
+		ala -> index(21);
+
+		ala -> index(21);
+		ala -> index(22);
+		ala -> index(14);
+
+		ala -> index(13);
+		ala -> index(8);
+		ala -> index(21);
+
+		ala -> index(21);
+		ala -> index(8);
+		ala -> index(16);
+
+		//Indices de la ala exterior
+
+		ala -> index(24);
+		ala -> index(16);
+		ala -> index(17);
+
+		ala -> index(24);
+		ala -> index(17);
+		ala -> index(18);
+
+		ala -> index(18);
+		ala -> index(27);
+		ala -> index(24);
+
+		ala -> index(18);
+		ala -> index(19);
+		ala -> index(27);
+
+		ala -> index(27);
+		ala -> index(19);
+		ala -> index(20);
+
+		ala -> index(20);
+		ala -> index(26);
+		ala -> index(27);
+
+		ala -> index(20);
+		ala -> index(23);
+		ala -> index(26);
+
+		ala -> index(25);
+		ala -> index(22);
+		ala -> index(21);
+
+		ala -> index(25);
+		ala -> index(21);
+		ala -> index(24);
+
+		ala -> index(24);
+		ala -> index(21);
+		ala -> index(16);
+
+
+
+
+		ala -> index(25);
+		ala -> index(24);
+		ala -> index(26);
+
+		ala -> index(27);
+		ala -> index(26);
+		ala -> index(24);
+
 
 
 		ala-> end();
 		MeshPtr pMeshAla = ala -> convertToMesh("ala1");
-		Entity* ala1 = mSceneMgr -> createEntity(pMeshAla);
-		Entity* ala2 = mSceneMgr -> createEntity(pMeshAla);
-		SceneNode* nodeAla = mSceneMgr -> createSceneNode();
+		Entity *ala1 = mSceneMgr -> createEntity(pMeshAla);
+		Entity *ala2 = mSceneMgr -> createEntity(pMeshAla);
+		SceneNode *nodeAla = mSceneMgr -> createSceneNode();
 		nodeAla -> attachObject(ala1);
-		nodeAla -> translate(5.0,0.0,0.0);
-		nodeAla -> scale(2.0,2.0,2.0);
+		nodeAla -> translate(5.0, 0.0, 0.0);
+		nodeAla -> scale(2.0, 2.0, 2.0);
 
-		SceneNode* nodeAla2 = mSceneMgr -> createSceneNode();
+		SceneNode *nodeAla2 = mSceneMgr -> createSceneNode();
 		nodeAla2 -> attachObject(ala2);
-		nodeAla2 -> translate(-5.0,0.0,0.0);
-		
-		nodeAla2 -> rotate(Quaternion(Degree(180),Vector3::UNIT_Z));
-		nodeAla2 -> scale(2.0,2.0,2.0);
-		
+		nodeAla2 -> translate(-5.0, 0.0, 0.0);
+
+		nodeAla2 -> rotate(Quaternion(Degree(180), Vector3::UNIT_Z));
+		nodeAla2 -> scale(2.0, 2.0, 2.0);
+
 
 		//Luces
-		Light* light1 = mSceneMgr -> createLight("Light1");
+		Light *light1 = mSceneMgr -> createLight("Light1");
 		light1->setType(Light::LT_POINT);
-		light1 -> setPosition(0,0,200);
-		light1-> setDiffuseColour(0.8f,0.8f,0.8f);
+		light1 -> setPosition(0, 0, 200);
+		light1-> setDiffuseColour(0.8f, 0.8f, 0.8f);
 
 		Entity *torus = mSceneMgr->createEntity("ObjetoPrueba", "usb_torus.mesh");
 		Entity *cilindro =  mSceneMgr->createEntity("ObjetoPrueba1", "usb_cubomod01.mesh");
