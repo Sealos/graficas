@@ -1,5 +1,5 @@
-#include "Ogre\ExampleApplication.h"
-#include <vector>
+#include "stdafx.h"
+
 SceneNode *torretas [8];
 SceneNode *helices[2];
 
@@ -7,7 +7,16 @@ float helicesLoc[2][3] = {
 	{ -13315, 321, -23728}, {15151, 321, -23728}
 };
 
-float bordesSuperiores[2] = {1368, -1229};
+float bordes[2] = {1368, -1229};
+
+float centroPasillos[2][2] = {
+	{0.f, -9280.f}, {0.f, -20560.f}
+};
+
+// width, height
+float medidasPasillos[2][2] = {
+	{3500.f, 18560.f}, {3500.f, 52000.f}
+};
 
 Real ultimaFila = -23354;
 Real penultimaFila = -19095;
@@ -25,6 +34,38 @@ Vector3 posicionesT[8] = {
 };
 
 SceneManager *mainSceneMgr;
+
+inline float crossProductLinePoint(float x1, float y1, float x2, float y2, float x3, float y3) {
+	return (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1);
+};
+
+bool pointCollisionWithRectangle(float pX, float pY, float rX, float rY, float sWidth, float sHeight) {
+
+	float halfHeight = sHeight /2;
+	float halfWidth = sWidth / 2;
+
+	float recPoints[4][2] = {
+		{rX - halfWidth, rY - halfHeight},
+		{rX - halfWidth, rY + halfHeight},
+		{rX + halfWidth, rY + halfHeight},
+		{rX + halfWidth, rY - halfHeight},
+	};
+
+	if (crossProductLinePoint(recPoints[0][0], recPoints[0][1], recPoints[1][0], recPoints[1][1], pX, pY) > 0) {
+		return false;
+	}
+	if (crossProductLinePoint(recPoints[1][0], recPoints[1][1], recPoints[2][0], recPoints[2][1], pX, pY) > 0) {
+		return false;
+	}
+	if (crossProductLinePoint(recPoints[2][0], recPoints[2][1], recPoints[3][0], recPoints[3][1], pX, pY) > 0) {
+		return false;
+	}
+	if (crossProductLinePoint(recPoints[3][0], recPoints[3][1], recPoints[0][0], recPoints[0][1], pX, pY) > 0) {
+		return false;
+	}
+
+	return true;
+};
 
 class Laser {
 public:
@@ -161,9 +202,6 @@ inline SceneNode *crearTorreta(SceneManager *mSceneMgr, Vector3 vec) {
 	nodo -> translate(vec);
 	nodo -> scale (10.0,10.0,10.0);
 
-	
-	
-
 	return nodo;
 }
 
@@ -174,33 +212,33 @@ inline SceneNode *crearHelice(SceneManager *mSceneMgr, Vector3 vec) {
 	SceneNode *nodo;
 
 	nodo = mSceneMgr->createSceneNode();
-	ent = mSceneMgr->createEntity("spine.mesh");
+	ent = mSceneMgr->createEntity("usb_laser.mesh");
 	ent->setMaterialName("Examples/GrassFloor");
 	nodo->attachObject(ent);
 	nodoRaiz->addChild(nodo);
 
 	nodo = mSceneMgr->createSceneNode();
-	ent = mSceneMgr->createEntity("spine.mesh");
+	ent = mSceneMgr->createEntity("usb_laser.mesh");
 	ent->setMaterialName("Examples/GrassFloor");
 	nodo->attachObject(ent);
 	nodo->rotate(Quaternion(Degree(180.0), Vector3::UNIT_Z));
 	nodoRaiz->addChild(nodo);
 
 	nodo = mSceneMgr->createSceneNode();
-	ent = mSceneMgr->createEntity("spine.mesh");
+	ent = mSceneMgr->createEntity("usb_laser.mesh");
 	ent->setMaterialName("Examples/GrassFloor");
 	nodo->attachObject(ent);
 	nodo->rotate(Quaternion(Degree(270.0), Vector3::UNIT_Z));
 	nodoRaiz->addChild(nodo);
 
 	nodo = mSceneMgr->createSceneNode();
-	ent = mSceneMgr->createEntity("spine.mesh");
+	ent = mSceneMgr->createEntity("usb_laser.mesh");
 	ent->setMaterialName("Examples/GrassFloor");
 	nodo->attachObject(ent);
 	nodo->rotate(Quaternion(Degree(90.0), Vector3::UNIT_Z));
 	nodoRaiz->addChild(nodo);
 
-	nodoRaiz->scale(35, 35, 35);
+	nodoRaiz->scale(400, 400, 400);
 	nodoRaiz->translate(vec);
 	return nodoRaiz;
 }
@@ -255,6 +293,7 @@ public:
 		bool reiniciarPosicion = false;
 		_key->capture();
 		_mouse->capture();
+		_playerNode->_updateBounds();
 
 		if (_key->isKeyDown(OIS::KC_ESCAPE))
 			return false;
@@ -310,15 +349,42 @@ public:
 				strafePlayer = strafePlayer * Quaternion(Degree(-(rotationAmount * rotationSpeed * evt.timeSinceLastFrame)), Vector3::UNIT_Z);
 
 		} else {
-			if (_playerNode->getOrientation().getRoll().valueDegrees() > 0.f)
+			if (_playerNode->getOrientation().getRoll().valueDegrees() > 0.1f)
 				sign = -1;
-			else if (_playerNode->getOrientation().getRoll().valueDegrees() == 0.0f)
-				sign = 0;
-			else
+			else if (_playerNode->getOrientation().getRoll().valueDegrees() < -0.1f)
 				sign = 1;
+			else
+				sign = 0;
 
 			strafePlayer = strafePlayer * Quaternion(Degree(sign * (rotationAmount * rotationSpeed * evt.timeSinceLastFrame)), Vector3::UNIT_Z);
 		}
+
+		Vector3 top = _playerNode->_getWorldAABB().getCorner(AxisAlignedBox::CornerEnum::FAR_LEFT_TOP);
+		Vector3 bot = _playerNode->_getWorldAABB().getCorner(AxisAlignedBox::CornerEnum::NEAR_RIGHT_BOTTOM);
+		Vector3 leftFar = top;
+		Vector3 rightNear = bot;
+
+		Vector3 oldPosition = _padreNode->getPosition();
+		Vector3 newPosition = translatePlayer * evt.timeSinceLastFrame * playerSpeed + _padreNode->getPosition();
+		Real deltaY = newPosition.y - oldPosition.y;
+		Real deltaX = newPosition.x - oldPosition.x;
+		Real deltaZ = newPosition.z - oldPosition.z;
+		Real newTop = top.y + deltaY;
+		Real newBottom = bot.y + deltaY;
+		//Real newLeft = 
+		if (deltaY > 0.0f && newTop > bordes[0])
+			translatePlayer.y = 0.0;
+
+		if (deltaY < 0.0f && newBottom < bordes[1])
+			translatePlayer.y = 0.0;
+
+		bool isInFirstCorridor = pointCollisionWithRectangle(leftFar.x, leftFar.z, centroPasillos[0][0], centroPasillos[0][0], medidasPasillos[0][0], medidasPasillos[0][1]);
+		isInFirstCorridor &= pointCollisionWithRectangle(rightNear.x, rightNear.z, centroPasillos[0][0], centroPasillos[0][0], medidasPasillos[0][0], medidasPasillos[0][1]);
+
+		bool isInSecondCorridor = pointCollisionWithRectangle(leftFar.x, leftFar.z, centroPasillos[1][0], centroPasillos[1][0], medidasPasillos[1][0], medidasPasillos[1][1]);
+		isInSecondCorridor &= pointCollisionWithRectangle(rightNear.x, rightNear.z, centroPasillos[1][0], centroPasillos[1][0], medidasPasillos[1][0], medidasPasillos[1][1]);
+
+		std::cout << isInFirstCorridor << " | | " << isInSecondCorridor << std::endl;
 
 		_padreNode->translate(translatePlayer * evt.timeSinceLastFrame * playerSpeed);
 		_padreNode->rotate(rotatePlayer);
