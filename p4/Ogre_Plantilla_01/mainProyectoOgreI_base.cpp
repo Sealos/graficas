@@ -534,7 +534,61 @@ public:
 		mSceneMgr->getRootSceneNode()->addChild(nodeEscenario01);
 		nodeEscenario01->attachObject(entEscenario01);
 
+		//Primer Cuadrado {0,3)
+float primerCuad = 0.5;
+float segundoCuad = 1.0;
+float interiorAlaX = 3.5;
+float puntaAlaZ = 6.0;
+float grosor = 0.5;
+//Primer Cuadrado {0,3)
+double vertices[][3] = {
+	{0.0, primerCuad, primerCuad},
+	{0.0, primerCuad, -primerCuad},
+	{0.0, -primerCuad, -primerCuad},
+	{0.0, -primerCuad, primerCuad},
 
+	//Segundo cuadrado {4,7)
+
+	{interiorAlaX, segundoCuad, segundoCuad},
+	{interiorAlaX, segundoCuad, -segundoCuad},
+	{interiorAlaX, -segundoCuad, -segundoCuad},
+	{interiorAlaX, -segundoCuad, segundoCuad},
+
+	//Bordes del Interior de la ala {8,15)
+	{interiorAlaX - (interiorAlaX / 4), 2 * segundoCuad, segundoCuad},
+	{interiorAlaX, segundoCuad, 2 * segundoCuad},
+	{interiorAlaX, -segundoCuad, 2 * segundoCuad},
+	{interiorAlaX - (interiorAlaX / 4), 2 * -segundoCuad, segundoCuad},
+
+	{interiorAlaX - (interiorAlaX / 4), 2 * -segundoCuad, -segundoCuad},
+	{interiorAlaX - (interiorAlaX / 4), 2 * segundoCuad, -segundoCuad},
+
+	
+	{interiorAlaX, segundoCuad, -segundoCuad - puntaAlaZ},
+	{interiorAlaX, -segundoCuad, -segundoCuad - puntaAlaZ},
+
+	//Grosor de alas
+	
+
+	//Bordes del Exterior de la ala {16,23)
+	{interiorAlaX - (interiorAlaX / 4) + grosor, 2 * segundoCuad, segundoCuad},
+	{interiorAlaX + grosor, segundoCuad, 2 * segundoCuad},
+	{interiorAlaX + grosor, -segundoCuad, 2 * segundoCuad},
+	{interiorAlaX - (interiorAlaX / 4) + grosor, 2 * -segundoCuad, segundoCuad},
+
+	{interiorAlaX - (interiorAlaX / 4) + grosor, 2 * -segundoCuad, -segundoCuad},
+	{interiorAlaX - (interiorAlaX / 4) + grosor, 2 * segundoCuad, -segundoCuad},
+
+	{interiorAlaX + grosor, segundoCuad, -segundoCuad - puntaAlaZ},
+	{interiorAlaX + grosor, -segundoCuad, -segundoCuad - puntaAlaZ},
+
+
+	//Segundo cuadrado grosor {24,27)
+	{interiorAlaX + grosor, segundoCuad, segundoCuad},
+	{interiorAlaX + grosor, segundoCuad, -segundoCuad},
+	{interiorAlaX + grosor, -segundoCuad, -segundoCuad},
+	{interiorAlaX + grosor, -segundoCuad, segundoCuad},
+};
 		ManualObject *ala = mSceneMgr -> createManualObject("manual");
 		ala -> begin("lambert3", RenderOperation::OT_TRIANGLE_LIST);
 
