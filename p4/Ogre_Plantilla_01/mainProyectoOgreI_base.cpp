@@ -68,11 +68,11 @@ public:
 		laserEnt->setMaterialName("lambert3");
 		laserNodo = mainSceneMgr -> createSceneNode();
 		laserNodo -> attachObject(laserEnt);
-		Vector3 src = laserNodo -> getOrientation() * Vector3::UNIT_Y;
+		Vector3 src = laserNodo -> getOrientation() * Vector3::NEGATIVE_UNIT_Y;
 		Quaternion dir = src.getRotationTo(-playerDir);
 		laserNodo -> rotate(dir);
 		laserNodo -> translate(vec);
-		laserNodo -> scale(2.0,2.0,2.0);
+		laserNodo -> scale(4.0,4.0,4.0);
 		direccionP = playerDir;
 		velocidad = 25.f;
 	}
@@ -159,28 +159,16 @@ inline SceneNode *crearTorreta(SceneManager *mSceneMgr, Vector3 vec, int i) {
 	//Asignar Materiales
 	if (i > 4) {
 		base -> setMaterialName("Examples/BeachStones");
-		cuerpo -> setMaterialName("Examples/BeachStones");
-		tapa -> setMaterialName("Examples/BeachStones");
-		barril -> setMaterialName("Examples/BeachStones");
-		base->getSubEntity(0)->getMaterial()->setAmbient(0.3, 0.3, 0.3);
-		cuerpo->getSubEntity(0)->getMaterial()->setAmbient(0.3, 0.3, 0.3);
-		tapa->getSubEntity(0)->getMaterial()->setAmbient(0.3, 0.3, 0.3);
-		barril->getSubEntity(0)->getMaterial()->setAmbient(0.3, 0.3, 0.3);
+		MaterialPtr mat = base->getSubEntity(0)->getMaterial();
+		mat->setAmbient(0.1, 0.1, 0.1);
+		mat->setDiffuse(Ogre::ColourValue(0.1, 0.1, 0.1, 0.2));
+		mat->setShininess(0.1);
+		mat->setSpecular(Ogre::ColourValue(0.1, 0.1, 0.1, 0.2));
 
-		base->getSubEntity(0)->getMaterial()->setDiffuse(Ogre::ColourValue(0.2, 0.2, 0.2, 1.0));
-		cuerpo->getSubEntity(0)->getMaterial()->setDiffuse(Ogre::ColourValue(0.2, 0.2, 0.2, 1.0));
-		tapa->getSubEntity(0)->getMaterial()->setDiffuse(Ogre::ColourValue(0.2, 0.2, 0.2, 1.0));
-		barril->getSubEntity(0)->getMaterial()->setDiffuse(Ogre::ColourValue(0.2, 0.2, 0.2, 1.0));
-
-		base->getSubEntity(0)->getMaterial()->setShininess(0.4);
-		cuerpo->getSubEntity(0)->getMaterial()->setShininess(0.4);
-		tapa->getSubEntity(0)->getMaterial()->setShininess(0.4);
-		barril->getSubEntity(0)->getMaterial()->setShininess(0.4);
-
-		base->getSubEntity(0)->getMaterial()->setSpecular(Ogre::ColourValue(0.2, 0.2, 0.2, 1.0));
-		cuerpo->getSubEntity(0)->getMaterial()->setSpecular(Ogre::ColourValue(0.2, 0.2, 0.2, 1.0));
-		tapa->getSubEntity(0)->getMaterial()->setSpecular(Ogre::ColourValue(0.2, 0.2, 0.2, 1.0));
-		barril->getSubEntity(0)->getMaterial()->setSpecular(Ogre::ColourValue(0.2, 0.2, 0.2, 1.0));
+		base->setMaterial(mat);
+		cuerpo->setMaterial(mat);
+		tapa->setMaterial(mat);
+		barril->setMaterial(mat);
 	}
 	else {
 		base -> setMaterialName("Examples/Chrome");
