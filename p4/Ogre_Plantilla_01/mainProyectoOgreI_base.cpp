@@ -113,22 +113,23 @@ public:
 
 		for (int i = 0; i < 8; ++i) {
 
-		Ogre::Vector3 direction = _playerNode->getPosition() - torretas[i]->getPosition();
-		direction.y = 0.0;
-		direction.normalise();
+			Ogre::Vector3 direction = _playerNode->getPosition() - torretas[i]->getPosition();
+			direction.y = 0.0;
+			direction.normalise();
 
-		Ogre::Vector3 vUp = Ogre::Vector3(0, 1.0f, 0.0f);
-		Ogre::Vector3 vRight = vUp.crossProduct(direction);
-		vUp = direction.crossProduct(vRight);
+			Ogre::Vector3 vUp = Ogre::Vector3(0, 1.0f, 0.0f);
+			Ogre::Vector3 vRight = vUp.crossProduct(direction);
+			vUp = direction.crossProduct(vRight);
 
-		Ogre::Matrix4 mBasis = Ogre::Matrix4(vRight.x,    vRight.y,    vRight.z,    0.0f,
-											 vUp.x,       vUp.y,       vUp.z,       0.0f,
-											 direction.x, direction.y, direction.z, 0.0f,
-											 0.0f,        0.0f,        0.0f,        1.0f);
+			Ogre::Matrix4 mBasis = Ogre::Matrix4(vRight.x,    vRight.y,    vRight.z,    0.0f,
+												 vUp.x,       vUp.y,       vUp.z,       0.0f,
+												 direction.x, direction.y, direction.z, 0.0f,
+												 0.0f,        0.0f,        0.0f,        1.0f);
 
-		Ogre::Quaternion mOrientDest = mBasis.extractQuaternion().Inverse();
+			Ogre::Quaternion mOrientDest = mBasis.extractQuaternion().Inverse();
+			torretas[i].rotate(mOrientDest);
 
-		
+
 			if (laserTimes[i].getMilliseconds() > tiempos[i]) {
 				Vector3 playerDirection = (posicionesT[i] + Vector3(0.0, alturaBarril, 0.0)) - _playerNode -> getPosition();
 				Real distance = playerDirection.normalise();
