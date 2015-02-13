@@ -12,12 +12,25 @@ float bordes[2] = {1368, -1229};
 
 // x, z
 float centroPasillos[2][2] = {
-	{0.f, -9280.f}, {0.f, -20560.f}
+	{0.f, -9280.f}, {0.f, -21560.f}
 };
+
 
 // width, height
 float medidasPasillos[2][2] = {
-	{3500.f, 19500.f}, {52000.f, 3500.f}
+	{3500.f, 19000.f}, {52000.f, 4500.f}
+};
+
+float minMaxX[2][2] = {
+	{centroPasillos[0][0] - medidasPasillos[0][0]/2, centroPasillos[0][0] + medidasPasillos[0][0]/2},
+
+	{centroPasillos[1][0] - medidasPasillos[1][0]/2, centroPasillos[1][0] + medidasPasillos[1][0]/2},
+};
+
+float minMaxZ[2][2] = {
+	{centroPasillos[0][1] + medidasPasillos[0][1]/2, centroPasillos[0][1] - medidasPasillos[0][1]/2},
+
+	{centroPasillos[1][1] + medidasPasillos[1][1]/2, centroPasillos[1][1] - medidasPasillos[1][1]/2},
 };
 
 Real ultimaFila = -23354;
@@ -36,38 +49,6 @@ Vector3 posicionesT[8] = {
 };
 
 SceneManager *mainSceneMgr;
-
-inline float crossProductLinePoint(float x1, float y1, float x2, float y2, float x3, float y3) {
-	return (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1);
-};
-
-bool pointCollisionWithRectangle(float pX, float pY, float rX, float rY, float sWidth, float sHeight) {
-
-	float halfHeight = sHeight /2;
-	float halfWidth = sWidth / 2;
-
-	float recPoints[4][2] = {
-		{rX - halfWidth, rY - halfHeight},
-		{rX - halfWidth, rY + halfHeight},
-		{rX + halfWidth, rY + halfHeight},
-		{rX + halfWidth, rY - halfHeight},
-	};
-
-	if (crossProductLinePoint(recPoints[0][0], recPoints[0][1], recPoints[1][0], recPoints[1][1], pX, pY) > 0) {
-		return false;
-	}
-	if (crossProductLinePoint(recPoints[1][0], recPoints[1][1], recPoints[2][0], recPoints[2][1], pX, pY) > 0) {
-		return false;
-	}
-	if (crossProductLinePoint(recPoints[2][0], recPoints[2][1], recPoints[3][0], recPoints[3][1], pX, pY) > 0) {
-		return false;
-	}
-	if (crossProductLinePoint(recPoints[3][0], recPoints[3][1], recPoints[0][0], recPoints[0][1], pX, pY) > 0) {
-		return false;
-	}
-
-	return true;
-};
 
 class Laser {
 public:
@@ -218,7 +199,7 @@ inline SceneNode *crearTorreta(SceneManager *mSceneMgr, Vector3 vec) {
 	Quaternion rotB(Degree(90),Vector3::UNIT_X);
 	nodoBarril -> rotate(rotB);
 	nodoBarril -> translate(0.0,alturaTapa,centroZTapa*2);
-	alturaBarril = alturaTapa*15.0;
+	alturaBarril = alturaTapa*15.0f;
 	nodoBarril -> scale(0.5,1.5,0.5);
 	
 
@@ -394,20 +375,41 @@ public:
 		Real deltaZ = newPosition.z - oldPosition.z;
 		Real newTop = top.y + deltaY;
 		Real newBottom = bot.y + deltaY;
-		//Real newLeft = 
+		Real newLeft = leftFar.x + deltaX;
+		Real newRight = rightNear.x + deltaX;
+		Real newFar = leftFar.z + deltaZ;
+		Real newNear = rightNear.z + deltaZ;
+
+		unsigned int pasillo;
+
 		if (deltaY > 0.0f && newTop > bordes[0])
 			translatePlayer.y = 0.0;
 
 		if (deltaY < 0.0f && newBottom < bordes[1])
 			translatePlayer.y = 0.0;
 
-		bool isInFirstCorridor = pointCollisionWithRectangle(leftFar.x, leftFar.z, centroPasillos[0][0], centroPasillos[0][1], medidasPasillos[0][0], medidasPasillos[0][1]);
-		isInFirstCorridor &= pointCollisionWithRectangle(rightNear.x, rightNear.z, centroPasillos[0][0], centroPasillos[0][1], medidasPasillos[0][0], medidasPasillos[0][1]);
+		if (newPosition.z < -19080)
+			pasillo = 1;
+		else
+			pasillo = 0;
 
-		bool isInSecondCorridor = pointCollisionWithRectangle(leftFar.x, leftFar.z, centroPasillos[1][0], centroPasillos[1][1], medidasPasillos[1][0], medidasPasillos[1][1]);
-		isInSecondCorridor &= pointCollisionWithRectangle(rightNear.x, rightNear.z, centroPasillos[1][0], centroPasillos[1][1], medidasPasillos[1][0], medidasPasillos[1][1]);
+		//std::cout << pasillo << std::endl;
 
-		std::cout << isInFirstCorridor << " | | " << isInSecondCorridor << std::endl;
+		if (deltaX > 0.0f && newRight > minMaxX[pasillo][1]) {
+			translatePlayer.x = 0.0;
+		}
+
+		if (deltaX < 0.0f && newLeft < minMaxX[pasillo][0]) {
+			translatePlayer.x = 0.0;
+		}
+
+		if (deltaZ > 0.0f && newNear > minMaxZ[pasillo][0]) {
+			translatePlayer.z = 0.0;
+		}
+
+		if (deltaZ < 0.0f && newFar < minMaxZ[pasillo][1]) {
+			translatePlayer.z = 0.0;
+		}
 
 		_padreNode->translate(translatePlayer * evt.timeSinceLastFrame * playerSpeed);
 		_padreNode->rotate(rotatePlayer);
