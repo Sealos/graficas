@@ -145,7 +145,7 @@ public:
 		}
 
 		for (vector<Laser *>::iterator it = laseres.begin(); it != laseres.end();) {
-			if ((*it)->aliveTime > 10000){
+			if ((*it)->aliveTime > 20){
 				it = laseres.erase(it);
 				delete (*it);
 			}
