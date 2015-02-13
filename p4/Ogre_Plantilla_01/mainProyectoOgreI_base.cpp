@@ -127,8 +127,7 @@ public:
 												 0.0f,        0.0f,        0.0f,        1.0f);
 
 			Ogre::Quaternion mOrientDest = mBasis.extractQuaternion().Inverse();
-			torretas[i]->rotate(mOrientDest);
-
+			torretas[i]->setOrientation(mOrientDest);
 
 			if (laserTimes[i].getMilliseconds() > tiempos[i]) {
 				Vector3 playerDirection = (posicionesT[i] + Vector3(0.0, alturaBarril, 0.0)) - _playerNode -> getPosition();
