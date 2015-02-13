@@ -2,6 +2,7 @@
 #include <vector>
 SceneNode *torretas [8];
 SceneNode *helices[2];
+float alturaBarril;
 
 float helicesLoc[2][3] = {
 	{ -13315, 321, -23728}, {15151, 321, -23728}
@@ -10,16 +11,16 @@ float helicesLoc[2][3] = {
 float bordesSuperiores[2] = {1368, -1229};
 
 Real ultimaFila = -23354;
-Real penultimaFila = -19095;
+Real penultimaFila = -18900;
 Real altura = -332;
 
 Vector3 posicionesT[8] = {
 	Vector3(-1615, altura, -8573),
 	Vector3(1615, altura, -15240),
 	Vector3(8135, altura, ultimaFila),
-	Vector3(15296, altura, penultimaFila),
+	Vector3(15400, altura, penultimaFila),
 	Vector3(23894, altura, ultimaFila),
-	Vector3(-10229, altura, ultimaFila),
+	Vector3(-10000, altura, ultimaFila),
 	Vector3(-16939, altura, penultimaFila),
 	Vector3(-23027, altura, ultimaFila)
 };
@@ -47,6 +48,7 @@ public:
 		Quaternion dir = src.getRotationTo(-playerDir);
 		laserNodo -> rotate(dir);
 		laserNodo -> translate(vec);
+		laserNodo -> scale(2.0,2.0,2.0);
 		direccionP = playerDir;
 		velocidad = 25.f;
 	}
@@ -86,10 +88,10 @@ public:
 	bool frameStarted(const FrameEvent &evt) {
 		for (int i = 0; i < 8; ++i) {
 			if (laserTimes[i].getMilliseconds() > tiempos[i]) {
-				Vector3 playerDirection = posicionesT[i] - _playerNode -> getPosition();
+				Vector3 playerDirection = (posicionesT[i]+Vector3(0.0,alturaBarril,0.0)) - _playerNode -> getPosition();
 				Real distance = playerDirection.normalise();
 				laserTimes[i].reset();
-				Laser *las = new Laser(posicionesT[i], -playerDirection);
+				Laser *las = new Laser((posicionesT[i]+Vector3(0.0,alturaBarril,0.0)), -playerDirection);
 				mainSceneMgr -> getRootSceneNode() -> addChild(las -> laserNodo);
 				laseres.push_back(las);
 			}
@@ -128,38 +130,58 @@ inline SceneNode *crearTorreta(SceneManager *mSceneMgr, Vector3 vec) {
 	Ogre::Entity* base = mSceneMgr->createEntity("usb_cubomod01.mesh");
 	Ogre::Entity* cuerpo = mSceneMgr-> createEntity("usb_cilindro.mesh");
 	Ogre::Entity* tapa = mSceneMgr-> createEntity("usb_formacurva.mesh");
-
+	Ogre::Entity* barril = mSceneMgr -> createEntity("usb_cilindro02.mesh");
+	//Asignar Materiales
+	base -> setMaterialName("lambert3");
+	cuerpo -> setMaterialName("lambert3");
+	tapa -> setMaterialName("lambert3");
+	barril -> setMaterialName("lambert3");
 	//Crear escenas
 	Ogre::SceneNode *nodoBase = mSceneMgr->createSceneNode();
 	Ogre::SceneNode *nodoCuerpo = mSceneMgr->createSceneNode();
 	Ogre::SceneNode *nodoTapa = mSceneMgr->createSceneNode();
+	SceneNode* nodoBarril = mSceneMgr-> createSceneNode();
 	Ogre::SceneNode *nodo = mSceneMgr->createSceneNode();
 
 	nodoBase -> attachObject(base);
 	nodoCuerpo -> attachObject(cuerpo);
 	nodoTapa -> attachObject(tapa);
+	nodoBarril -> attachObject(barril);
 
 	nodo -> addChild(nodoBase);
 	nodo -> addChild(nodoCuerpo);
 	nodo -> addChild(nodoTapa);
+	nodo -> addChild(nodoBarril);
 
-	nodoBase -> scale(2.0,2.0,2.0);
-	nodoCuerpo -> scale(1.0,2.0,1.0);
+	nodoBase -> scale(3.0,2.0,3.0);
+	nodoCuerpo -> scale(2.0,2.0,2.0);
 	nodoBase -> _updateBounds();
 	nodoCuerpo -> _updateBounds();
+	nodoTapa -> _updateBounds();
+	nodoBarril ->_updateBounds();
 
 	Ogre::AxisAlignedBox aab = nodoBase -> _getWorldAABB();
 	float alturaBase = aab.getSize().y;
-	std::cout << alturaBase << "\n";
 	aab = nodoCuerpo -> _getWorldAABB();
 	float alturaCuerpo = aab.getSize().y;
-	std::cout << alturaCuerpo << "\n";
+	aab =nodoCuerpo -> _getWorldAABB();
+	float alturaTapa = aab.getSize().y;
+	float centroXTapa = aab.getHalfSize().x;
+	float centroZTapa = aab.getHalfSize().z;
+
 
 	nodoCuerpo -> translate(0.0,alturaBase,0.0);
 	nodoTapa -> translate(0.0,alturaCuerpo,0.0);
+	
+	Quaternion rotB(Degree(90),Vector3::UNIT_X);
+	nodoBarril -> rotate(rotB);
+	nodoBarril -> translate(0.0,alturaTapa,centroZTapa*2);
+	alturaBarril = alturaTapa*15.0;
+	nodoBarril -> scale(0.5,1.5,0.5);
+	
 
 	nodo -> translate(vec);
-	nodo -> scale (10.0,10.0,10.0);
+	nodo -> scale (15.0,15.0,15.0);
 
 	
 	
@@ -373,7 +395,6 @@ public:
 
 
 	void chooseSceneManager() {
-		// Create the SceneManager, in this case a generic one
 		mainSceneMgr = mRoot->createSceneManager(ST_GENERIC, "ExampleSMInstance");
 		mSceneMgr = mainSceneMgr;
 
@@ -395,6 +416,25 @@ public:
 		mSceneMgr->getRootSceneNode()->addChild(nodeEscenario01);
 		nodeEscenario01->attachObject(entEscenario01);
 
+
+		//ManualObject 
+
+		ManualObject* ala = mSceneMgr -> createManualObject("manual");
+		ala -> begin("BaseWhiteNoLighting", RenderOperation::OT_POINT_LIST);
+
+
+		ala-> end();
+
+		SceneNode* nodeAla = mSceneMgr -> createSceneNode();
+		nodeAla -> attachObject(ala);
+		mSceneMgr -> getRootSceneNode() -> addChild(nodeAla);
+
+		//Luces
+		Light* light1 = mSceneMgr -> createLight("Light1");
+		light1->setType(Light::LT_POINT);
+		light1 -> setPosition(0,0,200);
+		light1-> setDiffuseColour(0.8f,0.8f,0.8f);
+
 		Entity *torus = mSceneMgr->createEntity("ObjetoPrueba", "usb_torus.mesh");
 		Entity *cilindro =  mSceneMgr->createEntity("ObjetoPrueba1", "usb_cubomod01.mesh");
 		torus -> setMaterialName("lambert3");
@@ -406,8 +446,8 @@ public:
 
 		player -> scale(3.0,3.0,3.0);
 
-		Ogre::SceneNode* test = crearTorreta(mSceneMgr,Vector3(0.0,0.0,0.0));
-		mSceneMgr -> getRootSceneNode() -> addChild(test);
+		//Ogre::SceneNode* test = crearTorreta(mSceneMgr,Vector3(0.0,0.0,0.0));
+		//mSceneMgr -> getRootSceneNode() -> addChild(test);
 
 		player -> scale(3.0, 3.0, 3.0);
 
