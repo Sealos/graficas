@@ -18,7 +18,7 @@ float centroPasillos[2][2] = {
 
 // width, height
 float medidasPasillos[2][2] = {
-	{3500.f, 19000.f}, {52000.f, 4500.f}
+	{3500.f, 19000.f}, {52000.f, 4000.f}
 };
 
 float minMaxX[2][2] = {
@@ -65,6 +65,7 @@ public:
 
 	Laser(Vector3 vec, Vector3 playerDir) {
 		laserEnt = mainSceneMgr -> createEntity("usb_laser.mesh");
+		laserEnt->setMaterialName("lambert3");
 		laserNodo = mainSceneMgr -> createSceneNode();
 		laserNodo -> attachObject(laserEnt);
 		Vector3 src = laserNodo -> getOrientation() * Vector3::UNIT_Y;
@@ -155,10 +156,10 @@ inline SceneNode *crearTorreta(SceneManager *mSceneMgr, Vector3 vec) {
 	Ogre::Entity* tapa = mSceneMgr-> createEntity("usb_formacurva.mesh");
 	Ogre::Entity* barril = mSceneMgr -> createEntity("usb_cilindro02.mesh");
 	//Asignar Materiales
-	base -> setMaterialName("lambert3");
-	cuerpo -> setMaterialName("lambert3");
-	tapa -> setMaterialName("lambert3");
-	barril -> setMaterialName("lambert3");
+	base -> setMaterialName("Examples/Chrome");
+	cuerpo -> setMaterialName("Examples/Chrome");
+	tapa -> setMaterialName("Examples/Chrome");
+	barril -> setMaterialName("Examples/Chrome");
 	//Crear escenas
 	Ogre::SceneNode *nodoBase = mSceneMgr->createSceneNode();
 	Ogre::SceneNode *nodoCuerpo = mSceneMgr->createSceneNode();
@@ -388,7 +389,7 @@ public:
 		if (deltaY < 0.0f && newBottom < bordes[1])
 			translatePlayer.y = 0.0;
 
-		if (newPosition.z < -19080)
+		if (newPosition.z < -18700)
 			pasillo = 1;
 		else
 			pasillo = 0;
