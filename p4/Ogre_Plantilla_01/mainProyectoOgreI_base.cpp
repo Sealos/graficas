@@ -40,7 +40,7 @@ Real altura = -332;
 Vector3 posicionesT[8] = {
 	Vector3(1615, altura, -15240),
 	Vector3(8135, altura, ultimaFila),
-	Vector3(23894, altura, ultimaFila),
+	Vector3(24000, altura, ultimaFila),
 	Vector3(-10000, altura, ultimaFila),
 	Vector3(-23027, altura, ultimaFila),
 	Vector3(-16939, altura, penultimaFila),
@@ -465,6 +465,10 @@ public:
 	}
 };
 
+Vector3 calcularNormal(Vector3 a, Vector3 b, Vector3 c){
+	return (b - a).crossProduct(c - a);
+}
+
 class Example1 : public ExampleApplication {
 
 public:
@@ -583,58 +587,288 @@ double vertices[][3] = {
 	{interiorAlaX + grosor, -segundoCuad, -segundoCuad},
 	{interiorAlaX + grosor, -segundoCuad, segundoCuad},
 };
-		ManualObject *ala = mSceneMgr -> createManualObject("manual");
+
+Vector3 verticesV[28];
+
+for(int i =0; i < 28; ++i){
+	verticesV[i] = Vector3(vertices[i][0],vertices[i][1],vertices[i][2]);
+}
+Vector3 normales[28];
+
+//Calculando Normales
+normales[0] = calcularNormal(verticesV[0],verticesV[1],verticesV[2])+
+				calcularNormal(verticesV[0],verticesV[2],verticesV[3])+
+				calcularNormal(verticesV[0],verticesV[4],verticesV[3])+
+				calcularNormal(verticesV[0],verticesV[4],verticesV[1]);
+
+normales[1] = calcularNormal(verticesV[1],verticesV[0],verticesV[2])+
+				calcularNormal(verticesV[1],verticesV[4],verticesV[0])+
+				calcularNormal(verticesV[1],verticesV[5],verticesV[4])+
+				calcularNormal(verticesV[1],verticesV[5],verticesV[6])+
+				calcularNormal(verticesV[1],verticesV[6],verticesV[2]);
+
+normales[2] = calcularNormal(verticesV[2],verticesV[0],verticesV[1])+
+				calcularNormal(verticesV[2],verticesV[3],verticesV[0])+
+				calcularNormal(verticesV[2],verticesV[3],verticesV[6])+
+				calcularNormal(verticesV[2],verticesV[1],verticesV[6]);
+
+normales[3] = calcularNormal(verticesV[3],verticesV[2],verticesV[0])+
+				calcularNormal(verticesV[3],verticesV[4],verticesV[0])+
+				calcularNormal(verticesV[3],verticesV[7],verticesV[4])+
+				calcularNormal(verticesV[3],verticesV[6],verticesV[7])+
+				calcularNormal(verticesV[3],verticesV[2],verticesV[6]);
+
+normales[4] = calcularNormal(verticesV[4],verticesV[5],verticesV[6])+
+				calcularNormal(verticesV[4],verticesV[6],verticesV[7])+
+				calcularNormal(verticesV[4],verticesV[0],verticesV[3])+
+				calcularNormal(verticesV[4],verticesV[7],verticesV[3])+
+				calcularNormal(verticesV[4],verticesV[1],verticesV[0])+
+				calcularNormal(verticesV[4],verticesV[5],verticesV[1])+
+				calcularNormal(verticesV[4],verticesV[9],verticesV[8])+
+				calcularNormal(verticesV[4],verticesV[9],verticesV[7])+
+				calcularNormal(verticesV[4],verticesV[5],verticesV[8]);
+
+normales[5] = calcularNormal(verticesV[5],verticesV[4],verticesV[6])+
+				calcularNormal(verticesV[5],verticesV[1],verticesV[4])+
+				calcularNormal(verticesV[5],verticesV[1],verticesV[6])+
+				calcularNormal(verticesV[5],verticesV[13],verticesV[14])+
+				calcularNormal(verticesV[5],verticesV[8],verticesV[13])+
+				calcularNormal(verticesV[5],verticesV[4],verticesV[8])+
+				calcularNormal(verticesV[5],verticesV[6],verticesV[26])+
+				calcularNormal(verticesV[5],verticesV[26],verticesV[25])+
+				calcularNormal(verticesV[5],verticesV[14],verticesV[25]);
+
+normales[6] = calcularNormal(verticesV[6],verticesV[4],verticesV[5])+
+				calcularNormal(verticesV[6],verticesV[7],verticesV[4])+
+				calcularNormal(verticesV[6],verticesV[3],verticesV[7])+
+				calcularNormal(verticesV[6],verticesV[3],verticesV[2])+
+				calcularNormal(verticesV[6],verticesV[1],verticesV[5])+
+				calcularNormal(verticesV[6],verticesV[1],verticesV[2])+
+				calcularNormal(verticesV[6],verticesV[7],verticesV[11])+
+				calcularNormal(verticesV[6],verticesV[11],verticesV[12])+
+				calcularNormal(verticesV[6],verticesV[15],verticesV[12])+
+				calcularNormal(verticesV[6],verticesV[15],verticesV[26])+
+				calcularNormal(verticesV[6],verticesV[5],verticesV[26]);
+
+normales[7] = calcularNormal(verticesV[7],verticesV[6],verticesV[4])+
+				calcularNormal(verticesV[7],verticesV[4],verticesV[3])+
+				calcularNormal(verticesV[7],verticesV[6],verticesV[3])+
+				calcularNormal(verticesV[7],verticesV[9],verticesV[4])+
+				calcularNormal(verticesV[7],verticesV[9],verticesV[10])+
+				calcularNormal(verticesV[7],verticesV[10],verticesV[14])+
+				calcularNormal(verticesV[7],verticesV[6],verticesV[11]);
+
+normales[8] = calcularNormal(verticesV[8],verticesV[9],verticesV[4])+
+				calcularNormal(verticesV[8],verticesV[5],verticesV[13])+
+				calcularNormal(verticesV[8],verticesV[5],verticesV[4])+
+				calcularNormal(verticesV[8],verticesV[9],verticesV[16])+
+				calcularNormal(verticesV[8],verticesV[13],verticesV[21])+
+				calcularNormal(verticesV[8],verticesV[21],verticesV[16]);
+
+normales[9] = calcularNormal(verticesV[9],verticesV[4],verticesV[8])+
+				calcularNormal(verticesV[9],verticesV[4],verticesV[7])+
+				calcularNormal(verticesV[9],verticesV[7],verticesV[10])+
+				calcularNormal(verticesV[9],verticesV[8],verticesV[16])+
+				calcularNormal(verticesV[9],verticesV[13],verticesV[21])+
+				calcularNormal(verticesV[9],verticesV[21],verticesV[16]);
+
+normales[10] = calcularNormal(verticesV[10],verticesV[9],verticesV[7])+
+				calcularNormal(verticesV[10],verticesV[7],verticesV[11])+
+				calcularNormal(verticesV[10],verticesV[9],verticesV[17])+
+				calcularNormal(verticesV[10],verticesV[17],verticesV[18])+
+				calcularNormal(verticesV[10],verticesV[11],verticesV[18]);
+
+normales[11] = calcularNormal(verticesV[11],verticesV[7],verticesV[10])+
+				calcularNormal(verticesV[11],verticesV[7],verticesV[6])+
+				calcularNormal(verticesV[11],verticesV[6],verticesV[12])+
+				calcularNormal(verticesV[11],verticesV[10],verticesV[18])+
+				calcularNormal(verticesV[11],verticesV[18],verticesV[19])+
+				calcularNormal(verticesV[11],verticesV[12],verticesV[19]);
+
+normales[12] = calcularNormal(verticesV[12],verticesV[11],verticesV[6])+
+				calcularNormal(verticesV[12],verticesV[6],verticesV[15])+
+				calcularNormal(verticesV[12],verticesV[11],verticesV[19])+
+				calcularNormal(verticesV[12],verticesV[19],verticesV[20])+
+				calcularNormal(verticesV[12],verticesV[15],verticesV[20]);
+
+normales[13] = calcularNormal(verticesV[13],verticesV[5],verticesV[14])+
+				calcularNormal(verticesV[13],verticesV[5],verticesV[8])+
+				calcularNormal(verticesV[13],verticesV[14],verticesV[21])+
+				calcularNormal(verticesV[13],verticesV[8],verticesV[21]);
+
+normales[14] = calcularNormal(verticesV[14],verticesV[5],verticesV[13])+
+				calcularNormal(verticesV[14],verticesV[5],verticesV[25])+
+				calcularNormal(verticesV[14],verticesV[25],verticesV[22])+
+				calcularNormal(verticesV[14],verticesV[13],verticesV[21])+
+				calcularNormal(verticesV[14],verticesV[21],verticesV[22]);
+
+normales[15] = calcularNormal(verticesV[15],verticesV[6],verticesV[12])+
+				calcularNormal(verticesV[15],verticesV[12],verticesV[20])+
+				calcularNormal(verticesV[15],verticesV[20],verticesV[23])+
+				calcularNormal(verticesV[15],verticesV[6],verticesV[26])+
+				calcularNormal(verticesV[15],verticesV[26],verticesV[23]);
+
+normales[16] = calcularNormal(verticesV[16],verticesV[9],verticesV[17])+
+				calcularNormal(verticesV[16],verticesV[8],verticesV[9])+
+				calcularNormal(verticesV[16],verticesV[21],verticesV[8])+
+				calcularNormal(verticesV[16],verticesV[24],verticesV[17])+
+				calcularNormal(verticesV[16],verticesV[24],verticesV[21]);
+
+normales[17] = calcularNormal(verticesV[17],verticesV[16],verticesV[9])+
+				calcularNormal(verticesV[17],verticesV[9],verticesV[10])+
+				calcularNormal(verticesV[17],verticesV[10],verticesV[18])+
+				calcularNormal(verticesV[17],verticesV[24],verticesV[16])+
+				calcularNormal(verticesV[17],verticesV[24],verticesV[18]);
+
+normales[18] = calcularNormal(verticesV[18],verticesV[17],verticesV[10])+
+				calcularNormal(verticesV[18],verticesV[10],verticesV[11])+
+				calcularNormal(verticesV[18],verticesV[11],verticesV[19])+
+				calcularNormal(verticesV[18],verticesV[24],verticesV[17])+
+				calcularNormal(verticesV[18],verticesV[27],verticesV[24])+
+				calcularNormal(verticesV[18],verticesV[19],verticesV[27]);
+
+normales[19] = calcularNormal(verticesV[19],verticesV[18],verticesV[11])+
+				calcularNormal(verticesV[19],verticesV[11],verticesV[12])+
+				calcularNormal(verticesV[19],verticesV[12],verticesV[20])+
+				calcularNormal(verticesV[19],verticesV[18],verticesV[27])+
+				calcularNormal(verticesV[19],verticesV[27],verticesV[20]);
+
+normales[20] = calcularNormal(verticesV[20],verticesV[19],verticesV[12])+
+				calcularNormal(verticesV[20],verticesV[12],verticesV[15])+
+				calcularNormal(verticesV[20],verticesV[15],verticesV[23])+
+				calcularNormal(verticesV[20],verticesV[27],verticesV[19])+
+				calcularNormal(verticesV[20],verticesV[26],verticesV[27])+
+				calcularNormal(verticesV[20],verticesV[23],verticesV[26]);
+
+normales[21] = calcularNormal(verticesV[21],verticesV[14],verticesV[13])+
+				calcularNormal(verticesV[21],verticesV[22],verticesV[14])+
+				calcularNormal(verticesV[21],verticesV[13],verticesV[8])+
+				calcularNormal(verticesV[21],verticesV[8],verticesV[16])+
+				calcularNormal(verticesV[21],verticesV[25],verticesV[22])+
+				calcularNormal(verticesV[21],verticesV[25],verticesV[24])+
+				calcularNormal(verticesV[21],verticesV[24],verticesV[16]);
+
+normales[22] = calcularNormal(verticesV[22],verticesV[25],verticesV[14])+
+				calcularNormal(verticesV[22],verticesV[21],verticesV[14])+
+				calcularNormal(verticesV[22],verticesV[25],verticesV[21]);
+
+normales[23]= calcularNormal(verticesV[23],verticesV[20],verticesV[15])+
+				calcularNormal(verticesV[23],verticesV[26],verticesV[15])+
+				calcularNormal(verticesV[23],verticesV[20],verticesV[26]);
+
+normales[24] = calcularNormal(verticesV[24],verticesV[16],verticesV[17])+
+				calcularNormal(verticesV[24],verticesV[17],verticesV[18])+
+				calcularNormal(verticesV[24],verticesV[18],verticesV[27])+
+				calcularNormal(verticesV[24],verticesV[25],verticesV[21])+
+				calcularNormal(verticesV[24],verticesV[21],verticesV[16])+
+				calcularNormal(verticesV[24],verticesV[25],verticesV[26])+
+				calcularNormal(verticesV[24],verticesV[27],verticesV[26]);
+
+normales[25] = calcularNormal(verticesV[25],verticesV[26],verticesV[5])+
+				calcularNormal(verticesV[25],verticesV[5],verticesV[14])+
+				calcularNormal(verticesV[25],verticesV[14],verticesV[22])+
+				calcularNormal(verticesV[25],verticesV[22],verticesV[21])+
+				calcularNormal(verticesV[25],verticesV[21],verticesV[24])+
+				calcularNormal(verticesV[25],verticesV[24],verticesV[26]);
+
+normales[26] = calcularNormal(verticesV[26],verticesV[15],verticesV[6])+
+				calcularNormal(verticesV[26],verticesV[23],verticesV[15])+
+				calcularNormal(verticesV[26],verticesV[6],verticesV[5])+
+				calcularNormal(verticesV[26],verticesV[5],verticesV[25])+
+				calcularNormal(verticesV[26],verticesV[20],verticesV[27])+
+				calcularNormal(verticesV[26],verticesV[20],verticesV[23])+
+				calcularNormal(verticesV[26],verticesV[25],verticesV[24])+
+				calcularNormal(verticesV[26],verticesV[27],verticesV[24]);
+
+normales[27] = calcularNormal(verticesV[27],verticesV[18],verticesV[24])+
+				calcularNormal(verticesV[27],verticesV[18],verticesV[19])+
+				calcularNormal(verticesV[27],verticesV[19],verticesV[20])+
+				calcularNormal(verticesV[27],verticesV[20],verticesV[26])+
+				calcularNormal(verticesV[27],verticesV[26],verticesV[24]);
+
+for(int i =0;i<28;++i){
+	normales[i].normalise();
+}
+
+
+
+				ManualObject *ala = mSceneMgr -> createManualObject("manual");
 		ala -> begin("lambert3", RenderOperation::OT_TRIANGLE_LIST);
 
 		//Primer Cuadrado (0,3)
-		float primerCuad = 0.5;
 		ala-> position(0.0, primerCuad, primerCuad);
+		ala -> normal(normales[0]);
 		ala-> position(0.0, primerCuad, -primerCuad);
+		ala -> normal(normales[1]);
 		ala-> position(0.0, -primerCuad, -primerCuad);
+		ala -> normal(normales[2]);
 		ala-> position(0.0, -primerCuad, primerCuad);
+		ala -> normal(normales[3]);
 
 		//Segundo cuadrado (4,7)
-		float segundoCuad = 1.0;
-		float interiorAlaX = 3.5;
+
 		ala -> position(interiorAlaX, segundoCuad, segundoCuad);
+		ala -> normal(normales[4]);
 		ala -> position(interiorAlaX, segundoCuad, -segundoCuad);
+		ala -> normal(normales[5]);
 		ala -> position(interiorAlaX, -segundoCuad, -segundoCuad);
+		ala -> normal(normales[6]);
 		ala -> position(interiorAlaX, -segundoCuad, segundoCuad);
+		ala -> normal(normales[7]);
 
 		//Bordes del Interior de la ala (8,15)
 		ala -> position(interiorAlaX - (interiorAlaX / 4), 2 * segundoCuad, segundoCuad);
+		ala -> normal(normales[8]);
 		ala -> position(interiorAlaX, segundoCuad, 2 * segundoCuad);
+		ala -> normal(normales[9]);
 		ala -> position(interiorAlaX, -segundoCuad, 2 * segundoCuad);
+		ala -> normal(normales[10]);
 		ala -> position(interiorAlaX - (interiorAlaX / 4), 2 * -segundoCuad, segundoCuad);
+		ala -> normal(normales[11]);
 
 		ala -> position(interiorAlaX - (interiorAlaX / 4), 2 * -segundoCuad, -segundoCuad);
+		ala -> normal(normales[12]);
 		ala -> position(interiorAlaX - (interiorAlaX / 4), 2 * segundoCuad, -segundoCuad);
+		ala -> normal(normales[13]);
 
-		float puntaAlaZ = 6.0;
+
 		ala -> position(interiorAlaX, segundoCuad, -segundoCuad - puntaAlaZ);
+		ala -> normal(normales[14]);
 		ala -> position(interiorAlaX, -segundoCuad, -segundoCuad - puntaAlaZ);
+		ala -> normal(normales[15]);
 
-		//Grosor de alas
-		float grosor = 0.5;
+
 
 		//Bordes del Exterior de la ala (16,23)
 		ala -> position(interiorAlaX - (interiorAlaX / 4) + grosor, 2 * segundoCuad, segundoCuad);
+		ala -> normal(normales[16]);
 		ala -> position(interiorAlaX + grosor, segundoCuad, 2 * segundoCuad);
+		ala -> normal(normales[17]);
 		ala -> position(interiorAlaX + grosor, -segundoCuad, 2 * segundoCuad);
+		ala -> normal(normales[18]);
 		ala -> position(interiorAlaX - (interiorAlaX / 4) + grosor, 2 * -segundoCuad, segundoCuad);
+		ala -> normal(normales[19]);
 
 		ala -> position(interiorAlaX - (interiorAlaX / 4) + grosor, 2 * -segundoCuad, -segundoCuad);
+		ala -> normal(normales[20]);
 		ala -> position(interiorAlaX - (interiorAlaX / 4) + grosor, 2 * segundoCuad, -segundoCuad);
+		ala -> normal(normales[21]);
 
 		ala -> position(interiorAlaX + grosor, segundoCuad, -segundoCuad - puntaAlaZ);
+		ala -> normal(normales[22]);
 		ala -> position(interiorAlaX + grosor, -segundoCuad, -segundoCuad - puntaAlaZ);
+		ala -> normal(normales[23]);
 
 
 		//Segundo cuadrado grosor (24,27)
 		ala -> position(interiorAlaX + grosor, segundoCuad, segundoCuad);
+		ala -> normal(normales[24]);
 		ala -> position(interiorAlaX + grosor, segundoCuad, -segundoCuad);
+		ala -> normal(normales[25]);
 		ala -> position(interiorAlaX + grosor, -segundoCuad, -segundoCuad);
+		ala -> normal(normales[26]);
 		ala -> position(interiorAlaX + grosor, -segundoCuad, segundoCuad);
+		ala -> normal(normales[27]);
 		//INDICES
 		//Indices primer cuadrado
 		ala -> index(0);
@@ -892,7 +1126,7 @@ double vertices[][3] = {
 		Entity *cilindro =  mSceneMgr->createEntity("ObjetoPrueba1", "usb_cubomod01.mesh");
 		torus -> setMaterialName("lambert3");
 		player = mSceneMgr -> createSceneNode("player");
-		player -> showBoundingBox(true);
+		//player -> showBoundingBox(true);
 		player -> addChild(nodeAla);
 		player -> addChild(nodeAla2);
 		player -> attachObject(torus);
