@@ -15,7 +15,7 @@ float centroPasillos[2][2] = {
 
 // width, height
 float medidasPasillos[2][2] = {
-	{3500.f, 18560.f}, {3500.f, 52000.f}
+	{3500.f, 18560.f}, {52000.f, 3500.f}
 };
 
 Real ultimaFila = -23354;
