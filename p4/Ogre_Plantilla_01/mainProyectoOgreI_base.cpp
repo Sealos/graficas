@@ -22,15 +22,15 @@ float medidasPasillos[2][2] = {
 };
 
 float minMaxX[2][2] = {
-	{centroPasillos[0][0] - medidasPasillos[0][0]/2, centroPasillos[0][0] + medidasPasillos[0][0]/2},
+	{centroPasillos[0][0] - medidasPasillos[0][0] / 2, centroPasillos[0][0] + medidasPasillos[0][0] / 2},
 
-	{centroPasillos[1][0] - medidasPasillos[1][0]/2, centroPasillos[1][0] + medidasPasillos[1][0]/2},
+	{centroPasillos[1][0] - medidasPasillos[1][0] / 2, centroPasillos[1][0] + medidasPasillos[1][0] / 2},
 };
 
 float minMaxZ[2][2] = {
-	{centroPasillos[0][1] + medidasPasillos[0][1]/2, centroPasillos[0][1] - medidasPasillos[0][1]/2},
+	{centroPasillos[0][1] + medidasPasillos[0][1] / 2, centroPasillos[0][1] - medidasPasillos[0][1] / 2},
 
-	{centroPasillos[1][1] + medidasPasillos[1][1]/2, centroPasillos[1][1] - medidasPasillos[1][1]/2},
+	{centroPasillos[1][1] + medidasPasillos[1][1] / 2, centroPasillos[1][1] - medidasPasillos[1][1] / 2},
 };
 
 Real ultimaFila = -23354;
@@ -72,7 +72,7 @@ public:
 		Quaternion dir = src.getRotationTo(-playerDir);
 		laserNodo -> rotate(dir);
 		laserNodo -> translate(vec);
-		laserNodo -> scale(4.0,4.0,4.0);
+		laserNodo -> scale(4.0, 4.0, 4.0);
 		direccionP = playerDir;
 		velocidad = 25.f;
 	}
@@ -110,12 +110,30 @@ public:
 	}
 
 	bool frameStarted(const FrameEvent &evt) {
+
 		for (int i = 0; i < 8; ++i) {
+
+		Ogre::Vector3 direction = _playerNode->getPosition() - torretas[i]->getPosition();
+		direction.y = 0.0;
+		direction.normalise();
+
+		Ogre::Vector3 vUp = Ogre::Vector3(0, 1.0f, 0.0f);
+		Ogre::Vector3 vRight = vUp.crossProduct(direction);
+		vUp = direction.crossProduct(vRight);
+
+		Ogre::Matrix4 mBasis = Ogre::Matrix4(vRight.x,    vRight.y,    vRight.z,    0.0f,
+											 vUp.x,       vUp.y,       vUp.z,       0.0f,
+											 direction.x, direction.y, direction.z, 0.0f,
+											 0.0f,        0.0f,        0.0f,        1.0f);
+
+		Ogre::Quaternion mOrientDest = mBasis.extractQuaternion().Inverse();
+
+		
 			if (laserTimes[i].getMilliseconds() > tiempos[i]) {
-				Vector3 playerDirection = (posicionesT[i]+Vector3(0.0,alturaBarril,0.0)) - _playerNode -> getPosition();
+				Vector3 playerDirection = (posicionesT[i] + Vector3(0.0, alturaBarril, 0.0)) - _playerNode -> getPosition();
 				Real distance = playerDirection.normalise();
 				laserTimes[i].reset();
-				Laser *las = new Laser((posicionesT[i]+Vector3(0.0,alturaBarril,0.0)), -playerDirection);
+				Laser *las = new Laser((posicionesT[i] + Vector3(0.0, alturaBarril, 0.0)), -playerDirection);
 				mainSceneMgr -> getRootSceneNode() -> addChild(las -> laserNodo);
 				laseres.push_back(las);
 			}
@@ -151,10 +169,10 @@ public:
 inline SceneNode *crearTorreta(SceneManager *mSceneMgr, Vector3 vec, int i) {
 
 	//Cargar entidades
-	Ogre::Entity* base = mSceneMgr->createEntity("usb_cubomod01.mesh");
-	Ogre::Entity* cuerpo = mSceneMgr-> createEntity("usb_cilindro.mesh");
-	Ogre::Entity* tapa = mSceneMgr-> createEntity("usb_formacurva.mesh");
-	Ogre::Entity* barril = mSceneMgr -> createEntity("usb_cilindro02.mesh");
+	Ogre::Entity *base = mSceneMgr->createEntity("usb_cubomod01.mesh");
+	Ogre::Entity *cuerpo = mSceneMgr-> createEntity("usb_cilindro.mesh");
+	Ogre::Entity *tapa = mSceneMgr-> createEntity("usb_formacurva.mesh");
+	Ogre::Entity *barril = mSceneMgr -> createEntity("usb_cilindro02.mesh");
 
 	//Asignar Materiales
 	if (i > 4) {
@@ -169,8 +187,7 @@ inline SceneNode *crearTorreta(SceneManager *mSceneMgr, Vector3 vec, int i) {
 		cuerpo->setMaterial(mat);
 		tapa->setMaterial(mat);
 		barril->setMaterial(mat);
-	}
-	else {
+	} else {
 		base -> setMaterialName("Examples/Chrome");
 		cuerpo -> setMaterialName("Examples/Chrome");
 		tapa -> setMaterialName("Examples/Chrome");
@@ -181,7 +198,7 @@ inline SceneNode *crearTorreta(SceneManager *mSceneMgr, Vector3 vec, int i) {
 	Ogre::SceneNode *nodoBase = mSceneMgr->createSceneNode();
 	Ogre::SceneNode *nodoCuerpo = mSceneMgr->createSceneNode();
 	Ogre::SceneNode *nodoTapa = mSceneMgr->createSceneNode();
-	SceneNode* nodoBarril = mSceneMgr-> createSceneNode();
+	SceneNode *nodoBarril = mSceneMgr-> createSceneNode();
 	Ogre::SceneNode *nodo = mSceneMgr->createSceneNode();
 
 	nodoBase -> attachObject(base);
@@ -194,8 +211,8 @@ inline SceneNode *crearTorreta(SceneManager *mSceneMgr, Vector3 vec, int i) {
 	nodo -> addChild(nodoTapa);
 	nodo -> addChild(nodoBarril);
 
-	nodoBase -> scale(3.0,2.0,3.0);
-	nodoCuerpo -> scale(2.0,2.0,2.0);
+	nodoBase -> scale(3.0, 2.0, 3.0);
+	nodoCuerpo -> scale(2.0, 2.0, 2.0);
 	nodoBase -> _updateBounds();
 	nodoCuerpo -> _updateBounds();
 	nodoTapa -> _updateBounds();
@@ -205,24 +222,24 @@ inline SceneNode *crearTorreta(SceneManager *mSceneMgr, Vector3 vec, int i) {
 	float alturaBase = aab.getSize().y;
 	aab = nodoCuerpo -> _getWorldAABB();
 	float alturaCuerpo = aab.getSize().y;
-	aab =nodoCuerpo -> _getWorldAABB();
+	aab = nodoCuerpo -> _getWorldAABB();
 	float alturaTapa = aab.getSize().y;
 	float centroXTapa = aab.getHalfSize().x;
 	float centroZTapa = aab.getHalfSize().z;
 
 
-	nodoCuerpo -> translate(0.0,alturaBase,0.0);
-	nodoTapa -> translate(0.0,alturaCuerpo,0.0);
-	
-	Quaternion rotB(Degree(90),Vector3::UNIT_X);
+	nodoCuerpo -> translate(0.0, alturaBase, 0.0);
+	nodoTapa -> translate(0.0, alturaCuerpo, 0.0);
+
+	Quaternion rotB(Degree(90), Vector3::UNIT_X);
 	nodoBarril -> rotate(rotB);
-	nodoBarril -> translate(0.0,alturaTapa,centroZTapa*2);
-	alturaBarril = alturaTapa*15.0f;
-	nodoBarril -> scale(0.5,1.5,0.5);
-	
+	nodoBarril -> translate(0.0, alturaTapa, centroZTapa * 2);
+	alturaBarril = alturaTapa * 15.0f;
+	nodoBarril -> scale(0.5, 1.5, 0.5);
+
 
 	nodo -> translate(vec);
-	nodo -> scale (15.0,15.0,15.0);
+	nodo -> scale (15.0, 15.0, 15.0);
 
 	return nodo;
 }
@@ -259,6 +276,12 @@ inline SceneNode *crearHelice(SceneManager *mSceneMgr, Vector3 vec) {
 	nodo->attachObject(ent);
 	nodo->rotate(Quaternion(Degree(90.0), Vector3::UNIT_Z));
 	nodoRaiz->addChild(nodo);
+
+	MaterialPtr mat = ent->getSubEntity(0)->getMaterial();
+	mat->setAmbient(0.1, 0.1, 0.1);
+	mat->setDiffuse(Ogre::ColourValue(0.1, 0.1, 0.1, 0.2));
+	mat->setShininess(0.1);
+	mat->setSpecular(Ogre::ColourValue(0.1, 0.1, 0.1, 0.2));
 
 	nodoRaiz->scale(400, 400, 400);
 	nodoRaiz->translate(vec);
@@ -500,23 +523,23 @@ public:
 		nodeEscenario01->attachObject(entEscenario01);
 
 
-		//ManualObject 
+		//ManualObject
 
-		ManualObject* ala = mSceneMgr -> createManualObject("manual");
+		ManualObject *ala = mSceneMgr -> createManualObject("manual");
 		ala -> begin("BaseWhiteNoLighting", RenderOperation::OT_POINT_LIST);
 
 
 		ala-> end();
 
-		SceneNode* nodeAla = mSceneMgr -> createSceneNode();
+		SceneNode *nodeAla = mSceneMgr -> createSceneNode();
 		nodeAla -> attachObject(ala);
 		mSceneMgr -> getRootSceneNode() -> addChild(nodeAla);
 
 		//Luces
-		Light* light1 = mSceneMgr -> createLight("Light1");
+		Light *light1 = mSceneMgr -> createLight("Light1");
 		light1->setType(Light::LT_POINT);
-		light1 -> setPosition(0,0,200);
-		light1-> setDiffuseColour(0.8f,0.8f,0.8f);
+		light1 -> setPosition(0, 0, 200);
+		light1-> setDiffuseColour(0.8f, 0.8f, 0.8f);
 
 		Entity *torus = mSceneMgr->createEntity("ObjetoPrueba", "usb_torus.mesh");
 		Entity *cilindro =  mSceneMgr->createEntity("ObjetoPrueba1", "usb_cubomod01.mesh");
@@ -527,10 +550,8 @@ public:
 		player -> attachObject(torus);
 		player -> attachObject(cilindro);
 
-		player -> scale(3.0,3.0,3.0);
+		player -> scale(3.0, 3.0, 3.0);
 
-		//Ogre::SceneNode* test = crearTorreta(mSceneMgr,Vector3(0.0,0.0,0.0));
-		//mSceneMgr -> getRootSceneNode() -> addChild(test);
 
 		player -> scale(3.0, 3.0, 3.0);
 
@@ -548,12 +569,12 @@ public:
 		SceneNode *helice = crearHelice(mSceneMgr, Vector3(helicesLoc[0][0], helicesLoc[0][1], helicesLoc[0][2]));
 		helice->rotate(Quaternion(Degree(90), Vector3::UNIT_Y));
 		helices[0] = helice;
-		
+
 		mSceneMgr->getRootSceneNode()->addChild(helice);
 		helice = crearHelice(mSceneMgr, Vector3(helicesLoc[1][0], helicesLoc[1][1], helicesLoc[1][2]));
 		helice->rotate(Quaternion(Degree(90), Vector3::UNIT_Y));
 		helices[1] = helice;
-		
+
 		mSceneMgr->getRootSceneNode()->addChild(helice);
 		mSceneMgr->getRootSceneNode()->addChild(padre);
 	}
