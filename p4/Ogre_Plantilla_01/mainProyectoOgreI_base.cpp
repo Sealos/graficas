@@ -38,14 +38,14 @@ Real penultimaFila = -18900;
 Real altura = -332;
 
 Vector3 posicionesT[8] = {
-	Vector3(-1615, altura, -8573),
 	Vector3(1615, altura, -15240),
 	Vector3(8135, altura, ultimaFila),
-	Vector3(15400, altura, penultimaFila),
 	Vector3(23894, altura, ultimaFila),
 	Vector3(-10000, altura, ultimaFila),
+	Vector3(-23027, altura, ultimaFila),
 	Vector3(-16939, altura, penultimaFila),
-	Vector3(-23027, altura, ultimaFila)
+	Vector3(15400, altura, penultimaFila),
+	Vector3(-1615, altura, -8573),
 };
 
 SceneManager *mainSceneMgr;
@@ -148,18 +148,47 @@ public:
 	}
 };
 
-inline SceneNode *crearTorreta(SceneManager *mSceneMgr, Vector3 vec) {
+inline SceneNode *crearTorreta(SceneManager *mSceneMgr, Vector3 vec, int i) {
 
 	//Cargar entidades
 	Ogre::Entity* base = mSceneMgr->createEntity("usb_cubomod01.mesh");
 	Ogre::Entity* cuerpo = mSceneMgr-> createEntity("usb_cilindro.mesh");
 	Ogre::Entity* tapa = mSceneMgr-> createEntity("usb_formacurva.mesh");
 	Ogre::Entity* barril = mSceneMgr -> createEntity("usb_cilindro02.mesh");
+
 	//Asignar Materiales
-	base -> setMaterialName("Examples/Chrome");
-	cuerpo -> setMaterialName("Examples/Chrome");
-	tapa -> setMaterialName("Examples/Chrome");
-	barril -> setMaterialName("Examples/Chrome");
+	if (i > 4) {
+		base -> setMaterialName("Examples/BeachStones");
+		cuerpo -> setMaterialName("Examples/BeachStones");
+		tapa -> setMaterialName("Examples/BeachStones");
+		barril -> setMaterialName("Examples/BeachStones");
+		base->getSubEntity(0)->getMaterial()->setAmbient(0.3, 0.3, 0.3);
+		cuerpo->getSubEntity(0)->getMaterial()->setAmbient(0.3, 0.3, 0.3);
+		tapa->getSubEntity(0)->getMaterial()->setAmbient(0.3, 0.3, 0.3);
+		barril->getSubEntity(0)->getMaterial()->setAmbient(0.3, 0.3, 0.3);
+
+		base->getSubEntity(0)->getMaterial()->setDiffuse(Ogre::ColourValue(0.2, 0.2, 0.2, 1.0));
+		cuerpo->getSubEntity(0)->getMaterial()->setDiffuse(Ogre::ColourValue(0.2, 0.2, 0.2, 1.0));
+		tapa->getSubEntity(0)->getMaterial()->setDiffuse(Ogre::ColourValue(0.2, 0.2, 0.2, 1.0));
+		barril->getSubEntity(0)->getMaterial()->setDiffuse(Ogre::ColourValue(0.2, 0.2, 0.2, 1.0));
+
+		base->getSubEntity(0)->getMaterial()->setShininess(0.4);
+		cuerpo->getSubEntity(0)->getMaterial()->setShininess(0.4);
+		tapa->getSubEntity(0)->getMaterial()->setShininess(0.4);
+		barril->getSubEntity(0)->getMaterial()->setShininess(0.4);
+
+		base->getSubEntity(0)->getMaterial()->setSpecular(Ogre::ColourValue(0.2, 0.2, 0.2, 1.0));
+		cuerpo->getSubEntity(0)->getMaterial()->setSpecular(Ogre::ColourValue(0.2, 0.2, 0.2, 1.0));
+		tapa->getSubEntity(0)->getMaterial()->setSpecular(Ogre::ColourValue(0.2, 0.2, 0.2, 1.0));
+		barril->getSubEntity(0)->getMaterial()->setSpecular(Ogre::ColourValue(0.2, 0.2, 0.2, 1.0));
+	}
+	else {
+		base -> setMaterialName("Examples/Chrome");
+		cuerpo -> setMaterialName("Examples/Chrome");
+		tapa -> setMaterialName("Examples/Chrome");
+		barril -> setMaterialName("Examples/Chrome");
+	}
+
 	//Crear escenas
 	Ogre::SceneNode *nodoBase = mSceneMgr->createSceneNode();
 	Ogre::SceneNode *nodoCuerpo = mSceneMgr->createSceneNode();
@@ -354,9 +383,9 @@ public:
 				strafePlayer = strafePlayer * Quaternion(Degree(-(rotationAmount * rotationSpeed * evt.timeSinceLastFrame)), Vector3::UNIT_Z);
 
 		} else {
-			if (_playerNode->getOrientation().getRoll().valueDegrees() > 0.1f)
+			if (_playerNode->getOrientation().getRoll().valueDegrees() > 0.2f)
 				sign = -1;
-			else if (_playerNode->getOrientation().getRoll().valueDegrees() < -0.1f)
+			else if (_playerNode->getOrientation().getRoll().valueDegrees() < -0.2f)
 				sign = 1;
 			else
 				sign = 0;
@@ -389,10 +418,10 @@ public:
 		if (deltaY < 0.0f && newBottom < bordes[1])
 			translatePlayer.y = 0.0;
 
-		if (newPosition.z < -18700)
-			pasillo = 1;
-		else
+		if (newPosition.z > -18700 && newPosition.x > minMaxX[0][0] && newPosition.x < minMaxX[0][1])
 			pasillo = 0;
+		else
+			pasillo = 1;
 
 		//std::cout << pasillo << std::endl;
 
@@ -475,12 +504,8 @@ public:
 	void createScene() {
 		cameraNode = mSceneMgr->createSceneNode("CameraNodo");
 		cameraNode->attachObject(mCamera);
-		mSceneMgr->setAmbientLight(ColourValue(1.0, 1.0, 1.0));
+		mSceneMgr->setAmbientLight(ColourValue(1, 1, 1));
 		mSceneMgr->setShadowTechnique(SHADOWTYPE_STENCIL_ADDITIVE);
-		Entity *ent01 = mSceneMgr->createEntity("MyEntity1", "ejes01.mesh");
-		SceneNode *node01 = mSceneMgr->createSceneNode("Node01");
-		mSceneMgr->getRootSceneNode()->addChild(node01);
-		node01->attachObject(ent01);
 		Entity *entEscenario01 = mSceneMgr->createEntity("EscenarioBase01", "proyectoOgreI.mesh");
 		SceneNode *nodeEscenario01 = mSceneMgr->createSceneNode("NodeMesh01");
 		mSceneMgr->getRootSceneNode()->addChild(nodeEscenario01);
@@ -522,10 +547,9 @@ public:
 		player -> scale(3.0, 3.0, 3.0);
 
 		for (int i = 0 ; i < 8 ; ++i) {
-			torretas[i] = crearTorreta(mSceneMgr, posicionesT[i]);
+			torretas[i] = crearTorreta(mSceneMgr, posicionesT[i], i);
 			mSceneMgr -> getRootSceneNode() -> addChild(torretas[i]);
 		}
-
 
 		padre = mSceneMgr -> createSceneNode();
 		padre -> addChild(cameraNode);
