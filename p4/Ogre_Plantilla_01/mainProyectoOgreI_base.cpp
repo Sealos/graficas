@@ -82,17 +82,11 @@ public:
 
 	void move(float timeDiff) {
 		aliveTime += timeDiff;
-		laserNodo -> translate(direccionP * velocidad);
+		if (laserNodo)
+			laserNodo -> translate(direccionP * velocidad);
 	}
 
 	~Laser() {
-		mainSceneMgr->destroySceneNode(laserNodo);
-		if (laserNodo) {
-			delete laserNodo;
-		}
-		if (laserEnt) {
-			delete laserEnt;
-		}
 	}
 
 };
@@ -145,9 +139,9 @@ public:
 		}
 
 		for (vector<Laser *>::iterator it = laseres.begin(); it != laseres.end();) {
-			if ((*it)->aliveTime > 20){
+			if ((*it)->aliveTime > 10){
+				(*it)->laserNodo->setScale(0.0, 0.0, 0.0);
 				it = laseres.erase(it);
-				delete (*it);
 			}
 			else {
 				(*it)-> move(evt.timeSinceLastFrame);
