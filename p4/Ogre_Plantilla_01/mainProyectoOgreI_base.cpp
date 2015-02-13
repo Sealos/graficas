@@ -9,13 +9,14 @@ float helicesLoc[2][3] = {
 
 float bordes[2] = {1368, -1229};
 
+// x, z
 float centroPasillos[2][2] = {
 	{0.f, -9280.f}, {0.f, -20560.f}
 };
 
 // width, height
 float medidasPasillos[2][2] = {
-	{3500.f, 18560.f}, {52000.f, 3500.f}
+	{3500.f, 19500.f}, {52000.f, 3500.f}
 };
 
 Real ultimaFila = -23354;
@@ -378,11 +379,11 @@ public:
 		if (deltaY < 0.0f && newBottom < bordes[1])
 			translatePlayer.y = 0.0;
 
-		bool isInFirstCorridor = pointCollisionWithRectangle(leftFar.x, leftFar.z, centroPasillos[0][0], centroPasillos[0][0], medidasPasillos[0][0], medidasPasillos[0][1]);
-		isInFirstCorridor &= pointCollisionWithRectangle(rightNear.x, rightNear.z, centroPasillos[0][0], centroPasillos[0][0], medidasPasillos[0][0], medidasPasillos[0][1]);
+		bool isInFirstCorridor = pointCollisionWithRectangle(leftFar.x, leftFar.z, centroPasillos[0][0], centroPasillos[0][1], medidasPasillos[0][0], medidasPasillos[0][1]);
+		isInFirstCorridor &= pointCollisionWithRectangle(rightNear.x, rightNear.z, centroPasillos[0][0], centroPasillos[0][1], medidasPasillos[0][0], medidasPasillos[0][1]);
 
-		bool isInSecondCorridor = pointCollisionWithRectangle(leftFar.x, leftFar.z, centroPasillos[1][0], centroPasillos[1][0], medidasPasillos[1][0], medidasPasillos[1][1]);
-		isInSecondCorridor &= pointCollisionWithRectangle(rightNear.x, rightNear.z, centroPasillos[1][0], centroPasillos[1][0], medidasPasillos[1][0], medidasPasillos[1][1]);
+		bool isInSecondCorridor = pointCollisionWithRectangle(leftFar.x, leftFar.z, centroPasillos[1][0], centroPasillos[1][1], medidasPasillos[1][0], medidasPasillos[1][1]);
+		isInSecondCorridor &= pointCollisionWithRectangle(rightNear.x, rightNear.z, centroPasillos[1][0], centroPasillos[1][1], medidasPasillos[1][0], medidasPasillos[1][1]);
 
 		std::cout << isInFirstCorridor << " | | " << isInSecondCorridor << std::endl;
 
