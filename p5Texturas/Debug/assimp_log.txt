@@ -1,0 +1,2 @@
+Info,  T7716: Load escenario.obj
+Error, T7716: Unable to open file "escenario.obj".

@@ -1,0 +1,13 @@
+Info,  T9476: Load escenario.obj
+Info,  T9476: Found a matching importer for this file format
+Info,  T9476: Import root directory is '.\'
+Info,  T9476: Entering post processing pipeline
+Error, T9476: Failed to triangulate polygon (no ear found). Probably not a simple polygon?
+Skipping one or more lines with the same contents
+Info,  T9476: TriangulateProcess finished. All polygons have been triangulated.
+Info,  T9476: Points: 0, Lines: 0, Triangles: 3, Polygons: 0 (Meshes, X = removed)
+Info,  T9476: GenVertexNormalsProcess finished. Vertex normals have been calculated
+Info,  T9476: CalcTangentsProcess finished. Tangents have been calculated
+Info,  T9476: JoinVerticesProcess finished | Verts in: 123454 out: 40530 | ~67.2%
+Info,  T9476: Cache relevant are 3 meshes (59712 faces). Average output ACMR is 0.864784
+Info,  T9476: Leaving post processing pipeline
