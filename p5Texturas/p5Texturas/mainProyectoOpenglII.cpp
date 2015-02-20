@@ -300,6 +300,17 @@ void render(){
 	gluLookAt (0, 80, 250, 0.0, 15.0, 0.0, 0.0, 1.0, 0.0);
 
 	
+	//Luz
+	GLfloat light_position[] = {0.0,200.0,0.0,1.0};
+	GLfloat light_direction[] = {0.0,-1.0,0.0};
+	GLfloat cutoff = 50.f;
+	GLfloat exponent = 25.f;
+	glLightf(GL_LIGHT0, GL_SPOT_CUTOFF,cutoff);
+	glLightf(GL_LIGHT0, GL_SPOT_EXPONENT,exponent);
+	glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION,light_direction);
+	glLightfv(GL_LIGHT0, GL_POSITION,light_position);
+
+
 
 	//Suaviza las lineas
 	glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -403,7 +414,6 @@ int loadasset (const char* path)
 			scene_center.z = (scene_min.z + scene_max.z) / 2.0f;
 			return 0;
 		}
-
 
 	return 1;
 }
