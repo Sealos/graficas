@@ -31,28 +31,25 @@ using namespace std;
 #define DEF_floorGridXSteps	10.0
 #define DEF_floorGridZSteps	10.0
 
-float lightPos[3] = {0, 200, 0};
-float pointsTo[3] = {0, -1, 0};
-float cutOff = 50.f;
-float exponent = 25.f;
+GLfloat lightPos[4] = {0.f, 200.f, 0.f, 1.f};
+GLfloat lightLookAt[3] = {0.f, -1.f, 0.f};
+GLfloat cutOff = 50.f;
+GLfloat exponent = 25.f;
 
-float rabbitColor[3] = {1.0f, 1.0f, 1.0f};
+GLfloat rabbitColor[3] = {1.0f, 1.0f, 1.0f};
 
-float ambientScale = 1.f;
+GLfloat ambientScale = 1.f;
 
 bool reflection = true;
 bool ilumination = true;
 
-float lightColor[3] = {1.0f, 1.0f, 1.0f};
-float lightIntensity = 1.f;
+GLfloat lightColor[3] = {1.0f, 1.0f, 1.0f};
+GLfloat lightIntensity = 1.f;
 
 #include "glm.h"
 
 
 void changeViewport(int w, int h) {
-	
-	float aspectratio;
-
 	if (h==0)
 		h=1;
 
@@ -65,23 +62,37 @@ void changeViewport(int w, int h) {
 }
 
 void init(){
-
-
-	
    glEnable(GL_LIGHTING);
    glEnable(GL_LIGHT0);
    glEnable(GL_DEPTH_TEST);
-   
-
 }
 
 
 void cargar_materiales(int idx) {
+	
+	unsigned char* image1 = NULL;
+	unsigned char* image2 = NULL;
+	unsigned char* image3 = NULL;
+	int iheight, iwidth;
+	static GLuint texName;
 
+	glClearColor (0.0, 0.0, 0.0, 0.0);
+	glShadeModel(GL_SMOOTH);
+	glEnable(GL_DEPTH_TEST);
+
+
+	glGenTextures(1, &texName);
+	glBindTexture(GL_TEXTURE_2D, texName);
 
 	// Material Piso
 	if (idx == 0){	
-		
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+		image1 = glmReadPPM("texAO_plano.ppm", &iwidth, &iheight);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, iwidth, iheight, 0, GL_RGB, GL_UNSIGNED_BYTE, image1);
 	}
 
 	// Material Columna
@@ -96,9 +107,6 @@ void cargar_materiales(int idx) {
 		
 		
 	}
-
-
-	
 
 }
 
@@ -186,12 +194,12 @@ void Keyboard(unsigned char key, int x, int y)
 
 	// Ambiental of each model
 	case 'z':
-		ambientScale += 0.05;
+		ambientScale += 0.05f;
 		if (ambientScale > 1.f)
 			ambientScale = 1.f;
 		break;
 	case 'x':
-		ambientScale -= 0.05;
+		ambientScale -= 0.05f;
 		if (ambientScale < 0.f)
 			ambientScale = 0.f;
 		break;
@@ -301,16 +309,10 @@ void render(){
 
 	
 	//Luz
-	GLfloat light_position[] = {0.0,200.0,0.0,1.0};
-	GLfloat light_direction[] = {0.0,-1.0,0.0};
-	GLfloat cutoff = 50.f;
-	GLfloat exponent = 25.f;
-	glLightf(GL_LIGHT0, GL_SPOT_CUTOFF,cutoff);
-	glLightf(GL_LIGHT0, GL_SPOT_EXPONENT,exponent);
-	glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION,light_direction);
-	glLightfv(GL_LIGHT0, GL_POSITION,light_position);
-
-
+	glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, cutOff);
+	glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, exponent);
+	glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, lightLookAt);
+	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
 	//Suaviza las lineas
 	glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
