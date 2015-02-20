@@ -3,9 +3,6 @@
 *.lo
 *.o
 *.obj
-*.sdf
-bin/
-obj/
 
 # Precompiled Headers
 *.gch
@@ -29,3 +26,10 @@ obj/
 *.exe
 *.out
 *.app
+*.tlog
+*.pdb
+*.ilk
+*.idb
+*.log
+
+*.ppm

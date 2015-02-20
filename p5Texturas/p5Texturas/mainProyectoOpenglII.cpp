@@ -66,60 +66,69 @@ void changeViewport(int w, int h) {
 }
 
 void init(){
-   glEnable(GL_LIGHTING);
-   glEnable(GL_LIGHT0);
-   glEnable(GL_DEPTH_TEST);
-}
 
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_TEXTURE_2D);
 
-void cargar_materiales(int idx) {
-
-	glClearColor (0.0, 0.0, 0.0, 0.0);
+	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_DEPTH_TEST);
 
+	glGenTextures(1, &texName[0]);
+	glBindTexture(GL_TEXTURE_2D, texName[0]);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	images[0] = glmReadPPM("texAO_plano.ppm", &iwidth[0], &iheight[0]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, iwidth[0], iheight[0], 0, GL_RGB, GL_UNSIGNED_BYTE, images[0]);
+
+	glGenTextures(1, &texName[2]);
+	glBindTexture(GL_TEXTURE_2D, texName[2]);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	images[2] = glmReadPPM("texAO_bunny.ppm", &iwidth[2], &iheight[2]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, iwidth[2], iheight[2], 0, GL_RGB, GL_UNSIGNED_BYTE, images[2]);
+
+
+	glGenTextures(1, &texName[1]);
+	glBindTexture(GL_TEXTURE_2D, texName[1]);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	images[1] = glmReadPPM("texAO_columna.ppm", &iwidth[1], &iheight[1]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, iwidth[1], iheight[1], 0, GL_RGB, GL_UNSIGNED_BYTE, images[1]);
+
+}
+
+void cargar_materiales(int idx) {
+
+   
 	// Material Piso
 	if (idx == 0){
-		glGenTextures(1, &texName[0]);
-		glBindTexture(GL_TEXTURE_2D, texName[0]);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-		images[0] = glmReadPPM("texAO_plano.ppm", &iwidth[0], &iheight[0]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, iwidth[0], iheight[0], 0, GL_RGB, GL_UNSIGNED_BYTE, images[0]);
 	}
 
 	// Material Columna
 	if (idx == 1){
-		glGenTextures(1, &texName[1]);
-		glBindTexture(GL_TEXTURE_2D, texName[1]);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-		images[1] = glmReadPPM("texAO_columna.ppm", &iwidth[1], &iheight[1]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, iwidth[1], iheight[1], 0, GL_RGB, GL_UNSIGNED_BYTE, images[1]);
 	}
 
 	// Material Conejo
 	if (idx == 2){
-		glGenTextures(1, &texName[2]);
-		glBindTexture(GL_TEXTURE_2D, texName[2]);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-		images[2] = glmReadPPM("texAO_bunny.ppm", &iwidth[2], &iheight[2]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, iwidth[2], iheight[2], 0, GL_RGB, GL_UNSIGNED_BYTE, images[2]);
 	}
-
 }
 
 void recursive_render (const aiScene *sc, const aiNode* nd)
@@ -322,22 +331,6 @@ void render(){
 	glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, exponent);
 	glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, lightLookAt);
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glEnable(GL_TEXTURE_2D);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-   
-	glBindTexture(GL_TEXTURE_2D, texName[0]);
-
-	glBindTexture(GL_TEXTURE_2D, texName[1]);
-
-	glBindTexture(GL_TEXTURE_2D, texName[2]);
-
-	glDisable(GL_TEXTURE_2D);
 
 	//Suaviza las lineas
 	glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
