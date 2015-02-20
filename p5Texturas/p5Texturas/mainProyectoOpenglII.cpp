@@ -581,71 +581,71 @@ void render() {
 
 	//glColor3f(0.0f, 0.0f, 0.0f);
 
-	// Front
+	// Front - Neg Z
+	glBindTexture(GL_TEXTURE_2D, skybox_tex[5]);
+	glBegin(GL_QUADS);
+	{
+		glVertex3f(+1.00f, -1.00f, -1.00f);
+		glVertex3f(+1.00f, +1.00f, -1.00f);
+		glVertex3f(-1.00f, +1.00f, -1.00f);
+		glVertex3f(-1.00f, -1.00f, -1.00f);
+	} 
+	glEnd();
+
+	// Left - Neg X
+	glBindTexture(GL_TEXTURE_2D, skybox_tex[1]);
+	glBegin(GL_QUADS);
+	{
+		glVertex3f(-1.00f, -1.00f, -1.00f);
+		glVertex3f(-1.00f, +1.00f, -1.00f);
+		glVertex3f(-1.00f, +1.00f, +1.00f);
+		glVertex3f(-1.00f, -1.00f, +1.00f);
+	}
+	glEnd();
+
+	// Right - Pos X
 	glBindTexture(GL_TEXTURE_2D, skybox_tex[0]);
 	glBegin(GL_QUADS);
 	{
-		glVertex3f(10.00f, -10.00f, -10.00f);
-		glVertex3f(-10.00f, -10.00f, -10.00f);
-		glVertex3f(-10.00f,  10.00f, -10.00f);
-		glVertex3f(10.00f,  10.00f, -10.00f);
+		glVertex3f(+1.00f, -1.00f, +1.00f);
+		glVertex3f(+1.00f, -1.00f, -1.00f);
+		glVertex3f(+1.00f, +1.00f, -1.00f);
+		glVertex3f(+1.00f, +1.00f, +1.00f);
 	}
 	glEnd();
 
 	// Back -- Cant see
-	glBindTexture(GL_TEXTURE_2D, skybox_tex[1]);
+	/*glBindTexture(GL_TEXTURE_2D, skybox_tex[1]);
 	glBegin(GL_QUADS);
 	{
-		glVertex3f(-10.00f, -10.00f,  10.00f);
-		glVertex3f(10.00f, -10.00f,  10.00f);
-		glVertex3f(10.00f,  10.00f,  10.00f);
-		glVertex3f(-10.00f,  10.00f,  10.00f);
+		glVertex3f(-1.00f, -1.00f,  1.00f);
+		glVertex3f(1.00f, -1.00f,  1.00f);
+		glVertex3f(1.00f,  1.00f,  1.00f);
+		glVertex3f(-1.00f,  1.00f,  1.00f);
 	}
-	glEnd();
+	glEnd();*/
 
-	// Left
-	glBindTexture(GL_TEXTURE_2D, skybox_tex[2]);
+	//Top -- cant see
+	/*glBindTexture(GL_TEXTURE_2D, skybox_tex[4]);
 	glBegin(GL_QUADS);
 	{
-		glVertex3f(10.00f, -10.00f,  10.00f);
-		glVertex3f(10.00f, -10.00f, -10.00f);
-		glVertex3f(10.00f,  10.00f, -10.00f);
-		glVertex3f(10.00f,  10.00f,  10.00f);
+		glVertex3f(-1.00f,  1.00f, -1.00f);
+		glVertex3f(-1.00f,  1.00f,  1.00f);
+		glVertex3f(1.00f,  1.00f,  1.00f);
+		glVertex3f(1.00f,  1.00f, -1.00f);
 	}
-	glEnd();
+	glEnd();*/
 
-	// Right
-	glBindTexture(GL_TEXTURE_2D, skybox_tex[3]);
+	// Bot -- cant see
+	/*glBindTexture(GL_TEXTURE_2D, skybox_tex[5]);
 	glBegin(GL_QUADS);
 	{
-		glVertex3f(-10.00f, -10.00f, -10.00f);
-		glVertex3f(-10.00f, -10.00f,  10.00f);
-		glVertex3f(-10.00f,  10.00f,  10.00f);
-		glVertex3f(-10.00f,  10.00f, -10.00f);
+		glVertex3f(-1.00f, -1.00f, -1.00f);
+		glVertex3f(-1.00f, -1.00f,  1.00f);
+		glVertex3f(1.00f, -1.00f,  1.00f);
+		glVertex3f(1.00f, -1.00f, -1.00f);
 	}
-	glEnd();
-
-	//Top
-	glBindTexture(GL_TEXTURE_2D, skybox_tex[4]);
-	glBegin(GL_QUADS);
-	{
-		glVertex3f(-10.00f,  10.00f, -10.00f);
-		glVertex3f(-10.00f,  10.00f,  10.00f);
-		glVertex3f(10.00f,  10.00f,  10.00f);
-		glVertex3f(10.00f,  10.00f, -10.00f);
-	}
-	glEnd();
-
-	// Bot
-	glBindTexture(GL_TEXTURE_2D, skybox_tex[5]);
-	glBegin(GL_QUADS);
-	{
-		glVertex3f(-10.00f, -10.00f, -10.00f);
-		glVertex3f(-10.00f, -10.00f,  10.00f);
-		glVertex3f(10.00f, -10.00f,  10.00f);
-		glVertex3f(10.00f, -10.00f, -10.00f);
-	}
-	glEnd();
+	glEnd();*/
 
 	glDisable(GL_TEXTURE_2D);
 	glEnable(GL_LIGHTING);
