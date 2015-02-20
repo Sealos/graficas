@@ -47,15 +47,13 @@ GLfloat rabbitAmbiental[4] = {1.0f, 0.8f, 0.6f, 1.0f};
 GLfloat rabbitSpecular[4] = {1.0f, 0.8f, 0.6f, 1.0f};
 GLfloat rabbitDiffuse[4] = {1.0f, 0.8f, 0.6f, 1.0f};
 
-GLfloat whiteColor[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-
-GLfloat ambientScale = 1.f;
+GLfloat ambientScalar = 1.f;
 
 bool reflection = true;
 bool ilumination = true;
 
-GLfloat lightColor[3] = {1.0f, 1.0f, 1.0f};
-GLfloat lightIntensity = 1.f;
+GLfloat lightColor[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+GLfloat diffuseScalar = 1.f;
 
 unsigned char* images[3] = {nullptr, nullptr, nullptr};
 int iheight[3], iwidth[3];
@@ -239,30 +237,30 @@ void Keyboard(unsigned char key, int x, int y)
 
 	// Ambiental of each model
 	case 'z':
-		ambientScale += 0.05f;
-		if (ambientScale > 1.f)
-			ambientScale = 1.f;
+		ambientScalar += 0.05f;
+		if (ambientScalar > 1.f)
+			ambientScalar = 1.f;
 		
-		ambiental[0] = ambientScale;
-		ambiental[1] = ambientScale;
-		ambiental[2] = ambientScale;
+		ambiental[0] = ambientScalar;
+		ambiental[1] = ambientScalar;
+		ambiental[2] = ambientScalar;
 
-		rabbitAmbiental[0] = ambientScale * rabbitColor[0];
-		rabbitAmbiental[1] = ambientScale * rabbitColor[1];
-		rabbitAmbiental[2] = ambientScale * rabbitColor[2];
+		rabbitAmbiental[0] = ambientScalar * rabbitColor[0];
+		rabbitAmbiental[1] = ambientScalar * rabbitColor[1];
+		rabbitAmbiental[2] = ambientScalar * rabbitColor[2];
 
 		break;
 	case 'x':
-		ambientScale -= 0.05f;
-		if (ambientScale < 0.f)
-			ambientScale = 0.f;
-		ambiental[0] = ambientScale;
-		ambiental[1] = ambientScale;
-		ambiental[2] = ambientScale;
+		ambientScalar -= 0.05f;
+		if (ambientScalar < 0.f)
+			ambientScalar = 0.f;
+		ambiental[0] = ambientScalar;
+		ambiental[1] = ambientScalar;
+		ambiental[2] = ambientScalar;
 
-		rabbitAmbiental[0] = ambientScale * rabbitColor[0];
-		rabbitAmbiental[1] = ambientScale * rabbitColor[1];
-		rabbitAmbiental[2] = ambientScale * rabbitColor[2];
+		rabbitAmbiental[0] = ambientScalar * rabbitColor[0];
+		rabbitAmbiental[1] = ambientScalar * rabbitColor[1];
+		rabbitAmbiental[2] = ambientScalar * rabbitColor[2];
 		break;
 
 	// X + -
@@ -348,29 +346,29 @@ void Keyboard(unsigned char key, int x, int y)
 
 	// Light 
 	case 'b':
-		lightIntensity += 0.05f;
-		if (lightIntensity > 1.f)
-			lightIntensity = 1.f;
+		diffuseScalar += 0.05f;
+		if (diffuseScalar > 1.f)
+			diffuseScalar = 1.f;
 
-		diffuse[0] = lightIntensity;
-		diffuse[1] = lightIntensity;
-		diffuse[2] = lightIntensity;
+		diffuse[0] = diffuseScalar;
+		diffuse[1] = diffuseScalar;
+		diffuse[2] = diffuseScalar;
 
-		rabbitDiffuse[0] = diffuse[0] * lightIntensity * rabbitColor[0];
-		rabbitDiffuse[1] = diffuse[1] * lightIntensity * rabbitColor[1];
-		rabbitDiffuse[2] = diffuse[2] * lightIntensity * rabbitColor[2];
+		rabbitDiffuse[0] = diffuse[0] * diffuseScalar * rabbitColor[0];
+		rabbitDiffuse[1] = diffuse[1] * diffuseScalar * rabbitColor[1];
+		rabbitDiffuse[2] = diffuse[2] * diffuseScalar * rabbitColor[2];
 		break;
 	case 'n':
-		lightIntensity -= 0.05f;
-		if (lightIntensity < 0.0f)
-			lightIntensity = 0.0f;
-		diffuse[0] = lightIntensity;
-		diffuse[1] = lightIntensity;
-		diffuse[2] = lightIntensity;
+		diffuseScalar -= 0.05f;
+		if (diffuseScalar < 0.0f)
+			diffuseScalar = 0.0f;
+		diffuse[0] = diffuseScalar;
+		diffuse[1] = diffuseScalar;
+		diffuse[2] = diffuseScalar;
 
-		rabbitDiffuse[0] = diffuse[0] * lightIntensity * rabbitColor[0];
-		rabbitDiffuse[1] = diffuse[1] * lightIntensity * rabbitColor[1];
-		rabbitDiffuse[2] = diffuse[2] * lightIntensity * rabbitColor[2];
+		rabbitDiffuse[0] = diffuse[0] * diffuseScalar * rabbitColor[0];
+		rabbitDiffuse[1] = diffuse[1] * diffuseScalar * rabbitColor[1];
+		rabbitDiffuse[2] = diffuse[2] * diffuseScalar * rabbitColor[2];
 		break;
 
 	// Light color
@@ -560,16 +558,11 @@ int main (int argc, char** argv) {
 		return -1;
 	}
 
-
-
-
 	init ();
 
 	glutReshapeFunc(changeViewport);
 	glutDisplayFunc(render);
 	glutKeyboardFunc (Keyboard);
-	
-
 
 	glutMainLoop();
 	return 0;
