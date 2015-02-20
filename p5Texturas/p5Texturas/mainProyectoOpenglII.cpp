@@ -317,12 +317,24 @@ void Keyboard(unsigned char key, int x, int y)
 		lightColor[2] = 1.f;
 		break;
 	case '2':
+		lightColor[0] = 1.f;
+		lightColor[1] = 0.f;
+		lightColor[2] = 0.f;
 		break;
 	case '3':
+		lightColor[0] = 0.f;
+		lightColor[1] = 1.f;
+		lightColor[2] = 0.f;
 		break;
 	case '4':
+		lightColor[0] = 0.f;
+		lightColor[1] = 0.f;
+		lightColor[2] = 1.f;
 		break;
 	case '5':
+		lightColor[0] = 1.f;
+		lightColor[1] = 0.f;
+		lightColor[2] = 1.f;
 		break;
   }
 
@@ -342,6 +354,9 @@ void render(){
 	glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, exponent);
 	glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, lightLookAt);
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, lightColor);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, lightColor);
 
 	//Suaviza las lineas
 	glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
