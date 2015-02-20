@@ -19,7 +19,7 @@ const aiScene* scene03 = NULL;
 GLuint scene_list = 0;
 aiVector3D scene_min, scene_max, scene_center;
 
-
+int teclas = 0;
 
 #define aisgl_min(x,y) (x<y?x:y)
 #define aisgl_max(x,y) (y>x?y:x)
@@ -39,11 +39,11 @@ float shininess = 75.0f;
 
 GLfloat rabbitColor[4] = {1.0f, 0.8f, 0.6f, 1.0f};
 
-GLfloat ambiental[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+GLfloat ambiental[4] = {0.3f, 0.3f, 0.3f, 1.0f};
 GLfloat specular[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 GLfloat diffuse[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 
-GLfloat rabbitAmbiental[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+GLfloat rabbitAmbiental[4] = {0.3f, 0.3f, 0.3f, 1.0f};
 GLfloat rabbitSpecular[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 GLfloat rabbitDiffuse[4] = {1.0f, 0.8f, 0.6f, 1.0f};
 
@@ -227,10 +227,10 @@ void init(){
 	//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
  //   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 
-	glDisable(GL_TEXTURE_GEN_S);
+	/*glDisable(GL_TEXTURE_GEN_S);
 	glDisable(GL_TEXTURE_GEN_T);
 	glDisable(GL_TEXTURE_GEN_R);
-	glDisable(GL_TEXTURE_CUBE_MAP);
+	glDisable(GL_TEXTURE_CUBE_MAP);*/
 
 }
 
@@ -313,20 +313,38 @@ void recursive_render (const aiScene *sc, const aiNode* nd)
 
 	// draw all children
 	for (n = 0; n < nd->mNumChildren; ++n) {
-		//glEnable(GL_TEXTURE_2D);
-		//glBindTexture( GL_TEXTURE_2D, texName[n] );
 		
-		glEnable(GL_TEXTURE_CUBE_MAP);
-		glEnable(GL_TEXTURE_GEN_S);
-		glEnable(GL_TEXTURE_GEN_T);
-		glEnable(GL_TEXTURE_GEN_R);
+		
+		/*if(reflection){
+			glDisable(GL_TEXTURE_2D);
+			glEnable(GL_TEXTURE_CUBE_MAP);
+			glEnable(GL_TEXTURE_GEN_S);
+			glEnable(GL_TEXTURE_GEN_T);
+			glEnable(GL_TEXTURE_GEN_R);
+		}else{
+			glDisable(GL_TEXTURE_GEN_S);
+			glDisable(GL_TEXTURE_GEN_T);
+			glDisable(GL_TEXTURE_GEN_R);
+			glDisable(GL_TEXTURE_CUBE_MAP);
+			glEnable(GL_TEXTURE_2D);
+			glBindTexture( GL_TEXTURE_2D, texName[n] );
+		}
+		*/
+			
+			glBindTexture( GL_TEXTURE_2D, texName[n] );
 		cargar_materiales(n);
 		recursive_render(sc, nd->mChildren[n]);
-		glDisable(GL_TEXTURE_GEN_S);
-		glDisable(GL_TEXTURE_GEN_T);
-		glDisable(GL_TEXTURE_GEN_R);
-		glDisable(GL_TEXTURE_CUBE_MAP);
-		//glDisable(GL_TEXTURE_2D);
+
+		/*if(reflection){
+			glDisable(GL_TEXTURE_GEN_S);
+			glDisable(GL_TEXTURE_GEN_T);
+			glDisable(GL_TEXTURE_GEN_R);
+			glDisable(GL_TEXTURE_CUBE_MAP);
+		}else{
+			glDisable(GL_TEXTURE_2D);
+		}
+		*/
+		
 	}
 
 	glPopMatrix();
@@ -366,26 +384,26 @@ void Keyboard(unsigned char key, int x, int y)
 		if (ambientScalar > 1.f)
 			ambientScalar = 1.f;
 		
-		ambiental[0] = ambientScalar;
-		ambiental[1] = ambientScalar;
-		ambiental[2] = ambientScalar;
+		ambiental[0] += 0.05f;
+		ambiental[1] += 0.05f;
+		ambiental[2] +=0.05f;
 
-		rabbitAmbiental[0] = ambientScalar * rabbitColor[0];
-		rabbitAmbiental[1] = ambientScalar * rabbitColor[1];
-		rabbitAmbiental[2] = ambientScalar * rabbitColor[2];
+		rabbitAmbiental[0] +=0.05f;
+		rabbitAmbiental[1]+=0.05f;
+		rabbitAmbiental[2] +=0.05f;
 
 		break;
 	case 'x':
 		ambientScalar -= 0.05f;
 		if (ambientScalar < 0.f)
 			ambientScalar = 0.f;
-		ambiental[0] = ambientScalar;
-		ambiental[1] = ambientScalar;
-		ambiental[2] = ambientScalar;
+		ambiental[0] -= 0.05f;
+		ambiental[1] -= 0.05f;
+		ambiental[2] -= 0.05f;
 
-		rabbitAmbiental[0] = ambientScalar * rabbitColor[0];
-		rabbitAmbiental[1] = ambientScalar * rabbitColor[1];
-		rabbitAmbiental[2] = ambientScalar * rabbitColor[2];
+		rabbitAmbiental[0] -=0.05f;
+		rabbitAmbiental[1] -=0.05f;
+		rabbitAmbiental[2] -=0.05f;
 		break;
 
 	// X + -
@@ -462,11 +480,25 @@ void Keyboard(unsigned char key, int x, int y)
 	// Reflection
 	case 'c':
 		reflection = !reflection;
+		if(reflection){
+			glDisable(GL_TEXTURE_2D);
+			glEnable(GL_TEXTURE_CUBE_MAP);
+			glEnable(GL_TEXTURE_GEN_S);
+			glEnable(GL_TEXTURE_GEN_T);
+			glEnable(GL_TEXTURE_GEN_R);
+		}else{
+			glDisable(GL_TEXTURE_GEN_S);
+			glDisable(GL_TEXTURE_GEN_T);
+			glDisable(GL_TEXTURE_GEN_R);
+			glDisable(GL_TEXTURE_CUBE_MAP);
+			glEnable(GL_TEXTURE_2D);
+		}
+
+		
 		break;
 	// Only reflection no ilumination
 	case 'v':
-		reflection = !reflection;
-		ilumination = false;
+		ilumination = !ilumination;
 		break;
 
 	// Light 
@@ -475,25 +507,53 @@ void Keyboard(unsigned char key, int x, int y)
 		if (diffuseScalar > 1.f)
 			diffuseScalar = 1.f;
 
-		diffuse[0] = diffuseScalar;
+		/*diffuse[0] = diffuseScalar;
 		diffuse[1] = diffuseScalar;
 		diffuse[2] = diffuseScalar;
 
 		rabbitDiffuse[0] = diffuse[0] * diffuseScalar * rabbitColor[0];
 		rabbitDiffuse[1] = diffuse[1] * diffuseScalar * rabbitColor[1];
-		rabbitDiffuse[2] = diffuse[2] * diffuseScalar * rabbitColor[2];
+		rabbitDiffuse[2] = diffuse[2] * diffuseScalar * rabbitColor[2];*/
+
+		lightColor[0] += 0.05f;
+		lightColor[1] += 0.05f;
+		lightColor[2] += 0.05f;
+
+		lightSpecular[0] += 0.05f;
+		lightSpecular[1] += 0.05f;
+		lightSpecular[2] += 0.05f;
+
+		lightAmbient[0] += 0.05f;
+		lightAmbient[1] += 0.05f;
+		lightAmbient[2] += 0.05f;
+
+		
+
 		break;
 	case 'n':
 		diffuseScalar -= 0.05f;
 		if (diffuseScalar < 0.0f)
 			diffuseScalar = 0.0f;
-		diffuse[0] = diffuseScalar;
+		/*diffuse[0] = diffuseScalar;
 		diffuse[1] = diffuseScalar;
 		diffuse[2] = diffuseScalar;
 
 		rabbitDiffuse[0] = diffuse[0] * diffuseScalar * rabbitColor[0];
 		rabbitDiffuse[1] = diffuse[1] * diffuseScalar * rabbitColor[1];
-		rabbitDiffuse[2] = diffuse[2] * diffuseScalar * rabbitColor[2];
+		rabbitDiffuse[2] = diffuse[2] * diffuseScalar * rabbitColor[2];*/
+
+		lightColor[0] -= 0.05f;
+		lightColor[1] -= 0.05f;
+		lightColor[2] -= 0.05f;
+
+		lightSpecular[0] -= 0.05f;
+		lightSpecular[1] -= 0.05f;
+		lightSpecular[2] -= 0.05f;
+
+		lightAmbient[0] -= 0.05f;
+		lightAmbient[1] -= 0.05f;
+		lightAmbient[2] -= 0.05f;
+
 		break;
 
 	// Light color
@@ -523,7 +583,8 @@ void Keyboard(unsigned char key, int x, int y)
 		lightColor[2] = 1.f;
 		break;
   }
-
+  teclas++;
+  cout << teclas << "\n";
   scene_list = 0;
   glutPostRedisplay();
 }
@@ -536,13 +597,20 @@ void render(){
 	gluLookAt (0, 80, 250, 0.0, 15.0, 0.0, 0.0, 1.0, 0.0);
 	
 	//Luz
-	glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, cutOff);
-	glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, exponent);
-	glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, lightLookAt);
-	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-	glLightfv(GL_LIGHT0, GL_AMBIENT, lightColor);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, lightColor);
+	if(ilumination){
+		glEnable(GL_LIGHT0);
+		glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, cutOff);
+		glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, exponent);
+		glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, lightLookAt);
+		glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+		glLightfv(GL_LIGHT0, GL_AMBIENT, lightColor);
+		glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor);
+		glLightfv(GL_LIGHT0, GL_SPECULAR, lightColor);
+	}else{
+		glDisable(GL_LIGHT0);
+	}
+	
+
 
 	//Suaviza las lineas
 	glEnable(GL_BLEND); 
