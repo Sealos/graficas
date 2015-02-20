@@ -607,9 +607,9 @@ void render() {
 	glBindTexture(GL_TEXTURE_2D, skybox_tex[0]);
 	glBegin(GL_QUADS);
 	{
-		glVertex3f(+1.00f, -1.00f, +1.00f);
-		glVertex3f(+1.00f, -1.00f, -1.00f);
 		glVertex3f(+1.00f, +1.00f, -1.00f);
+		glVertex3f(+1.00f, -1.00f, -1.00f);
+		glVertex3f(+1.00f, -1.00f, +1.00f);
 		glVertex3f(+1.00f, +1.00f, +1.00f);
 	}
 	glEnd();
