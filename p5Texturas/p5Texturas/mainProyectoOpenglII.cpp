@@ -36,7 +36,9 @@ GLfloat lightLookAt[3] = {0.f, -1.f, 0.f};
 GLfloat cutOff = 50.f;
 GLfloat exponent = 25.f;
 
-GLfloat rabbitColor[3] = {1.0f, 1.0f, 1.0f};
+GLfloat rabbitColor[4] = {1.0f, 0.8f, 0.6f, 1.0f};
+GLfloat whiteColor[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+float high_shininess = 100.0f;
 
 GLfloat ambientScale = 1.f;
 
@@ -113,20 +115,26 @@ void cargar_materiales(int idx) {
    
 	// Material Piso
 	if (idx == 0){
-		
+		glMaterialfv(GL_FRONT, GL_AMBIENT, whiteColor);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, whiteColor);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, whiteColor);
+		glMaterialf(GL_FRONT, GL_SHININESS, high_shininess);
 	}
 
 	// Material Columna
 	if (idx == 1){
-
-
+		glMaterialfv(GL_FRONT, GL_AMBIENT, whiteColor);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, whiteColor);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, whiteColor);
+		glMaterialf(GL_FRONT, GL_SHININESS, high_shininess);
 	}
 
 	// Material Conejo
 	if (idx == 2){
-
-		
-
+		glMaterialfv(GL_FRONT, GL_AMBIENT, rabbitColor);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, rabbitColor);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, rabbitColor);
+		glMaterialf(GL_FRONT, GL_SHININESS, high_shininess);
 	}
 }
 
