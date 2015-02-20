@@ -52,6 +52,8 @@ GLfloat ambientScalar = 1.f;
 bool reflection = true;
 bool ilumination = true;
 
+GLuint vA;
+
 GLfloat lightColor[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 GLfloat lightAmbient[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 GLfloat lightSpecular[4] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -59,6 +61,10 @@ GLfloat diffuseScalar = 1.f;
 
 unsigned char* images[3] = {nullptr, nullptr, nullptr};
 unsigned char* cube_map[6] = {nullptr,nullptr,nullptr,nullptr,nullptr,nullptr};
+
+unsigned char* skybox[6] = {nullptr,nullptr,nullptr,nullptr,nullptr,nullptr};
+static GLuint skybox_tex[6];
+int skyheight[6], skywidth[6];
 int cmHeight[6],cmWidth[6];
 int iheight[3], iwidth[3];
 static GLuint texName[3];
@@ -76,8 +82,6 @@ static GLuint texObjPosY;
 static GLuint texObjNegY;
 static GLuint texObjPosZ;
 static GLuint texObjNegZ;
-
-
 
 #include "glm.h"
 
@@ -179,59 +183,12 @@ void init(){
 	glBindTexture(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z,texNegZ);
 	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z,0,GL_RGBA,cmWidth[5],cmHeight[5],1,GL_RGB,GL_UNSIGNED_BYTE,cube_map[5]);
 
-
 	glTexParameteri(GL_TEXTURE_CUBE_MAP,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP,GL_TEXTURE_WRAP_R,GL_CLAMP_TO_EDGE);
 
-
-
-
     glTexParameteri(GL_TEXTURE_CUBE_MAP,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
     glTexParameteri(GL_TEXTURE_CUBE_MAP,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-
-
-	//glGenTextures(1,&texObjPosX);
-	//glBindTexture(GL_TEXTURE_2D,texObjPosX);
-	//glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,cmWidth[0],cmHeight[0],1,GL_RGB,GL_UNSIGNED_BYTE,cube_map[0]);
-	//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
- //   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-
-	//glGenTextures(1,&texObjNegX);
-	//glBindTexture(GL_TEXTURE_2D,texObjNegX);
-	//glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,cmWidth[1],cmHeight[1],1,GL_RGB,GL_UNSIGNED_BYTE,cube_map[1]);
-	//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
- //   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-
-	//glGenTextures(1,&texObjPosY);
-	//glBindTexture(GL_TEXTURE_2D,texObjPosY);
-	//glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,cmWidth[2],cmHeight[2],1,GL_RGB,GL_UNSIGNED_BYTE,cube_map[2]);
-	//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
- //   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-
-	//glGenTextures(1,&texObjNegY);
-	//glBindTexture(GL_TEXTURE_2D,texObjNegY);
-	//glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,cmWidth[3],cmHeight[3],1,GL_RGB,GL_UNSIGNED_BYTE,cube_map[3]);
-	//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
- //   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-
-	//glGenTextures(1,&texObjPosZ);
-	//glBindTexture(GL_TEXTURE_2D,texObjPosZ);
-	//glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,cmWidth[4],cmHeight[4],1,GL_RGB,GL_UNSIGNED_BYTE,cube_map[4]);
-	//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
- //   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-
-	//glGenTextures(1,&texObjNegZ);
-	//glBindTexture(GL_TEXTURE_2D,texObjNegZ);
-	//glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,cmWidth[5],cmHeight[5],1,GL_RGB,GL_UNSIGNED_BYTE,cube_map[5]);
-	//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
- //   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-
-	/*glDisable(GL_TEXTURE_GEN_S);
-	glDisable(GL_TEXTURE_GEN_T);
-	glDisable(GL_TEXTURE_GEN_R);
-	glDisable(GL_TEXTURE_CUBE_MAP);*/
-
 }
 
 void cargar_materiales(int idx) {
@@ -312,39 +269,10 @@ void recursive_render (const aiScene *sc, const aiNode* nd)
 	}
 
 	// draw all children
-	for (n = 0; n < nd->mNumChildren; ++n) {
-		
-		
-		/*if(reflection){
-			glDisable(GL_TEXTURE_2D);
-			glEnable(GL_TEXTURE_CUBE_MAP);
-			glEnable(GL_TEXTURE_GEN_S);
-			glEnable(GL_TEXTURE_GEN_T);
-			glEnable(GL_TEXTURE_GEN_R);
-		}else{
-			glDisable(GL_TEXTURE_GEN_S);
-			glDisable(GL_TEXTURE_GEN_T);
-			glDisable(GL_TEXTURE_GEN_R);
-			glDisable(GL_TEXTURE_CUBE_MAP);
-			glEnable(GL_TEXTURE_2D);
-			glBindTexture( GL_TEXTURE_2D, texName[n] );
-		}
-		*/
-			
-			glBindTexture( GL_TEXTURE_2D, texName[n] );
+	for (n = 0; n < nd->mNumChildren; ++n) {	
+		glBindTexture( GL_TEXTURE_2D, texName[n] );
 		cargar_materiales(n);
 		recursive_render(sc, nd->mChildren[n]);
-
-		/*if(reflection){
-			glDisable(GL_TEXTURE_GEN_S);
-			glDisable(GL_TEXTURE_GEN_T);
-			glDisable(GL_TEXTURE_GEN_R);
-			glDisable(GL_TEXTURE_CUBE_MAP);
-		}else{
-			glDisable(GL_TEXTURE_2D);
-		}
-		*/
-		
 	}
 
 	glPopMatrix();
@@ -515,17 +443,17 @@ void Keyboard(unsigned char key, int x, int y)
 		rabbitDiffuse[1] = diffuse[1] * diffuseScalar * rabbitColor[1];
 		rabbitDiffuse[2] = diffuse[2] * diffuseScalar * rabbitColor[2];*/
 
-		lightColor[0] += 0.05f;
-		lightColor[1] += 0.05f;
-		lightColor[2] += 0.05f;
+		lightColor[0] += diffuseScalar;
+		lightColor[1] += diffuseScalar;
+		lightColor[2] += diffuseScalar;
 
-		lightSpecular[0] += 0.05f;
-		lightSpecular[1] += 0.05f;
-		lightSpecular[2] += 0.05f;
+		lightSpecular[0] += diffuseScalar;
+		lightSpecular[1] += diffuseScalar;
+		lightSpecular[2] += diffuseScalar;
 
-		lightAmbient[0] += 0.05f;
-		lightAmbient[1] += 0.05f;
-		lightAmbient[2] += 0.05f;
+		lightAmbient[0] += diffuseScalar;
+		lightAmbient[1] += diffuseScalar;
+		lightAmbient[2] += diffuseScalar;
 
 		
 
@@ -542,17 +470,17 @@ void Keyboard(unsigned char key, int x, int y)
 		rabbitDiffuse[1] = diffuse[1] * diffuseScalar * rabbitColor[1];
 		rabbitDiffuse[2] = diffuse[2] * diffuseScalar * rabbitColor[2];*/
 
-		lightColor[0] -= 0.05f;
-		lightColor[1] -= 0.05f;
-		lightColor[2] -= 0.05f;
+		lightColor[0] -= diffuseScalar;
+		lightColor[1] -= diffuseScalar;
+		lightColor[2] -= diffuseScalar;
 
-		lightSpecular[0] -= 0.05f;
-		lightSpecular[1] -= 0.05f;
-		lightSpecular[2] -= 0.05f;
+		lightSpecular[0] -= diffuseScalar;
+		lightSpecular[1] -= diffuseScalar;
+		lightSpecular[2] -= diffuseScalar;
 
-		lightAmbient[0] -= 0.05f;
-		lightAmbient[1] -= 0.05f;
-		lightAmbient[2] -= 0.05f;
+		lightAmbient[0] -= diffuseScalar;
+		lightAmbient[1] -= diffuseScalar;
+		lightAmbient[2] -= diffuseScalar;
 
 		break;
 
@@ -583,8 +511,6 @@ void Keyboard(unsigned char key, int x, int y)
 		lightColor[2] = 1.f;
 		break;
   }
-  teclas++;
-  cout << teclas << "\n";
   scene_list = 0;
   glutPostRedisplay();
 }
@@ -610,12 +536,80 @@ void render(){
 		glDisable(GL_LIGHT0);
 	}
 	
+	// Skybox
+	glPushMatrix();
+ 
+    glLoadIdentity();
+    glEnable(GL_TEXTURE_2D);
+	glMatrixMode(GL_MODELVIEW);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_BLEND);
 
+    // Front
+    glBindTexture(GL_TEXTURE_2D, texNegZ);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex3f(  0.50f, -0.50f, -1.00f );
+        glTexCoord2f(1, 0); glVertex3f( -0.50f, -0.50f, -1.00f );
+        glTexCoord2f(1, 1); glVertex3f( -0.50f,  0.50f, -1.00f );
+        glTexCoord2f(0, 1); glVertex3f(  0.50f,  0.50f, -1.00f );
+    glEnd();
+
+	// Back -- Cant see
+    /*glBindTexture(GL_TEXTURE_2D, texPosZ);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex3f( -1.00f, -1.00f,  1.00f );
+        glTexCoord2f(1, 0); glVertex3f(  1.00f, -1.00f,  1.00f );
+        glTexCoord2f(1, 1); glVertex3f(  1.00f,  1.00f,  1.00f );
+        glTexCoord2f(0, 1); glVertex3f( -1.00f,  1.00f,  1.00f );
+    glEnd();*/
+ 
+    // Left
+   /* glBindTexture(GL_TEXTURE_2D,texNegX);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex3f(  1.00f, -1.00f,  1.00f );
+        glTexCoord2f(1, 0); glVertex3f(  1.00f, -1.00f, -1.00f );
+        glTexCoord2f(1, 1); glVertex3f(  1.00f,  1.00f, -1.00f );
+        glTexCoord2f(0, 1); glVertex3f(  1.00f,  1.00f,  1.00f );
+    glEnd();*/
+
+	// Right
+   /* glBindTexture(GL_TEXTURE_2D, texPosX);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex3f( -1.00f, -1.00f, -1.00f );
+        glTexCoord2f(1, 0); glVertex3f( -1.00f, -1.00f,  1.00f );
+        glTexCoord2f(1, 1); glVertex3f( -1.00f,  1.00f,  1.00f );
+        glTexCoord2f(0, 1); glVertex3f( -1.00f,  1.00f, -1.00f );
+    glEnd();*/
+ 
+    //Top
+    /*glBindTexture(GL_TEXTURE_2D, texPosY);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 1); glVertex3f( -1.00f,  1.00f, -1.00f );
+        glTexCoord2f(0, 0); glVertex3f( -1.00f,  1.00f,  1.00f );
+        glTexCoord2f(1, 0); glVertex3f(  1.00f,  1.00f,  1.00f );
+        glTexCoord2f(1, 1); glVertex3f(  1.00f,  1.00f, -1.00f );
+    glEnd();*/
+ 
+    // Bot
+	/*glBindTexture(GL_TEXTURE_2D, texNegY);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex3f( -1.00f, -1.00f, -1.00f );
+        glTexCoord2f(0, 1); glVertex3f( -1.00f, -1.00f,  1.00f );
+        glTexCoord2f(1, 1); glVertex3f(  1.00f, -1.00f,  1.00f );
+        glTexCoord2f(1, 0); glVertex3f(  1.00f, -1.00f, -1.00f );
+    glEnd();*/
+
+	glDisable(GL_TEXTURE_2D);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_DEPTH_TEST);
 
 	//Suaviza las lineas
 	glEnable(GL_BLEND); 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable( GL_LINE_SMOOTH );	
+	glPopAttrib();
+    glPopMatrix();
 
 	glPushMatrix();
 	glEnable(GL_NORMALIZE);
