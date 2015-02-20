@@ -49,8 +49,17 @@ GLfloat lightColor[3] = {1.0f, 1.0f, 1.0f};
 GLfloat lightIntensity = 1.f;
 
 unsigned char* images[3] = {nullptr, nullptr, nullptr};
+unsigned char* cube_map[6] = {nullptr,nullptr,nullptr,nullptr,nullptr,nullptr};
+int cmHeight[6],cmWidth[6];
 int iheight[3], iwidth[3];
 static GLuint texName[3];
+
+static GLuint texPosX;
+static GLuint texNegX;
+static GLuint texPosY;
+static GLuint texNegY;
+static GLuint texPosZ;
+static GLuint texNegZ;
 
 #include "glm.h"
 
@@ -109,6 +118,59 @@ void init(){
 	images[1] = glmReadPPM("texAO_columna.ppm", &iwidth[1], &iheight[1]);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, iwidth[1], iheight[1], 0, GL_RGB, GL_UNSIGNED_BYTE, images[1]);
 	glDisable(GL_TEXTURE_2D);
+
+
+	//Cube Map
+
+	cube_map[0] = glmReadPPM("posx.ppm",&cmHeight[0],&cmWidth[0]);
+	cube_map[1] = glmReadPPM("negx.ppm",&cmHeight[1],&cmWidth[1]);
+	cube_map[2] = glmReadPPM("posy.ppm",&cmHeight[2],&cmWidth[2]);
+	cube_map[3] = glmReadPPM("negy.ppm",&cmHeight[3],&cmWidth[3]);
+	cube_map[4] = glmReadPPM("posz.ppm",&cmHeight[4],&cmWidth[4]);
+	cube_map[5] = glmReadPPM("negz.ppm",&cmHeight[5],&cmWidth[5]);
+
+	glEnable(GL_TEXTURE_CUBE_MAP);
+	//glEnable(GL_TEXTURE_GEN_S);
+	//glEnable(GL_TEXTURE_GEN_T);
+	//glEnable(GL_TEXTURE_GEN_R);
+
+	glGenTextures(1,&texPosX);
+	glBindTexture(GL_TEXTURE_CUBE_MAP_POSITIVE_X,texPosX);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X,0,GL_RGBA,cmWidth[0],cmHeight[0],1,GL_RGB,GL_UNSIGNED_BYTE,cube_map[0]);
+
+	glGenTextures(1,&texNegX);
+	glBindTexture(GL_TEXTURE_CUBE_MAP_NEGATIVE_X,texNegX);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X,0,GL_RGBA,cmWidth[1],cmHeight[1],1,GL_RGB,GL_UNSIGNED_BYTE,cube_map[1]);
+
+	glGenTextures(1,&texPosY);
+	glBindTexture(GL_TEXTURE_CUBE_MAP_POSITIVE_Y,texPosY);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y,0,GL_RGBA,cmWidth[2],cmHeight[2],1,GL_RGB,GL_UNSIGNED_BYTE,cube_map[2]);
+
+	glGenTextures(1,&texNegY);
+	glBindTexture(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,texNegY);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,0,GL_RGBA,cmWidth[3],cmHeight[3],1,GL_RGB,GL_UNSIGNED_BYTE,cube_map[3]);
+
+	glGenTextures(1,&texPosZ);
+	glBindTexture(GL_TEXTURE_CUBE_MAP_POSITIVE_Z,texPosZ);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z,0,GL_RGBA,cmWidth[4],cmHeight[4],1,GL_RGB,GL_UNSIGNED_BYTE,cube_map[4]);
+
+	glGenTextures(1,&texNegZ);
+	glBindTexture(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z,texNegZ);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z,0,GL_RGBA,cmWidth[5],cmHeight[5],1,GL_RGB,GL_UNSIGNED_BYTE,cube_map[5]);
+
+
+	//glTexParameteri(GL_TEXTURE_CUBE_MAP,GL_TEXTURE_WRAP_S,GL_REPEAT);
+    //glTexParameteri(GL_TEXTURE_CUBE_MAP,GL_TEXTURE_WRAP_T,GL_REPEAT);
+   // glTexParameteri(GL_TEXTURE_CUBE_MAP,GL_TEXTURE_WRAP_R,GL_REPEAT);
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+
+	//glDisable(GL_TEXTURE_GEN_S);
+	//glDisable(GL_TEXTURE_GEN_T);
+	//glDisable(GL_TEXTURE_GEN_R);
+	glDisable(GL_TEXTURE_CUBE_MAP);
+
 }
 
 void cargar_materiales(int idx) {
@@ -190,11 +252,20 @@ void recursive_render (const aiScene *sc, const aiNode* nd)
 
 	// draw all children
 	for (n = 0; n < nd->mNumChildren; ++n) {
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture( GL_TEXTURE_2D, texName[n] );
+		//glEnable(GL_TEXTURE_2D);
+		//glBindTexture( GL_TEXTURE_2D, texName[n] );
+		
+		glEnable(GL_TEXTURE_CUBE_MAP);
+		//glEnable(GL_TEXTURE_GEN_S);
+		//glEnable(GL_TEXTURE_GEN_T);
+		//glEnable(GL_TEXTURE_GEN_R);
 		cargar_materiales(n);
 		recursive_render(sc, nd->mChildren[n]);
-		glDisable(GL_TEXTURE_2D);
+		//glDisable(GL_TEXTURE_GEN_S);
+		//glDisable(GL_TEXTURE_GEN_T);
+		//glDisable(GL_TEXTURE_GEN_R);
+		glDisable(GL_TEXTURE_CUBE_MAP);
+		//glDisable(GL_TEXTURE_2D);
 	}
 
 	glPopMatrix();
@@ -349,15 +420,19 @@ void render(){
 
 	glPushMatrix();
 	glEnable(GL_NORMALIZE);
+	
 	if(scene_list == 0) {
 	    scene_list = glGenLists(1);
 	    glNewList(scene_list, GL_COMPILE);
             // now begin at the root node of the imported data and traverse
             // the scenegraph by multiplying subsequent local transforms
-            // together on GL's matrix stack.		
+            // together on GL's matrix stack.
+		
 	    recursive_render(scene01, scene01->mRootNode);
+		
 	    glEndList();
 	}
+	
 	glCallList(scene_list);
 	
 	
