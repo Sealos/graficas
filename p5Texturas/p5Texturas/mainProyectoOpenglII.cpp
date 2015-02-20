@@ -37,15 +37,15 @@ GLfloat cutOff = 50.f;
 GLfloat exponent = 25.f;
 float shininess = 75.0f;
 
-GLfloat rabbitAmbiental[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-GLfloat rabbitSpecular[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-GLfloat rabbitDiffuse[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-
 GLfloat rabbitColor[4] = {1.0f, 0.8f, 0.6f, 1.0f};
 
 GLfloat ambiental[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 GLfloat specular[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 GLfloat diffuse[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+
+GLfloat rabbitAmbiental[4] = {1.0f, 0.8f, 0.6f, 1.0f};
+GLfloat rabbitSpecular[4] = {1.0f, 0.8f, 0.6f, 1.0f};
+GLfloat rabbitDiffuse[4] = {1.0f, 0.8f, 0.6f, 1.0f};
 
 GLfloat whiteColor[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 
@@ -123,7 +123,7 @@ void init(){
 void cargar_materiales(int idx) {
    
 	// Material Piso
-	if (idx == 0){
+	if (idx == 0) {
 		glMaterialfv(GL_FRONT, GL_AMBIENT, ambiental);
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
 		glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
@@ -131,7 +131,7 @@ void cargar_materiales(int idx) {
 	}
 
 	// Material Columna
-	if (idx == 1){
+	if (idx == 1) {
 		glMaterialfv(GL_FRONT, GL_AMBIENT, ambiental);
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
 		glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
@@ -139,7 +139,7 @@ void cargar_materiales(int idx) {
 	}
 
 	// Material Conejo
-	if (idx == 2){
+	if (idx == 2) {
 		glMaterialfv(GL_FRONT, GL_AMBIENT, rabbitAmbiental);
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, rabbitDiffuse);
 		glMaterialfv(GL_FRONT, GL_SPECULAR, rabbitSpecular);
@@ -243,26 +243,26 @@ void Keyboard(unsigned char key, int x, int y)
 		if (ambientScale > 1.f)
 			ambientScale = 1.f;
 		
-		ambiental[0] = whiteColor[0] * ambientScale;
-		ambiental[1] = whiteColor[1] * ambientScale;
-		ambiental[2] = whiteColor[2] * ambientScale;
+		ambiental[0] = ambientScale;
+		ambiental[1] = ambientScale;
+		ambiental[2] = ambientScale;
 
-		rabbitAmbiental[0] = whiteColor[0] * ambientScale * rabbitColor[0];
-		rabbitAmbiental[1] = whiteColor[1] * ambientScale * rabbitColor[1];
-		rabbitAmbiental[2] = whiteColor[2] * ambientScale * rabbitColor[2];
+		rabbitAmbiental[0] = ambientScale * rabbitColor[0];
+		rabbitAmbiental[1] = ambientScale * rabbitColor[1];
+		rabbitAmbiental[2] = ambientScale * rabbitColor[2];
 
 		break;
 	case 'x':
 		ambientScale -= 0.05f;
 		if (ambientScale < 0.f)
 			ambientScale = 0.f;
-		ambiental[0] = whiteColor[0] * ambientScale;
-		ambiental[1] = whiteColor[1] * ambientScale;
-		ambiental[2] = whiteColor[2] * ambientScale;
+		ambiental[0] = ambientScale;
+		ambiental[1] = ambientScale;
+		ambiental[2] = ambientScale;
 
-		rabbitAmbiental[0] = whiteColor[0] * ambientScale * rabbitColor[0];
-		rabbitAmbiental[1] = whiteColor[1] * ambientScale * rabbitColor[1];
-		rabbitAmbiental[2] = whiteColor[2] * ambientScale * rabbitColor[2];
+		rabbitAmbiental[0] = ambientScale * rabbitColor[0];
+		rabbitAmbiental[1] = ambientScale * rabbitColor[1];
+		rabbitAmbiental[2] = ambientScale * rabbitColor[2];
 		break;
 
 	// X + -
@@ -348,12 +348,29 @@ void Keyboard(unsigned char key, int x, int y)
 
 	// Light 
 	case 'b':
-		lightIntensity += 1.f;
+		lightIntensity += 0.05f;
+		if (lightIntensity > 1.f)
+			lightIntensity = 1.f;
+
+		diffuse[0] = lightIntensity;
+		diffuse[1] = lightIntensity;
+		diffuse[2] = lightIntensity;
+
+		rabbitDiffuse[0] = diffuse[0] * lightIntensity * rabbitColor[0];
+		rabbitDiffuse[1] = diffuse[1] * lightIntensity * rabbitColor[1];
+		rabbitDiffuse[2] = diffuse[2] * lightIntensity * rabbitColor[2];
 		break;
 	case 'n':
-		lightIntensity -= 1.f;
+		lightIntensity -= 0.05f;
 		if (lightIntensity < 0.0f)
-		lightIntensity = 0.0f;
+			lightIntensity = 0.0f;
+		diffuse[0] = lightIntensity;
+		diffuse[1] = lightIntensity;
+		diffuse[2] = lightIntensity;
+
+		rabbitDiffuse[0] = diffuse[0] * lightIntensity * rabbitColor[0];
+		rabbitDiffuse[1] = diffuse[1] * lightIntensity * rabbitColor[1];
+		rabbitDiffuse[2] = diffuse[2] * lightIntensity * rabbitColor[2];
 		break;
 
 	// Light color
@@ -405,7 +422,8 @@ void render(){
 	glLightfv(GL_LIGHT0, GL_SPECULAR, lightColor);
 
 	//Suaviza las lineas
-	glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND); 
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable( GL_LINE_SMOOTH );	
 
 	glPushMatrix();
@@ -421,9 +439,7 @@ void render(){
 	}
 	glCallList(scene_list);
 	
-	
 	glPopMatrix();
-
 
 	glDisable(GL_BLEND);
 	glDisable(GL_LINE_SMOOTH);
