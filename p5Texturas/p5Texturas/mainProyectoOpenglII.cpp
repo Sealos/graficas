@@ -615,13 +615,13 @@ void render() {
 	glEnd();
 
 	// Back -- Cant see
-	/*glBindTexture(GL_TEXTURE_2D, skybox_tex[1]);
+	/*glBindTexture(GL_TEXTURE_2D, skybox_tex[4]);
 	glBegin(GL_QUADS);
 	{
-		glVertex3f(-1.00f, -1.00f,  1.00f);
-		glVertex3f(1.00f, -1.00f,  1.00f);
-		glVertex3f(1.00f,  1.00f,  1.00f);
-		glVertex3f(-1.00f,  1.00f,  1.00f);
+		glVertex3f(+1.00f, +1.00f, +1.00f);
+		glVertex3f(+1.00f, -1.00f, +1.00f);
+		glVertex3f(-1.00f, -1.00f, +1.00f);
+		glVertex3f(-1.00f, +1.00f, +1.00f);
 	}
 	glEnd();*/
 
@@ -629,10 +629,10 @@ void render() {
 	/*glBindTexture(GL_TEXTURE_2D, skybox_tex[4]);
 	glBegin(GL_QUADS);
 	{
-		glVertex3f(-1.00f,  1.00f, -1.00f);
-		glVertex3f(-1.00f,  1.00f,  1.00f);
-		glVertex3f(1.00f,  1.00f,  1.00f);
-		glVertex3f(1.00f,  1.00f, -1.00f);
+		glVertex3f(+1.00f, +1.00f, -1.00f);
+		glVertex3f(-1.00f, +1.00f, -1.00f);
+		glVertex3f(-1.00f, +1.00f, -1.00f);
+		glVertex3f(+1.00f, +1.00f, -1.00f);
 	}
 	glEnd();*/
 
@@ -641,9 +641,9 @@ void render() {
 	glBegin(GL_QUADS);
 	{
 		glVertex3f(-1.00f, -1.00f, -1.00f);
-		glVertex3f(-1.00f, -1.00f,  1.00f);
-		glVertex3f(1.00f, -1.00f,  1.00f);
-		glVertex3f(1.00f, -1.00f, -1.00f);
+		glVertex3f(-1.00f, -1.00f, +1.00f);
+		glVertex3f(+1.00f, -1.00f, +1.00f);
+		glVertex3f(+1.00f, -1.00f, -1.00f);
 	}
 	glEnd();*/
 
