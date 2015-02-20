@@ -118,21 +118,21 @@ void cargar_materiales(int idx) {
 	if (idx == 0){
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture( GL_TEXTURE_2D, texName[0] );
-		glDisable(GL_TEXTURE_2D);
+		
 	}
 
 	// Material Columna
 	if (idx == 1){
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture( GL_TEXTURE_2D, texName[1] );
-		glDisable(GL_TEXTURE_2D);
+
 	}
 
 	// Material Conejo
 	if (idx == 2){
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture( GL_TEXTURE_2D, texName[2] );
-		glDisable(GL_TEXTURE_2D);
+
 	}
 }
 
@@ -179,7 +179,7 @@ void recursive_render (const aiScene *sc, const aiNode* nd)
 				
 				glVertex3fv(&mesh->mVertices[index].x);
 			}
-
+			glDisable(GL_TEXTURE_2D);
 			glEnd();
 		}
 
