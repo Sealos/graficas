@@ -72,9 +72,6 @@ void init(){
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
 
-	glClearColor(0.0, 0.0, 0.0, 0.0);
-	glShadeModel(GL_SMOOTH);
-	glEnable(GL_DEPTH_TEST);
 
 	glGenTextures(1, &texName[0]);
 	glBindTexture(GL_TEXTURE_2D, texName[0]);
@@ -116,21 +113,19 @@ void cargar_materiales(int idx) {
    
 	// Material Piso
 	if (idx == 0){
-		glEnable(GL_TEXTURE_2D);
 		glBindTexture( GL_TEXTURE_2D, texName[0] );
 		
 	}
 
 	// Material Columna
 	if (idx == 1){
-		glEnable(GL_TEXTURE_2D);
 		glBindTexture( GL_TEXTURE_2D, texName[1] );
 
 	}
 
 	// Material Conejo
 	if (idx == 2){
-		glEnable(GL_TEXTURE_2D);
+
 		glBindTexture( GL_TEXTURE_2D, texName[2] );
 
 	}
@@ -151,7 +146,7 @@ void recursive_render (const aiScene *sc, const aiNode* nd)
 	for (; n < nd->mNumMeshes; ++n) {
 		
 		const aiMesh* mesh = scene01->mMeshes[nd->mMeshes[n]];
-
+		
 		for (t = 0; t < mesh->mNumFaces; ++t) {
 			const aiFace* face = &mesh->mFaces[t];
 			GLenum face_mode;
@@ -162,7 +157,7 @@ void recursive_render (const aiScene *sc, const aiNode* nd)
 				case 3: face_mode = GL_TRIANGLES; break;
 				default: face_mode = GL_POLYGON; break;
 			}
-
+			
 			glBegin(face_mode);
 
 			for(i = 0; i < face->mNumIndices; i++) {
@@ -179,16 +174,20 @@ void recursive_render (const aiScene *sc, const aiNode* nd)
 				
 				glVertex3fv(&mesh->mVertices[index].x);
 			}
-			glDisable(GL_TEXTURE_2D);
+			
 			glEnd();
+			
 		}
-
+		
 	}
 
 	// draw all children
 	for (n = 0; n < nd->mNumChildren; ++n) {
+		glEnable(GL_TEXTURE_2D);
+
 		cargar_materiales(n);
 		recursive_render(sc, nd->mChildren[n]);
+		glDisable(GL_TEXTURE_2D);
 	}
 
 	glPopMatrix();
