@@ -109,25 +109,30 @@ void init(){
 
 	images[1] = glmReadPPM("texAO_columna.ppm", &iwidth[1], &iheight[1]);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, iwidth[1], iheight[1], 0, GL_RGB, GL_UNSIGNED_BYTE, images[1]);
-
+	glDisable(GL_TEXTURE_2D);
 }
 
 void cargar_materiales(int idx) {
-
    
 	// Material Piso
 	if (idx == 0){
-
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture( GL_TEXTURE_2D, texName[0] );
+		glDisable(GL_TEXTURE_2D);
 	}
 
 	// Material Columna
 	if (idx == 1){
-
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture( GL_TEXTURE_2D, texName[1] );
+		glDisable(GL_TEXTURE_2D);
 	}
 
 	// Material Conejo
 	if (idx == 2){
-
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture( GL_TEXTURE_2D, texName[2] );
+		glDisable(GL_TEXTURE_2D);
 	}
 }
 
