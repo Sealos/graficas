@@ -1,2 +1,2 @@
-Info,  T7716: Load escenario.obj
-Error, T7716: Unable to open file "escenario.obj".
+Info,  T4468: Load escenario.obj
+Error, T4468: Unable to open file "escenario.obj".

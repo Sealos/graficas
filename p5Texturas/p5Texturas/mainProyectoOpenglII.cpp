@@ -31,6 +31,20 @@ using namespace std;
 #define DEF_floorGridXSteps	10.0
 #define DEF_floorGridZSteps	10.0
 
+float lightPos[3] = {0, 200, 0};
+float pointsTo[3] = {0, -1, 0};
+float cutOff = 50.f;
+float exponent = 25.f;
+
+float rabbitColor[3] = {1.0f, 1.0f, 1.0f};
+
+float ambientScale = 1.f;
+
+bool reflection = true;
+bool ilumination = true;
+
+float lightColor[3] = {1.0f, 1.0f, 1.0f};
+float lightIntensity = 1.f;
 
 #include "glm.h"
 
@@ -154,7 +168,122 @@ void Keyboard(unsigned char key, int x, int y)
 	case 27:             
 		exit (0);
 		break;
+	// cutoff spotlight
+	case 'q':
+		cutOff += 1.f;
+		break;
+	case 'w':
+		cutOff -= 1.f;
+		break;
 
+	// exponent spotlight
+	case 'a':
+		exponent += 1.f;
+		break;
+	case 's':
+		exponent -= 1.f;
+		break;
+
+	// Ambiental of each model
+	case 'z':
+		ambientScale += 0.05;
+		if (ambientScale > 1.f)
+			ambientScale = 1.f;
+		break;
+	case 'x':
+		ambientScale -= 0.05;
+		if (ambientScale < 0.f)
+			ambientScale = 0.f;
+		break;
+
+	// X + -
+	case 'e':
+		lightPos[0] += 1.f;
+		break;
+	case 'd':
+		lightPos[0] -= 1.f;
+		break;
+
+	// Z + -
+	case 'r':
+		lightPos[2] += 1.f;
+		break;
+	case 'f':
+		lightPos[2] -= 1.f;
+		break;
+
+	// Red bunny
+	case 't':
+		rabbitColor[0] += 0.05f;
+		if (rabbitColor[0] > 1.f)
+			rabbitColor[0] = 1.f;
+		break;
+	case 'g':
+		rabbitColor[0] -= 0.05f;
+		if (rabbitColor[0] < 0.f)
+			rabbitColor[0] = 0.f;
+		break;
+
+	// Green bunny
+	case 'y':
+		rabbitColor[1] += 0.05f;
+		if (rabbitColor[1] > 1.f)
+			rabbitColor[1] = 1.f;
+		break;
+		break;
+	case 'h':
+		rabbitColor[1] -= 0.05f;
+		if (rabbitColor[1] < 0.f)
+			rabbitColor[1] = 0.f;
+		break;
+
+	// Blue bunny
+	case 'u':
+		rabbitColor[2] += 0.05f;
+		if (rabbitColor[2] > 1.f)
+			rabbitColor[2] = 1.f;
+		break;
+		break;
+	case 'j':
+		rabbitColor[2] -= 0.05f;
+		if (rabbitColor[2] < 0.f)
+			rabbitColor[2] = 0.f;
+		break;
+
+	// Reflection
+	case 'c':
+		reflection = !reflection;
+		break;
+	// Only reflection no ilumination
+	case 'v':
+		reflection = !reflection;
+		ilumination = false;
+		break;
+
+	// Light 
+	case 'b':
+		lightIntensity += 1.f;
+		break;
+	case 'n':
+		lightIntensity -= 1.f;
+		if (lightIntensity < 0.0f)
+		lightIntensity = 0.0f;
+		break;
+
+	// Light color
+	case '1':
+		lightColor[0] = 1.f;
+		lightColor[1] = 1.f;
+		lightColor[2] = 1.f;
+		break;
+	case '2':
+		break;
+	case '3':
+		break;
+	case '4':
+		break;
+	case '5':
+		break;
   }
 
   scene_list = 0;
