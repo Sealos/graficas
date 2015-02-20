@@ -35,10 +35,19 @@ GLfloat lightPos[4] = {0.f, 200.f, 0.f, 1.f};
 GLfloat lightLookAt[3] = {0.f, -1.f, 0.f};
 GLfloat cutOff = 50.f;
 GLfloat exponent = 25.f;
+float shininess = 75.0f;
+
+GLfloat rabbitAmbiental[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+GLfloat rabbitSpecular[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+GLfloat rabbitDiffuse[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 
 GLfloat rabbitColor[4] = {1.0f, 0.8f, 0.6f, 1.0f};
+
+GLfloat ambiental[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+GLfloat specular[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+GLfloat diffuse[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+
 GLfloat whiteColor[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-float high_shininess = 100.0f;
 
 GLfloat ambientScale = 1.f;
 
@@ -86,6 +95,17 @@ void init(){
 	images[0] = glmReadPPM("texAO_plano.ppm", &iwidth[0], &iheight[0]);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, iwidth[0], iheight[0], 0, GL_RGB, GL_UNSIGNED_BYTE, images[0]);
 
+	glGenTextures(1, &texName[1]);
+	glBindTexture(GL_TEXTURE_2D, texName[1]);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	images[1] = glmReadPPM("texAO_columna.ppm", &iwidth[1], &iheight[1]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, iwidth[1], iheight[1], 0, GL_RGB, GL_UNSIGNED_BYTE, images[1]);
+
 	glGenTextures(1, &texName[2]);
 	glBindTexture(GL_TEXTURE_2D, texName[2]);
 
@@ -97,17 +117,6 @@ void init(){
 	images[2] = glmReadPPM("texAO_bunny.ppm", &iwidth[2], &iheight[2]);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, iwidth[2], iheight[2], 0, GL_RGB, GL_UNSIGNED_BYTE, images[2]);
 
-
-	glGenTextures(1, &texName[1]);
-	glBindTexture(GL_TEXTURE_2D, texName[1]);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-	images[1] = glmReadPPM("texAO_columna.ppm", &iwidth[1], &iheight[1]);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, iwidth[1], iheight[1], 0, GL_RGB, GL_UNSIGNED_BYTE, images[1]);
 	glDisable(GL_TEXTURE_2D);
 }
 
@@ -115,26 +124,26 @@ void cargar_materiales(int idx) {
    
 	// Material Piso
 	if (idx == 0){
-		glMaterialfv(GL_FRONT, GL_AMBIENT, whiteColor);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, whiteColor);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, whiteColor);
-		glMaterialf(GL_FRONT, GL_SHININESS, high_shininess);
+		glMaterialfv(GL_FRONT, GL_AMBIENT, ambiental);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
+		glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 	}
 
 	// Material Columna
 	if (idx == 1){
-		glMaterialfv(GL_FRONT, GL_AMBIENT, whiteColor);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, whiteColor);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, whiteColor);
-		glMaterialf(GL_FRONT, GL_SHININESS, high_shininess);
+		glMaterialfv(GL_FRONT, GL_AMBIENT, ambiental);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
+		glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 	}
 
 	// Material Conejo
 	if (idx == 2){
-		glMaterialfv(GL_FRONT, GL_AMBIENT, rabbitColor);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, rabbitColor);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, rabbitColor);
-		glMaterialf(GL_FRONT, GL_SHININESS, high_shininess);
+		glMaterialfv(GL_FRONT, GL_AMBIENT, rabbitAmbiental);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, rabbitDiffuse);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, rabbitSpecular);
+		glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 	}
 }
 
@@ -214,6 +223,8 @@ void Keyboard(unsigned char key, int x, int y)
 		break;
 	case 'w':
 		cutOff -= 1.f;
+		if (cutOff < 0.0f)
+			cutOff = 0.0f;
 		break;
 
 	// exponent spotlight
@@ -222,6 +233,8 @@ void Keyboard(unsigned char key, int x, int y)
 		break;
 	case 's':
 		exponent -= 1.f;
+		if (exponent < 0.0f)
+			exponent = 0.0f;
 		break;
 
 	// Ambiental of each model
@@ -229,11 +242,27 @@ void Keyboard(unsigned char key, int x, int y)
 		ambientScale += 0.05f;
 		if (ambientScale > 1.f)
 			ambientScale = 1.f;
+		
+		ambiental[0] = whiteColor[0] * ambientScale;
+		ambiental[1] = whiteColor[1] * ambientScale;
+		ambiental[2] = whiteColor[2] * ambientScale;
+
+		rabbitAmbiental[0] = whiteColor[0] * ambientScale * rabbitColor[0];
+		rabbitAmbiental[1] = whiteColor[1] * ambientScale * rabbitColor[1];
+		rabbitAmbiental[2] = whiteColor[2] * ambientScale * rabbitColor[2];
+
 		break;
 	case 'x':
 		ambientScale -= 0.05f;
 		if (ambientScale < 0.f)
 			ambientScale = 0.f;
+		ambiental[0] = whiteColor[0] * ambientScale;
+		ambiental[1] = whiteColor[1] * ambientScale;
+		ambiental[2] = whiteColor[2] * ambientScale;
+
+		rabbitAmbiental[0] = whiteColor[0] * ambientScale * rabbitColor[0];
+		rabbitAmbiental[1] = whiteColor[1] * ambientScale * rabbitColor[1];
+		rabbitAmbiental[2] = whiteColor[2] * ambientScale * rabbitColor[2];
 		break;
 
 	// X + -
@@ -257,11 +286,18 @@ void Keyboard(unsigned char key, int x, int y)
 		rabbitColor[0] += 0.05f;
 		if (rabbitColor[0] > 1.f)
 			rabbitColor[0] = 1.f;
+
+		rabbitAmbiental[0] = ambiental[0] * rabbitColor[0];
+		rabbitDiffuse[0] = diffuse[0] * rabbitColor[0];
+		rabbitSpecular[0] = specular[0] * rabbitColor[0];
 		break;
 	case 'g':
 		rabbitColor[0] -= 0.05f;
 		if (rabbitColor[0] < 0.f)
 			rabbitColor[0] = 0.f;
+		rabbitAmbiental[0] = ambiental[0] * rabbitColor[0];
+		rabbitDiffuse[0] = diffuse[0] * rabbitColor[0];
+		rabbitSpecular[0] = specular[0] * rabbitColor[0];
 		break;
 
 	// Green bunny
@@ -269,12 +305,17 @@ void Keyboard(unsigned char key, int x, int y)
 		rabbitColor[1] += 0.05f;
 		if (rabbitColor[1] > 1.f)
 			rabbitColor[1] = 1.f;
-		break;
+		rabbitAmbiental[1] = ambiental[1] * rabbitColor[1];
+		rabbitDiffuse[1] = diffuse[1] * rabbitColor[1];
+		rabbitSpecular[1] = specular[1] * rabbitColor[1];
 		break;
 	case 'h':
 		rabbitColor[1] -= 0.05f;
 		if (rabbitColor[1] < 0.f)
 			rabbitColor[1] = 0.f;
+		rabbitAmbiental[1] = ambiental[1] * rabbitColor[1];
+		rabbitDiffuse[1] = diffuse[1] * rabbitColor[1];
+		rabbitSpecular[1] = specular[1] * rabbitColor[1];
 		break;
 
 	// Blue bunny
@@ -282,12 +323,17 @@ void Keyboard(unsigned char key, int x, int y)
 		rabbitColor[2] += 0.05f;
 		if (rabbitColor[2] > 1.f)
 			rabbitColor[2] = 1.f;
-		break;
+		rabbitAmbiental[2] = ambiental[2] * rabbitColor[2];
+		rabbitDiffuse[2] = diffuse[2] * rabbitColor[2];
+		rabbitSpecular[2] = specular[2] * rabbitColor[2];
 		break;
 	case 'j':
 		rabbitColor[2] -= 0.05f;
 		if (rabbitColor[2] < 0.f)
 			rabbitColor[2] = 0.f;
+		rabbitAmbiental[2] = ambiental[2] * rabbitColor[2];
+		rabbitDiffuse[2] = diffuse[2] * rabbitColor[2];
+		rabbitSpecular[2] = specular[2] * rabbitColor[2];
 		break;
 
 	// Reflection
