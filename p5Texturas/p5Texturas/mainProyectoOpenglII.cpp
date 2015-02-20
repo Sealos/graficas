@@ -567,7 +567,7 @@ void render(){
  
     glLoadIdentity();
     glEnable(GL_TEXTURE_2D);
-	glMatrixMode(GL_MODELVIEW);
+	glPushAttrib(GL_ENABLE_BIT);
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_LIGHTING);
     glDisable(GL_BLEND);
