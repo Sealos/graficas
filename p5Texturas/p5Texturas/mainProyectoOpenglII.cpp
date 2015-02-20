@@ -113,20 +113,19 @@ void cargar_materiales(int idx) {
    
 	// Material Piso
 	if (idx == 0){
-		glBindTexture( GL_TEXTURE_2D, texName[0] );
 		
 	}
 
 	// Material Columna
 	if (idx == 1){
-		glBindTexture( GL_TEXTURE_2D, texName[1] );
+
 
 	}
 
 	// Material Conejo
 	if (idx == 2){
 
-		glBindTexture( GL_TEXTURE_2D, texName[2] );
+		
 
 	}
 }
@@ -184,7 +183,7 @@ void recursive_render (const aiScene *sc, const aiNode* nd)
 	// draw all children
 	for (n = 0; n < nd->mNumChildren; ++n) {
 		glEnable(GL_TEXTURE_2D);
-
+		glBindTexture( GL_TEXTURE_2D, texName[n] );
 		cargar_materiales(n);
 		recursive_render(sc, nd->mChildren[n]);
 		glDisable(GL_TEXTURE_2D);
