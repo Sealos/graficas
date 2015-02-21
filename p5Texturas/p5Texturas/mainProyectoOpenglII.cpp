@@ -507,25 +507,18 @@ void Keyboard(unsigned char key, int x, int y) {
 			if (diffuseScalar > 1.f)
 			{ diffuseScalar = 1.f; }
 
-			/*diffuse[0] = diffuseScalar;
-			diffuse[1] = diffuseScalar;
-			diffuse[2] = diffuseScalar;
 
-			rabbitDiffuse[0] = diffuse[0] * diffuseScalar * rabbitColor[0];
-			rabbitDiffuse[1] = diffuse[1] * diffuseScalar * rabbitColor[1];
-			rabbitDiffuse[2] = diffuse[2] * diffuseScalar * rabbitColor[2];*/
+			lightColor[0] += 0.05f;
+			lightColor[1] += 0.05f;
+			lightColor[2] += 0.05f;
 
-			lightColor[0] += diffuseScalar;
-			lightColor[1] += diffuseScalar;
-			lightColor[2] += diffuseScalar;
+			lightSpecular[0] += 0.05f;
+			lightSpecular[1] += 0.05f;
+			lightSpecular[2] += 0.05f;
 
-			lightSpecular[0] += diffuseScalar;
-			lightSpecular[1] += diffuseScalar;
-			lightSpecular[2] += diffuseScalar;
-
-			lightAmbient[0] += diffuseScalar;
-			lightAmbient[1] += diffuseScalar;
-			lightAmbient[2] += diffuseScalar;
+			lightAmbient[0] += 0.05f;
+			lightAmbient[1] += 0.05f;
+			lightAmbient[2] += 0.05f;
 
 
 
@@ -534,25 +527,19 @@ void Keyboard(unsigned char key, int x, int y) {
 			diffuseScalar -= 0.05f;
 			if (diffuseScalar < 0.0f)
 			{ diffuseScalar = 0.0f; }
-			/*diffuse[0] = diffuseScalar;
-			diffuse[1] = diffuseScalar;
-			diffuse[2] = diffuseScalar;
 
-			rabbitDiffuse[0] = diffuse[0] * diffuseScalar * rabbitColor[0];
-			rabbitDiffuse[1] = diffuse[1] * diffuseScalar * rabbitColor[1];
-			rabbitDiffuse[2] = diffuse[2] * diffuseScalar * rabbitColor[2];*/
 
-			lightColor[0] -= diffuseScalar;
-			lightColor[1] -= diffuseScalar;
-			lightColor[2] -= diffuseScalar;
+			lightColor[0] -= 0.05f;
+			lightColor[1] -= 0.05f;
+			lightColor[2] -= 0.05f;
 
-			lightSpecular[0] -= diffuseScalar;
-			lightSpecular[1] -= diffuseScalar;
-			lightSpecular[2] -= diffuseScalar;
+			lightSpecular[0] -= 0.05f;
+			lightSpecular[1] -= 0.05f;
+			lightSpecular[2] -= 0.05f;
 
-			lightAmbient[0] -= diffuseScalar;
-			lightAmbient[1] -= diffuseScalar;
-			lightAmbient[2] -= diffuseScalar;
+			lightAmbient[0] -= 0.05f;
+			lightAmbient[1] -= 0.05f;
+			lightAmbient[2] -= 0.05f;
 
 			break;
 
