@@ -555,6 +555,57 @@ void Keyboard(unsigned char key, int x, int y) {
 	glutPostRedisplay();
 }
 
+void renderSkybox() {
+
+	glPushMatrix();
+
+	glLoadIdentity();
+
+	glMatrixMode(GL_MODELVIEW);
+
+	//glPushAttrib(GL_ENABLE_BIT);
+	/*glDisable(GL_DEPTH_TEST);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_BLEND);*/
+	glColor3f(1.0f, 1.0f, 1.0f);
+
+	// Front - Neg Z
+	//glBindTexture(GL_TEXTURE_2D, skybox_tex[5]);
+	glBegin(GL_QUADS);
+	{
+		glVertex3f(+1.00f, -1.00f, -3.00f);
+		glVertex3f(+1.00f, +1.00f, -3.00f);
+		glVertex3f(-1.00f, +1.00f, -3.00f);
+		glVertex3f(-1.00f, -1.00f, -3.00f);
+	}
+	glEnd();
+
+	// Left - Neg X
+	//glBindTexture(GL_TEXTURE_2D, skybox_tex[1]);
+	glBegin(GL_QUADS);
+	{
+		glVertex3f(-1.00f, -1.00f, -3.00f);
+		glVertex3f(-1.00f, +1.00f, -3.00f);
+		glVertex3f(-1.00f, +1.00f, -0.f);
+		glVertex3f(-1.00f, -1.00f, -0.f);
+	}
+	glEnd();
+
+	// Right - Pos X
+	//glBindTexture(GL_TEXTURE_2D, skybox_tex[0]);
+	glBegin(GL_QUADS);
+	{
+		glVertex3f(+1.00f, +1.00f, -3.00f);
+		glVertex3f(+1.00f, -1.00f, -3.00f);
+		glVertex3f(+1.00f, -1.00f, -0.00f);
+		glVertex3f(+1.00f, +1.00f, -0.00f);
+	}
+	glEnd();
+
+	//glPopAttrib();
+	glPopMatrix();
+}
+
 void render() {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -578,64 +629,10 @@ void render() {
 	}
 
 	// Skybox
-	glEnable(GL_TEXTURE_2D);
+	//renderSkybox();
 
 	glPushMatrix();
-
-	glLoadIdentity();
-
-	glPushAttrib(GL_ENABLE_BIT);
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_LIGHTING);
-	glDisable(GL_BLEND);
-
-	//glColor3f(0.0f, 0.0f, 0.0f);
-
-	// Front - Neg Z
-	glBindTexture(GL_TEXTURE_2D, skybox_tex[5]);
-	glBegin(GL_QUADS);
-	{
-		glTexCoord2f(0, 0);
-		glVertex3f(+1.00f, -1.00f, -3.00f);
-		glTexCoord2f(1, 0);
-		glVertex3f(+1.00f, +1.00f, -3.00f);
-		glTexCoord2f(1, 1);
-		glVertex3f(-1.00f, +1.00f, -3.00f);
-		glTexCoord2f(0, 1);
-		glVertex3f(-1.00f, -1.00f, -3.00f);
-	}
-	glEnd();
-
-	// Left - Neg X
-	glBindTexture(GL_TEXTURE_2D, skybox_tex[1]);
-	glBegin(GL_QUADS);
-	{
-		glTexCoord2f(0, 0);
-		glVertex3f(-1.00f, -1.00f, -3.00f);
-		glTexCoord2f(1, 0);
-		glVertex3f(-1.00f, +1.00f, -3.00f);
-		glTexCoord2f(1, 1);
-		glVertex3f(-1.00f, +1.00f, -0.f);
-		glTexCoord2f(0, 1);
-		glVertex3f(-1.00f, -1.00f, -0.f);
-	}
-	glEnd();
-
-	// Right - Pos X
-	glBindTexture(GL_TEXTURE_2D, skybox_tex[0]);
-	glBegin(GL_QUADS);
-	{
-		glTexCoord2f(0, 0);
-		glVertex3f(+1.00f, +1.00f, -3.00f);
-		glTexCoord2f(1, 0);
-		glVertex3f(+1.00f, -1.00f, -3.00f);
-		glTexCoord2f(1, 1);
-		glVertex3f(+1.00f, -1.00f, -0.00f);
-		glTexCoord2f(0, 1);
-		glVertex3f(+1.00f, +1.00f, -0.00f);
-	}
-	glEnd();
-
+	glEnable(GL_NORMALIZE);
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_DEPTH_TEST);
@@ -644,14 +641,6 @@ void render() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_LINE_SMOOTH);
-	glPopAttrib();
-	glPopMatrix();
-
-
-	glDisable(GL_TEXTURE_2D);
-
-	glPushMatrix();
-	glEnable(GL_NORMALIZE);
 
 	if (scene_list == 0) {
 		scene_list = glGenLists(1);
