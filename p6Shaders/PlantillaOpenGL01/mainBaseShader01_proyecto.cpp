@@ -30,7 +30,7 @@ GLfloat posLX;
 GLfloat posLZ;
 
 float indexR = 5.500f;
-float R0 = pow(1.0 - indexR, 2.0) / pow(1.0 + indexR, 2.0);
+float R0 = pow(1.0f - indexR, 2.0f) / pow(1.0f + indexR, 2.0f);
 
 float m = 0.0f;
 float sharpness = 0.0f;
@@ -65,18 +65,18 @@ void ejesCoordenada() {
 	for (i = -10; i <= 10; i++) {
 		if (i != 0) {
 			if ((i % 2) == 0) {
-				glVertex2f(i, 0.4);
-				glVertex2f(i, -0.4);
+				glVertex2f(i, 0.4f);
+				glVertex2f(i, -0.4f);
 
-				glVertex2f(0.4, i);
-				glVertex2f(-0.4, i);
+				glVertex2f(0.4f, i);
+				glVertex2f(-0.4f, i);
 			}
 			else {
-				glVertex2f(i, 0.2);
-				glVertex2f(i, -0.2);
+				glVertex2f(i, 0.2f);
+				glVertex2f(i, -0.2f);
 
-				glVertex2f(0.2, i);
-				glVertex2f(-0.2, i);
+				glVertex2f(0.2f, i);
+				glVertex2f(-0.2f, i);
 			}
 		}
 	}
@@ -87,7 +87,6 @@ void ejesCoordenada() {
 }
 
 void changeViewport(int w, int h) {
-	float aspectratio;
 
 	if (h == 0)
 	{ h = 1; }
@@ -168,21 +167,21 @@ void Keyboard(unsigned char key, int x, int y) {
 		break;
 
 	case 'e':
-		sharpness += 0.02;
+		sharpness += 0.02f;
 		if (sharpness > 1.0f)
 			sharpness = 1.0f;
 		break;
 	case 'r':
-		sharpness -= 0.02;
+		sharpness -= 0.02f;
 		if (sharpness < 0.0f)
 			sharpness = 0.0f;
 		break;
 
 	case 'd':
-		roughness += 0.02;
+		roughness += 0.02f;
 		break;
 	case 'f':
-		roughness -= 0.02;
+		roughness -= 0.02f;
 		if (roughness < 0.1f)
 			roughness = 0.1f;
 		break;
@@ -296,26 +295,23 @@ void render() {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	GLfloat zExtent, xExtent, xLocal, zLocal;
-	int loopX, loopZ;
-
 	glLoadIdentity();
 	gluLookAt(10.0, 3.0, 5.0, 0.0, 1.5, 0.0, 0.0, 1.0, 0.0);
 
 	// Luz y material
-	GLfloat mat_diffuse[] = { 1.0, 0.7, 0.5, 1.0 };
-	GLfloat mat_specular[] = { 1.0, 0.5, 0.5, 1.0 };
-	GLfloat mat_ambient[] = { 0.1, 0.1 , 0.1, 1.0 };
-	GLfloat mat_shininess[] = { 10.0 };
+	GLfloat mat_diffuse[] = { 1.0f, 0.7f, 0.5f, 1.0f };
+	GLfloat mat_specular[] = { 1.0f, 0.5f, 0.5f, 1.0f };
+	GLfloat mat_ambient[] = { 0.1f, 0.1f , 0.1f, 1.0f };
+	GLfloat mat_shininess[] = { 10.0f };
 
 	glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
 	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
 	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 
-	GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
-	GLfloat light_diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
-	GLfloat light_specular[] = { 0.8, 0.8, 0.8, 1.0 };
+	GLfloat light_ambient[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+	GLfloat light_diffuse[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+	GLfloat light_specular[] = { 0.8f, 0.8f, 0.8f, 1.0f };
 	//GLfloat light_position[] = { posLX, 10.0, posLZ, 1.0 };
 	GLfloat light_position[] = { 10.0, 10.0, 10.0, 1.0 };
 
@@ -371,7 +367,7 @@ void render() {
 	*/
 
 	glPushMatrix();
-	glTranslatef(5.2, 3.25, 0.0);
+	glTranslatef(5.2f, 3.25f, 0.0f);
 	glutSolidSphere(0.4f, 30, 30);
 	glPopMatrix();
 
