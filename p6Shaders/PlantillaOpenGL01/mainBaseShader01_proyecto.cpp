@@ -32,14 +32,14 @@ GLfloat posLZ;
 float indexR = 5.500f;
 float R0 = pow(1.0f - indexR, 2.0f) / pow(1.0f + indexR, 2.0f);
 
-float m = 0.0f;
-float sharpness = 0.0f;
-float roughness = 0.1f;
-float bias = 0.0f;
-float specularIntensity = 0.0f;
-float diffuseIntensity = 0.0f;
-float Kfr = 0.0f;
-float eta = 0.0f;
+float m = 0.130f;
+float sharpness = 0.840f;
+float roughness = 0.140f;
+float bias = 0.5f;
+float specularIntensity = 1.0f;
+float diffuseIntensity = 1.0f;
+float Kfr = 1.0f;
+float eta = 1.0f;
 float refraction = 1.0f;
 
 bool fresnel = false;
@@ -329,9 +329,7 @@ void render() {
 
 	if (shader){
 		shader->begin();
-	}
-
-	shader->setUniform1f("bias", bias);
+		shader->setUniform1f("bias", bias);
 	shader->setUniform1f("indexR", indexR);
 	shader->setUniform1f("R0", R0);
 	shader->setUniform1f("m", m);
@@ -346,6 +344,9 @@ void render() {
 	shader->setUniform1f("cookSpec", cookSpec ? 1.0f : 0.0f);
 	shader->setUniform1f("glossySharp", glossySharp ? 1.0f : 0.0f);
 	shader->setUniform1f("biasedDiff", biasedDiff ? 1.0f : 0.0f);
+	}
+
+	
 
 	// COdigo para el mesh
 	glEnable(GL_NORMALIZE);
