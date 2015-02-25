@@ -331,30 +331,12 @@ void render() {
 
 	glPushMatrix();
 
-	if (shader)
-	{ shader->begin(); }
-
-	/*
-	float indexR = 5.500f;
-	float R0 = pow(1.0 - indexR, 2.0) / pow(1.0 + indexR, 2.0);
-
-	float m = 0.0f;
-	float sharpness = 0.0f;
-	float roughness = 0.1f;
-	float bias = 0.0f;
-	float specularIntensity = 0.0f;
-	float diffuseIntensity = 0.0f;
-	float Kfr = 0.0f;
-	float eta = 0.0f;
-	float refraction = 1.0f;
-
-	bool fresnel = false;
-	bool biasedDiff = false;
-	bool glossySharp = false;
-bool cookSpec = false;
-	*/
+	if (shader){
+		shader->begin();
+	}
 
 	shader->setUniform1f("bias", bias);
+	shader->setUniform1f("indexR", indexR);
 	shader->setUniform1f("R0", R0);
 	shader->setUniform1f("m", m);
 	shader->setUniform1f("sharpness", sharpness);
