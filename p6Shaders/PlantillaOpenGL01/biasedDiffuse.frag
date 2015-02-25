@@ -1,21 +1,27 @@
-
 //Bias Diffuse variables
 uniform float bias;
 
 //Glossy Variables
-uniform float sharpness = 0.840f;
-uniform float roughness = 0.140f;
+uniform float sharpness;
+uniform float roughness;
 
 //Cook-Torrance variables
-uniform float m = 0.130f;
+uniform float m;
 uniform float indexR = 5.500f;
 uniform float R0;
+unifrom float refraction;
 
 //Fresnel
+uniform float eta;
+uniform float Kfr;
 
-uniform float eta = 1.0f;
+uniform float specularIntensity;
+uniform float diffuseIntensity;
 
-uniform float Kfr = 1.0f;
+uniform float fresnel;
+uniform float cookSpec;
+uniform float glossySharp;
+uniform float biasedDiff;
 
 varying vec4 cLightDiff, cLightAmb, cLightSpec;
 varying vec4 cMatDiff, cMatAmb, cMatSpec;
