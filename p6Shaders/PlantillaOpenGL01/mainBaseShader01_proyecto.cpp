@@ -30,6 +30,8 @@ cwc::glShader *shader;
 GLfloat posLX;
 GLfloat posLZ;
 
+float indexR = 5.500f;
+float R0 = pow(1.0-indexR,2.0)/pow(1.0+indexR,2.0);
 
 void ejesCoordenada() {
 	
@@ -105,6 +107,9 @@ void init(){
 
 	posLX = 10.0;
 	posLZ = 10.0;
+
+	
+	
 
 
 }
@@ -229,25 +234,26 @@ void render(){
 
 	if (shader) shader->begin();
 	shader->setUniform1f("bias", 0.5);
+	shader -> setUniform1f("R0",R0);
 
 	// COdigo para el mesh
 	glEnable(GL_NORMALIZE);
-	glTranslatef(0.0, -2.0, 0.0);
+	/*glTranslatef(0.0, -2.0, 0.0);
 	glRotatef(90.0, 0.0, 1.0, 0.0);
 	glScalef(30.0, 30.0, 30.0);
 	if(scene_list == 0) {
 	    scene_list = glGenLists(1);
 	    glNewList(scene_list, GL_COMPILE);
-            // now begin at the root node of the imported data and traverse
-            // the scenegraph by multiplying subsequent local transforms
-            // together on GL's matrix stack.
+             now begin at the root node of the imported data and traverse
+             the scenegraph by multiplying subsequent local transforms
+             together on GL's matrix stack.
 	    recursive_render(scene, scene->mRootNode);
 	    glEndList();
 	}
 	glCallList(scene_list);
 	
 	glPopMatrix();
-	
+	*/
 	
 	glPushMatrix();
 	glTranslatef(5.2, 3.25, 0.0);
@@ -356,13 +362,13 @@ int main (int argc, char** argv) {
 	// is specified, we try to locate one of the more expressive test 
 	// models from the repository (/models-nonbsd may be missing in 
 	// some distributions so we need a fallback from /models!).
-	
-	
-	if( 0 != loadasset( argc >= 2 ? argv[1] : "dragon_vrip_res2.ply")) {
-		if( argc != 1 || (0 != loadasset( "dragon_vrip_res2.ply") && 0 != loadasset( "dragon_vrip_res2.ply"))) { 
-			return -1;
-		}
-	}
+	//
+	//
+	//if( 0 != loadasset( argc >= 2 ? argv[1] : "dragon_vrip_res2.ply")) {
+	//	if( argc != 1 || (0 != loadasset( "dragon_vrip_res2.ply") && 0 != loadasset( "dragon_vrip_res2.ply"))) { 
+	//		return -1;
+	//	}
+	//}
 
 
 
