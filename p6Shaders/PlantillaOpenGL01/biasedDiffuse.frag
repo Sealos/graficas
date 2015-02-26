@@ -7,21 +7,20 @@ uniform float roughness = 0.140;
 
 //Cook-Torrance variables
 uniform float m;
-uniform float indexR = 5.500;
 uniform float R0;
-uniform float refraction = 1.0;
+uniform float refraction;
 
 //Fresnel
 uniform float eta = 1.0;
-uniform float Kfr =1.0;
+uniform float Kfr = 1.0;
 
 uniform float specularIntensity = 1.0;
 uniform float diffuseIntensity = 1.0;
 
-uniform float fresnel = 0.0;
-uniform float cookSpec = 1.0;
-uniform float glossySharp = 0.0;
-uniform float biasedDiff = 1.0;
+uniform float fresnel;
+uniform float cookSpec;
+uniform float glossySharp;
+uniform float biasedDiff;
 
 varying vec4 cLightDiff, cLightAmb, cLightSpec;
 varying vec4 cMatDiff, cMatAmb, cMatSpec;
@@ -51,8 +50,8 @@ float geom(vec3 H){
 	return min (1.0, min(masking,shadowing));
 }
 
-float fresnelCT(){ 
-	return R0 + (1.0- R0) * pow(1.0- dot(L.xyz,N.xyz),5.0);
+float fresnelCT() { 
+	return refraction + (1.0- refraction) * pow(1.0- dot(L.xyz,N.xyz),5.0);
 }
 
 float cookTorrance(vec3 H){
@@ -76,29 +75,52 @@ float glossyComp(vec3 H){
 	return c;
 }
 
-float biasFunc(float t,float a){
-
+float biasFunc(float t,float a) {
 	return pow(t, -(log(a)/log(2.0)));
 }
 
+vec4 fresnelSchlick(vec3 H) {
+
+	vec3 Nn = normalize(N);
+	vec3 Vn = -normalize(H);
+
+	float dotnv = abs(dot(Nn, Vn));
+	float Kr = eta + (1 - eta) * pow(1 - dotnv, 5);
+	Kr = Kfr * biasFunc(Kr, bias);
+	
+	vec4 color = vec4(Kr, Kr, Kr, 1.0);
+
+	return color;
+	
+}
+
 void main (void)  
-{     
-   
-   vec4 cFinal = vec4(0.0,0.0,0.0,1.0);
-   vec4 iSpec;
-   vec4 iDiff;
-   vec3 H = normalize(L.xyz + normalize(camDirection));
-   iSpec = cookTorrance(H)* cLightSpec*cMatSpec;
-   iSpec = clamp(iSpec,0.0,1.0);
+{
+	vec4 iSpec = vec4(1.0,1.0,1.0,1.0);
+	vec4 iDiff = vec4(1.0,1.0,1.0,1.0);
 
-   //Componente difuso.
-   iDiff = biasFunc(dot(N,L.xyz),bias) * (cLightDiff * cMatDiff);
-   iDiff = clamp(iDiff,0.0,1.0);
+	vec4 cFinal = vec4(0.0,0.0,0.0,1.0);
+	vec3 H = normalize(L.xyz + normalize(camDirection));
+	if (cookSpec > 0.0)
+		iSpec = cookTorrance(H) * cLightSpec * cMatSpec;
 
+	if (glossySharp > 0.0)
+		iSpec = glossyComp(H) * cLightSpec * cMatSpec;
+	
+	iSpec = clamp(iSpec,0.0,1.0) * specularIntensity;
 
-   cFinal =vec4(10.0,0.0,0.0,1.0)*cLightAmb*cMatAmb + iDiff + iSpec;
+	//Componente difuso.
+	if (biasedDiff > 0.0)
+		iDiff = biasFunc(dot(N,L.xyz),bias) * (cLightDiff * cMatDiff);
 
-   cFinal.w = 1.0;
-   gl_FragColor = cFinal;
+	iDiff = clamp(iDiff,0.0,1.0) * diffuseIntensity;
 
-}    
+	if (fresnel > 0.0)
+		cFinal = fresnelSchlick(camDirection)*cLightAmb*cMatAmb;
+	else
+		cFinal = vec4(10.0,0.0,0.0,1.0)*cLightAmb*cMatAmb + iDiff + iSpec;
+
+	cFinal.w = 1.0;
+	gl_FragColor = cFinal;
+
+}  

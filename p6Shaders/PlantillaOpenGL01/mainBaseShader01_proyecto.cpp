@@ -29,23 +29,23 @@ cwc::glShader* shader;
 GLfloat posLX;
 GLfloat posLZ;
 
-float indexR = 5.500f;
-float R0 = pow(1.0f - indexR, 2.0f) / pow(1.0f + indexR, 2.0f);
+GLfloat indexR = 5.500f;
+GLfloat R0 = pow(1.0f - indexR, 2.0f) / pow(1.0f + indexR, 2.0f);
 
-float m = 0.130f;
-float sharpness = 0.840f;
-float roughness = 0.140f;
-float bias = 0.5f;
-float specularIntensity = 1.0f;
-float diffuseIntensity = 1.0f;
-float Kfr = 1.0f;
-float eta = 1.0f;
-float refraction = 1.0f;
+GLfloat m = 0.130f;
+GLfloat sharpness = 0.840f;
+GLfloat roughness = 0.140f;
+GLfloat bias = 0.5f;
+GLfloat specularIntensity = 1.0f;
+GLfloat diffuseIntensity = 1.0f;
+GLfloat Kfr = 2.60f;
+GLfloat eta = 0.0f;
+GLfloat refraction = 1.0f;
 
 bool fresnel = false;
-bool biasedDiff = false;
-bool glossySharp = false;
-bool cookSpec = false;
+bool biasedDiff = true;
+bool glossySharp = true;
+bool cookSpec = true;
 
 void ejesCoordenada() {
 	glLineWidth(2.5);
@@ -123,12 +123,14 @@ void Keyboard(unsigned char key, int x, int y) {
 		// activa el specular asignado para cada equipo 
 	case '1':
 		glossySharp = true;
+		cookSpec = false;
 		break;
 		// activa el Cook Torrance specular
 	case '2':
 		cookSpec = true;
+		glossySharp = false;
 		break;
-		// activa el efecto fresnel, este efecto debeverse solo
+		// activa el efecto fresnel, este efecto debe verse solo
 	case '3':
 		fresnel = true;
 		glossySharp = false;
@@ -136,8 +138,8 @@ void Keyboard(unsigned char key, int x, int y) {
 		break;
 		// desactiva el efecto fresnel
 	case '4':
-		break;
 		fresnel = false;
+		break;
 
 	case 'a':
 		m += 0.01f;
@@ -218,8 +220,6 @@ void Keyboard(unsigned char key, int x, int y) {
 		break;
 	case 'x':
 		bias -= 0.1f;
-		break;
-	case 'y':
 		break;
 	}
 
@@ -329,43 +329,42 @@ void render() {
 
 	if (shader){
 		shader->begin();
+
 		shader->setUniform1f("bias", bias);
-	shader->setUniform1f("indexR", indexR);
-	shader->setUniform1f("R0", R0);
-	shader->setUniform1f("m", m);
-	shader->setUniform1f("sharpness", sharpness);
-	shader->setUniform1f("roughness", roughness);
-	shader->setUniform1f("specularIntensity", specularIntensity);
-	shader->setUniform1f("diffuseIntensity", diffuseIntensity);
-	shader->setUniform1f("Kfr", Kfr);
-	shader->setUniform1f("eta", eta);
-	shader->setUniform1f("refraction", refraction);
-	shader->setUniform1f("fresnel", fresnel ? 1.0f : 0.0f);
-	shader->setUniform1f("cookSpec", cookSpec ? 1.0f : 0.0f);
-	shader->setUniform1f("glossySharp", glossySharp ? 1.0f : 0.0f);
-	shader->setUniform1f("biasedDiff", biasedDiff ? 1.0f : 0.0f);
+		shader->setUniform1f("m", m);
+		shader->setUniform1f("sharpness", sharpness);
+		shader->setUniform1f("roughness", roughness);
+		shader->setUniform1f("specularIntensity", specularIntensity);
+		shader->setUniform1f("diffuseIntensity", diffuseIntensity);
+		shader->setUniform1f("Kfr", Kfr);
+		shader->setUniform1f("eta", eta);
+		shader->setUniform1f("refraction", refraction);
+		shader->setUniform1f("fresnel", fresnel ? 1.0f : 0.0f);
+		shader->setUniform1f("cookSpec", cookSpec ? 1.0f : 0.0f);
+		shader->setUniform1f("glossySharp", glossySharp ? 1.0f : 0.0f);
+		shader->setUniform1f("biasedDiff", biasedDiff ? 1.0f : 0.0f);
 	}
 
 	
 
 	// COdigo para el mesh
+	/*now begin at the root node of the imported data and traverse
+	the scenegraph by multiplying subsequent local transforms
+	together on GL's matrix stack.*/
 	glEnable(GL_NORMALIZE);
-	/*glTranslatef(0.0, -2.0, 0.0);
+	glTranslatef(0.0, -2.0, 0.0);
 	glRotatef(90.0, 0.0, 1.0, 0.0);
 	glScalef(30.0, 30.0, 30.0);
 	if(scene_list == 0) {
 	scene_list = glGenLists(1);
 	glNewList(scene_list, GL_COMPILE);
-	now begin at the root node of the imported data and traverse
-	the scenegraph by multiplying subsequent local transforms
-	together on GL's matrix stack.
 	recursive_render(scene, scene->mRootNode);
 	glEndList();
 	}
 	glCallList(scene_list);
-
+	
 	glPopMatrix();
-	*/
+
 
 	glPushMatrix();
 	glTranslatef(5.2f, 3.25f, 0.0f);
@@ -467,11 +466,11 @@ int main(int argc, char** argv) {
 	// some distributions so we need a fallback from /models!).
 	//
 	//
-	//if( 0 != loadasset( argc >= 2 ? argv[1] : "dragon_vrip_res2.ply")) {
-	//  if( argc != 1 || (0 != loadasset( "dragon_vrip_res2.ply") && 0 != loadasset( "dragon_vrip_res2.ply"))) {
-	//      return -1;
-	//  }
-	//}
+	if( 0 != loadasset( argc >= 2 ? argv[1] : "dragon_vrip_res2.ply")) {
+	  if( argc != 1 || (0 != loadasset( "dragon_vrip_res2.ply") && 0 != loadasset( "dragon_vrip_res2.ply"))) {
+	      return -1;
+	  }
+	}
 
 	init();
 

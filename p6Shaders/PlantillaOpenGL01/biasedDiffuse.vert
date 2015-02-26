@@ -1,3 +1,5 @@
+#version 120
+
 varying vec4 cLightDiff, cLightAmb, cLightSpec;
 varying vec4 cMatDiff, cMatAmb, cMatSpec;
 varying vec3 camDirection;
