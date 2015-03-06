@@ -34,7 +34,6 @@ bool Player::onUpdate(Real dtime) {
 	float rotationAmount = 1.f;
 	float strafeRotSpeed = 200.f;
 	bool reiniciarPosicion = false;
-	std::cout << keyboard << std::endl;
 	keyboard->capture();
 
 	if (keyboard->isKeyDown(OIS::KC_ESCAPE))

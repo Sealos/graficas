@@ -70,20 +70,18 @@ public:
 		light1->setPosition(0, 0, 200);
 		light1-> setDiffuseColour(0.8f, 0.8f, 0.8f);
 		Entity *torus = mSceneMgr->createEntity("ObjetoPrueba", "usb_torus.mesh");
-		Entity *cilindro =  mSceneMgr->createEntity("ObjetoPrueba1", "usb_cubomod01.mesh");
-		torus->setMaterialName("lambert3");
+		//torus->setMaterialName("lambert3");
 		player = mSceneMgr->createSceneNode("player");
 		//player->showBoundingBox(true);
 		player->attachObject(torus);
 		player->scale(3.0, 3.0, 3.0);
 		padre = mSceneMgr->createSceneNode();
 		padre->addChild(cameraNode);
-		mSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
+		//mSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
 		padre-> addChild(player);
 		cPlayer = new Player(mSceneMgr, mWindow, player, padre);
 		mSceneMgr->getRootSceneNode()->addChild(padre);
 	}
-
 };
 
 
