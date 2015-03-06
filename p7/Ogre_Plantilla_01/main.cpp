@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "player.h"
 #include "coin.h"
-#include "Ogre\ExampleApplication.h"
 
 class MainLoopFL : public FrameListener {
 private:
@@ -32,6 +31,8 @@ public:
 	~Starfox() {
 		if (mainLoop)
 			delete mainLoop;
+		if (cPlayer)
+			delete cPlayer;
 	}
 
 	void createFrameListener() {
@@ -63,10 +64,6 @@ public:
 		cameraNode->attachObject(mCamera);
 		mSceneMgr->setAmbientLight(ColourValue(1, 1, 1));
 		mSceneMgr->setShadowTechnique(SHADOWTYPE_STENCIL_ADDITIVE);
-		Entity *entEscenario01 = mSceneMgr->createEntity("EscenarioBase01", "proyectoOgreI.mesh");
-		SceneNode *nodeEscenario01 = mSceneMgr->createSceneNode("NodeMesh01");
-		mSceneMgr->getRootSceneNode()->addChild(nodeEscenario01);
-		nodeEscenario01->attachObject(entEscenario01);
 		//Luces
 		Light *light1 = mSceneMgr->createLight("Light1");
 		light1->setType(Light::LT_POINT);

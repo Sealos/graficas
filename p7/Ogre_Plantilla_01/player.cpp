@@ -19,6 +19,8 @@ Player::Player(SceneManager *sm, RenderWindow *win, SceneNode *_playerNode, Scen
 Player::~Player() {
 	_man->destroyInputObject(keyboard);
 	OIS::InputManager::destroyInputSystem(_man);
+	_padreNode->removeAndDestroyAllChildren();
+	mSceneMgr->destroySceneNode(_padreNode);
 }
 
 bool Player::onUpdate(Real dtime) {
