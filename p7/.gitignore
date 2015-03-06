@@ -11,6 +11,8 @@
 
 ipch/
 
+*.opensdf
+
 # Compiled Dynamic libraries
 *.so
 *.dylib
