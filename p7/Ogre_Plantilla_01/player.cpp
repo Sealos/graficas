@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "player.h"
 
-Player::Player(SceneManager *sm, RenderWindow *win, SceneNode *_playerNode, SceneNode *_padreNode)
-	: mSceneMgr(sm), _playerNode(_playerNode), _padreNode(_padreNode) {
+Player::Player(SceneManager *sm, RenderWindow *win, SceneNode *_padreNode)
+	: mSceneMgr(sm), _padreNode(_padreNode) {
 	//Helper variables for extracting the window handle
 	size_t windowHnd = 0;
 	std::stringstream windowHndStr;
@@ -14,6 +14,17 @@ Player::Player(SceneManager *sm, RenderWindow *win, SceneNode *_playerNode, Scen
 	//Create the input system
 	_man = OIS::InputManager::createInputSystem(pl);
 	keyboard = static_cast<OIS::Keyboard *>(_man->createInputObject(OIS::OISKeyboard, false));
+	createPlayerNode();
+}
+
+void Player::createPlayerNode() {
+	Entity *torus = mSceneMgr->createEntity("ObjetoPrueba", "usb_torus.mesh");
+	torus->setMaterialName("lambert1");
+	_playerNode = mSceneMgr->createSceneNode();
+	_playerNode->showBoundingBox(true);
+	_playerNode->attachObject(torus);
+	_playerNode->scale(3.0, 3.0, 3.0);
+	_padreNode->addChild(_playerNode);
 }
 
 Player::~Player() {
