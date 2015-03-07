@@ -5,7 +5,7 @@ public:
 	SceneNode *_node;
 	Ring(){};
 	Ring(SceneNode *);
-	~Ring();
+	~Ring(){};
 
 	void onUpdate(Real);
 	bool isColliding(Vector3);

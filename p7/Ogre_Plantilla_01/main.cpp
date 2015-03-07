@@ -2,6 +2,11 @@
 #include "player.h"
 #include "coin.h"
 #include "ring.h"
+#include "obstacle.h"
+
+std::vector<Ring> rings = std::vector<Ring>(20);
+std::vector<Coin> coins = std::vector<Coin>(20);
+std::vector<Obstacle> obstacles = std::vector<Obstacle>(20);
 
 class MainLoopFL : public FrameListener {
 private:
@@ -17,6 +22,16 @@ public:
 
 	bool frameStarted(const FrameEvent &evt) {
 		Vector3 playerPos = player->_padreNode->getPosition();
+		AxisAlignedBox bbox = player->_padreNode->_getWorldAABB();
+
+		for (auto it = rings.begin(); it != rings.end(); ++it)
+			player->checkCollision(*it);
+
+		for (auto it = coins.begin(); it != coins.end(); ++it)
+			player->checkCollision(*it);			
+
+		for (auto it = obstacles.begin(); it != obstacles.end(); ++it)
+			player->checkCollision(*it);
 
 		return player->onUpdate(evt.timeSinceLastFrame);
 	}

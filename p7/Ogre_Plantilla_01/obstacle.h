@@ -6,8 +6,9 @@ public:
 	Vector3 rotationVector;
 	Real rotationSpeed;
 
-	Obstacle();
+	Obstacle(){};
 	Obstacle(SceneNode *, Vector3, Real rotationSpeed = 100.f);
+	~Obstacle(){};
 	void onUpdate(Real);
-	bool isColliding(Vector3);
+	bool isColliding(AxisAlignedBox&);
 };

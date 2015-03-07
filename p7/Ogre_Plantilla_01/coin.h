@@ -5,7 +5,7 @@ public:
 	SceneNode *_node;
 	Coin(){};
 	Coin(SceneNode *);
-	~Coin();
+	~Coin(){};
 
 	void onUpdate(Real);
 	bool isColliding(Vector3);

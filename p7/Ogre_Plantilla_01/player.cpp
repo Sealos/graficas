@@ -103,8 +103,10 @@ bool Player::onUpdate(Real dtime) {
 	} else {
 		if (_playerNode->getOrientation().getRoll().valueDegrees() > 0.2f)
 			sign = -1;
+
 		else if (_playerNode->getOrientation().getRoll().valueDegrees() < -0.2f)
 			sign = 1;
+
 		else
 			sign = 0;
 
@@ -129,39 +131,32 @@ bool Player::onUpdate(Real dtime) {
 
 	if (deltaY > 0.0f && newTop > y_border[0])
 		translatePlayer.y = 0.0;
+
 	else if (deltaY < 0.0f && newBottom < y_border[1])
 		translatePlayer.y = 0.0;
 
 	if (deltaX > 0.0f && newRight > x_border[0])
 		translatePlayer.x = 0.0;
+
 	else if (deltaX < 0.0f && newLeft < x_border[1])
 		translatePlayer.x = 0.0;
 
 	// TODO(sdecolli): Revisar el near y far
 	if (deltaZ > 0.0f && newNear > z_border[1])
 		translatePlayer.z = 0.0;
+
 	else if (deltaZ < 0.0f && newFar < z_border[0])
 		translatePlayer.z = 0.0;
 
 	_padreNode->translate(translatePlayer * dtime * playerSpeed);
 	_padreNode->rotate(rotatePlayer);
 	_playerNode->rotate(strafePlayer);
-
 	return true;
 }
 
-inline void Player::checkCollisionWithCoin(Coin &c) {
-
-}
-
-inline void Player::onCollisionWithCoin(Coin &c) {
-
-}
-
-inline void Player::checkCollisionWithRing(Ring &c) {
-
-}
-
-inline void Player::onCollisionWithRing(Ring &c) {
-
-}
+void Player::onCollision(Coin&){}
+void Player::onCollision(Ring&){}
+void Player::onCollision(Obstacle&){}
+void Player::checkCollision(Coin&){}
+void Player::checkCollision(Ring&){}
+void Player::checkCollision(Obstacle&){}

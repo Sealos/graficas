@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "coin.h"
 
+Real rotationSpeed = 100.f;
+
 void Coin::onUpdate(Real dtime) {
 	Quaternion rotation(Degree(0), Vector3::UNIT_Y);
 	rotation = rotation * Quaternion(Degree((rotationSpeed * dtime)), Vector3::UNIT_Y);

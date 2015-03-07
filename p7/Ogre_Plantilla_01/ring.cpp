@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "ring.h"
 
-Real rotationSpeed = 100.f;
-
 void Ring::onUpdate(Real dtime) {
 }
 
