@@ -1,11 +1,11 @@
 #pragma once
 
-class Coin {
+class Ring {
 public:
 	SceneNode *_node;
-	Coin(){};
-	Coin(SceneNode *);
-	~Coin();
+	Ring(){};
+	Ring(SceneNode *);
+	~Ring();
 
 	void onUpdate(Real);
 	bool isColliding(Vector3);

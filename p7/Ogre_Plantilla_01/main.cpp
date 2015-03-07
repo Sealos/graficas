@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "player.h"
 #include "coin.h"
+#include "ring.h"
 
 class MainLoopFL : public FrameListener {
 private:
@@ -15,6 +16,8 @@ public:
 	}
 
 	bool frameStarted(const FrameEvent &evt) {
+		Vector3 playerPos = player->_padreNode->getPosition();
+
 		return player->onUpdate(evt.timeSinceLastFrame);
 	}
 };

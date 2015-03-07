@@ -27,6 +27,12 @@
     <ClCompile Include="player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ring.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="obstacle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -36,6 +42,12 @@
       <Filter>Resource Files</Filter>
     </ClInclude>
     <ClInclude Include="player.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ring.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="obstacle.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,5 +1,6 @@
 #pragma once
 #include "coin.h"
+#include "ring.h"
 
 const Real x_border[2] = {10000.0f, -10000.0f};
 const Real y_border[2] = {5000.0f, -5000.0f};
@@ -13,10 +14,15 @@ public:
 	SceneNode *_padreNode;
 	OIS::InputManager *_man;
 
+	size_t lives;
+
 	bool onUpdate(Real);
 	void createPlayerNode();
 	Player() {};
 	~Player();
 	Player(SceneManager *, RenderWindow *, SceneNode *); 
-	bool onCollisionWithCoin(Coin *);
+	void onCollisionWithCoin(Coin&);
+	void checkCollisionWithCoin(Coin&);
+	void onCollisionWithRing(Ring&);
+	void checkCollisionWithRing(Ring&);
 };

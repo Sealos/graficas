@@ -1,13 +1,18 @@
 #include "stdafx.h"
-#include "coin.h"
+#include "obstacle.h"
 
-void Coin::onUpdate(Real dtime) {
-	Quaternion rotation(Degree(0), Vector3::UNIT_Y);
-	rotation = rotation * Quaternion(Degree((rotationSpeed * dtime)), Vector3::UNIT_Y);
+Obstacle::Obstacle(SceneNode *_node, Vector3 rotationVector, Real rotationSpeed = 100.f)
+	: _node(_node), rotationVector(rotationVector), rotationSpeed(rotationSpeed) {
+
+}
+
+void Obstacle::onUpdate(Real dtime) {
+	Quaternion rotation(Degree(0), rotationVector);
+	rotation = rotation * Quaternion(Degree((rotationSpeed * dtime)), rotationVector);
 	_node->rotate(rotation);
 }
 
-bool Coin::isColliding(Vector3 point) {
+bool Obstacle::isColliding(Vector3 point) {
 	Vector3 farLeftTop = _node->_getWorldAABB().getCorner(AxisAlignedBox::CornerEnum::FAR_LEFT_TOP);
 	Vector3 nearRightBottom = _node->_getWorldAABB().getCorner(AxisAlignedBox::CornerEnum::NEAR_RIGHT_BOTTOM);
 

@@ -2,7 +2,7 @@
 #include "player.h"
 
 Player::Player(SceneManager *sm, RenderWindow *win, SceneNode *_padreNode)
-	: mSceneMgr(sm), _padreNode(_padreNode) {
+	: mSceneMgr(sm), _padreNode(_padreNode), lives(3) {
 	//Helper variables for extracting the window handle
 	size_t windowHnd = 0;
 	std::stringstream windowHndStr;
@@ -41,7 +41,7 @@ bool Player::onUpdate(Real dtime) {
 	Quaternion strafePlayer(Degree(0), Vector3::UNIT_Z);
 	float speedFactor = 2000.0f;
 	float playerSpeed = 1000.f;
-	float rotationSpeed = 50.f;
+	float rotationSpeed = 100.f;
 	float rotationAmount = 1.f;
 	float strafeRotSpeed = 200.f;
 	bool reiniciarPosicion = false;
@@ -148,4 +148,20 @@ bool Player::onUpdate(Real dtime) {
 	_playerNode->rotate(strafePlayer);
 
 	return true;
+}
+
+inline void Player::checkCollisionWithCoin(Coin &c) {
+
+}
+
+inline void Player::onCollisionWithCoin(Coin &c) {
+
+}
+
+inline void Player::checkCollisionWithRing(Ring &c) {
+
+}
+
+inline void Player::onCollisionWithRing(Ring &c) {
+
 }

@@ -1,13 +1,12 @@
 #include "stdafx.h"
-#include "coin.h"
+#include "ring.h"
 
-void Coin::onUpdate(Real dtime) {
-	Quaternion rotation(Degree(0), Vector3::UNIT_Y);
-	rotation = rotation * Quaternion(Degree((rotationSpeed * dtime)), Vector3::UNIT_Y);
-	_node->rotate(rotation);
+Real rotationSpeed = 100.f;
+
+void Ring::onUpdate(Real dtime) {
 }
 
-bool Coin::isColliding(Vector3 point) {
+bool Ring::isColliding(Vector3 point) {
 	Vector3 farLeftTop = _node->_getWorldAABB().getCorner(AxisAlignedBox::CornerEnum::FAR_LEFT_TOP);
 	Vector3 nearRightBottom = _node->_getWorldAABB().getCorner(AxisAlignedBox::CornerEnum::NEAR_RIGHT_BOTTOM);
 
