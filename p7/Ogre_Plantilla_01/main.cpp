@@ -94,7 +94,7 @@ SceneNode* construirRejas(SceneManager* sceneMgr){
 	for(int i =0 ; i < 6; ++i) {
 		SceneNode* nodoBarra = sceneMgr -> createSceneNode();
 		Entity* barra = sceneMgr -> createEntity("Poly02.mesh");
-		//barra -> setMaterialName("Examples/BumpyMetal");
+		barra -> setMaterialName("Examples/BumpyMetal");
 		nodoBarra -> attachObject(barra);
 		nodoBarra -> translate(0.0,50.0f+i*100.f,0.0);
 		nodoBarra -> rotate(rotacionBarra);
@@ -135,7 +135,8 @@ Obstacle construirSierra(SceneManager* sceneMgr){
 	Entity* entSierra = sceneMgr ->createEntity("saw.mesh");
 	SceneNode* nodoSierra = sceneMgr -> createSceneNode();
 	nodoSierra->attachObject(entSierra);
-	Obstacle sierra = Obstacle(nodoSierra,Vector3::UNIT_Z,200.0f, Vector3::UNIT_Z, 100.f);
+	Obstacle sierra = Obstacle(nodoSierra,Vector3::UNIT_X,200.0f, Vector3::UNIT_X, 100.f);
+	nodoSierra->rotate(Quaternion(Degree(90.f), Vector3::UNIT_Y));
 	nodoSierra -> scale(2.0,2.0,7.0);
 	return sierra;
 }
