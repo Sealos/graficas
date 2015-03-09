@@ -18,12 +18,12 @@ Player::Player(SceneManager *sm, RenderWindow *win, SceneNode *_padreNode)
 }
 
 void Player::createPlayerNode() {
-	Entity *torus = mSceneMgr->createEntity("ObjetoPrueba", "usb_torus.mesh");
+	Entity *torus = mSceneMgr->createEntity("ObjetoPrueba", "ship.mesh");
 	torus->setMaterialName("lambert1");
 	_playerNode = mSceneMgr->createSceneNode();
 	_playerNode->showBoundingBox(true);
 	_playerNode->attachObject(torus);
-	_playerNode->scale(3.0, 3.0, 3.0);
+	_playerNode->scale(6.0, 3.0, 6.0);
 	_padreNode->addChild(_playerNode);
 }
 
@@ -42,7 +42,6 @@ bool Player::onUpdate(Real dtime) {
 	float speedFactor = 2000.0f;
 	float playerSpeed = 1000.f;
 	float rotationSpeed = 100.f;
-	float rotationAmount = 1.f;
 	float strafeRotSpeed = 200.f;
 	bool reiniciarPosicion = false;
 	keyboard->capture();
@@ -66,11 +65,11 @@ bool Player::onUpdate(Real dtime) {
 
 	// Rotate player LEFT
 	if (keyboard->isKeyDown(OIS::KC_LEFT))
-		rotatePlayer = rotatePlayer * Quaternion(Degree((rotationAmount * rotationSpeed * dtime)), Vector3::UNIT_Y);
+		rotatePlayer = rotatePlayer * Quaternion(Degree((rotationSpeed * dtime)), Vector3::UNIT_Y);
 
 	// Rotate player RIGHT
 	if (keyboard->isKeyDown(OIS::KC_RIGHT))
-		rotatePlayer = rotatePlayer * Quaternion(Degree(-(rotationAmount * rotationSpeed * dtime)), Vector3::UNIT_Y);
+		rotatePlayer = rotatePlayer * Quaternion(Degree(-(rotationSpeed * dtime)), Vector3::UNIT_Y);
 
 	q = _playerNode->_getDerivedOrientation();
 	Radian angulo = q.getYaw();
@@ -94,11 +93,11 @@ bool Player::onUpdate(Real dtime) {
 	// Strafe left
 	if (keyA && !keyD) {
 		if (_playerNode->getOrientation().getRoll().valueDegrees() < 45.f)
-			strafePlayer = strafePlayer * Quaternion(Degree((rotationAmount * rotationSpeed * dtime)), Vector3::UNIT_Z);
+			strafePlayer = strafePlayer * Quaternion(Degree(( rotationSpeed * dtime)), Vector3::UNIT_Z);
 
 	} else if (keyD && !keyA) {
 		if (_playerNode->getOrientation().getRoll().valueDegrees() > -45.f)
-			strafePlayer = strafePlayer * Quaternion(Degree(-(rotationAmount * rotationSpeed * dtime)), Vector3::UNIT_Z);
+			strafePlayer = strafePlayer * Quaternion(Degree(-(rotationSpeed * dtime)), Vector3::UNIT_Z);
 
 	} else {
 		if (_playerNode->getOrientation().getRoll().valueDegrees() > 0.2f)
@@ -110,7 +109,7 @@ bool Player::onUpdate(Real dtime) {
 		else
 			sign = 0;
 
-		strafePlayer = strafePlayer * Quaternion(Degree(sign * (rotationAmount * rotationSpeed * dtime)), Vector3::UNIT_Z);
+		strafePlayer = strafePlayer * Quaternion(Degree(sign * (rotationSpeed * dtime)), Vector3::UNIT_Z);
 	}
 
 	Vector3 top = _playerNode->_getWorldAABB().getCorner(AxisAlignedBox::CornerEnum::FAR_LEFT_TOP);
@@ -154,9 +153,9 @@ bool Player::onUpdate(Real dtime) {
 	return true;
 }
 
-void Player::onCollision(Coin&){}
-void Player::onCollision(Ring&){}
-void Player::onCollision(Obstacle&){}
-void Player::checkCollision(Coin&){}
-void Player::checkCollision(Ring&){}
-void Player::checkCollision(Obstacle&){}
+void Player::onCollision(Coin*){}
+void Player::onCollision(Ring*){}
+void Player::onCollision(Obstacle*){}
+void Player::checkCollision(Coin*){}
+void Player::checkCollision(Ring*){}
+void Player::checkCollision(Obstacle*){}
