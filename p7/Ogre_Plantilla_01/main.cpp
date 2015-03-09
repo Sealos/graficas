@@ -3,7 +3,6 @@
 #include "coin.h"
 #include "ring.h"
 #include "obstacle.h"
-#include "pilar.h"
 
 std::vector<Ring> rings = std::vector<Ring>();
 std::vector<Coin> coins = std::vector<Coin>();

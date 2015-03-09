@@ -18,7 +18,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="obstacle.cpp" />
-    <ClCompile Include="pilar.cpp" />
     <ClCompile Include="player.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
     </ClCompile>
@@ -29,7 +28,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pilar.h" />
     <ClInclude Include="obstacle.h" />
     <ClInclude Include="ring.h" />
     <ClInclude Include="coin.h" />
