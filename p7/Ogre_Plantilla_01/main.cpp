@@ -3,7 +3,6 @@
 #include "coin.h"
 #include "ring.h"
 #include "obstacle.h"
-#include "sierra.h"
 #include "pilar.h"
 
 std::vector<Ring> rings = std::vector<Ring>();
@@ -135,9 +134,9 @@ Obstacle construirSierra(SceneManager* sceneMgr){
 	Entity* entSierra = sceneMgr ->createEntity("saw.mesh");
 	SceneNode* nodoSierra = sceneMgr -> createSceneNode();
 	nodoSierra->attachObject(entSierra);
-	Obstacle sierra = Obstacle(nodoSierra,Vector3::UNIT_X,200.0f, Vector3::UNIT_X, 100.f);
+	Obstacle sierra = Obstacle(nodoSierra,Vector3::UNIT_X,200.0f, Vector3::UNIT_X, 1000.f);
 	nodoSierra->rotate(Quaternion(Degree(90.f), Vector3::UNIT_Y));
-	nodoSierra -> scale(2.0,2.0,7.0);
+	nodoSierra -> scale(30.0,30.0,105.0);
 	return sierra;
 }
 
