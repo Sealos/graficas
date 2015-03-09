@@ -51,7 +51,7 @@ SceneNode* construirTorre(SceneManager* sceneMgr){
 	
 
 	Entity* entTorreBase = sceneMgr -> createEntity("poly02.mesh");
-	entTorreBase -> setMaterialName("RustyBarrel");
+	//entTorreBase -> setMaterialName("RustyBarrel");
 	SceneNode* scnTorreBase = sceneMgr->createSceneNode();
 	scnTorreBase -> attachObject(entTorreBase);
 	scnTorreBase -> scale(1.5,3.0,1.5);
@@ -59,14 +59,14 @@ SceneNode* construirTorre(SceneManager* sceneMgr){
 	scnTorre -> addChild(scnTorreBase);
 	for(int i = 0; i < 7 ; ++i){
 		Entity* entTorreAnillo = sceneMgr -> createEntity("poly04.mesh");
-		entTorreAnillo -> setMaterialName("Examples/BumpyMetal");
+		//entTorreAnillo -> setMaterialName("Examples/BumpyMetal");
 		SceneNode* scnTorreAnillo = sceneMgr -> createSceneNode();
 		scnTorreAnillo -> attachObject(entTorreAnillo);
 		scnTorreAnillo -> translate(0.0,i*100.0,0.0);
 		scnTorre -> addChild(scnTorreAnillo);
 	}
 	Entity* entTorreTope = sceneMgr -> createEntity("poly16.mesh");
-	entTorreTope -> setMaterialName("Examples/BumpyMetal");
+	//entTorreTope -> setMaterialName("Examples/BumpyMetal");
 	SceneNode* scnTorreTope = sceneMgr -> createSceneNode();
 	scnTorreTope -> attachObject(entTorreTope);
 	
@@ -94,7 +94,7 @@ SceneNode* construirRejas(SceneManager* sceneMgr){
 	for(int i =0 ; i < 6; ++i){
 		SceneNode* nodoBarra = sceneMgr -> createSceneNode();
 		Entity* barra = sceneMgr -> createEntity("Poly02.mesh");
-		barra -> setMaterialName("Examples/BumpyMetal");
+		//barra -> setMaterialName("Examples/BumpyMetal");
 		nodoBarra -> attachObject(barra);
 		nodoBarra -> translate(0.0,50.0+i*100,0.0);
 		nodoBarra -> rotate(rotacionBarra);
@@ -215,7 +215,7 @@ public:
 
 		Ogre::Entity* entPlano = mSceneMgr->createEntity("PlanoEntity", "plane");
 		SceneNode* nodoPlano = mSceneMgr -> createSceneNode();
-		entPlano -> setMaterialName("Examples/GrassFloor");
+		//entPlano -> setMaterialName("Examples/GrassFloor");
 		nodoPlano -> attachObject(entPlano);
 		nodoPlano -> translate(0.0,-5000.0,-44900.0);
 		mSceneMgr->getRootSceneNode()->addChild(nodoPlano);
