@@ -141,10 +141,10 @@ bool Player::onUpdate(Real dtime) {
 		translatePlayer.x = 0.0;
 
 	// TODO(sdecolli): Revisar el near y far
-	if (deltaZ > 0.0f && newNear > z_border[1])
+	if (deltaZ < 0.0f && newNear < z_border[1])
 		translatePlayer.z = 0.0;
 
-	else if (deltaZ < 0.0f && newFar < z_border[0])
+	else if (deltaZ > 0.0f && newFar > z_border[0])
 		translatePlayer.z = 0.0;
 
 	_padreNode->translate(translatePlayer * dtime * playerSpeed);

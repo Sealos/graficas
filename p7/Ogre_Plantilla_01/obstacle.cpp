@@ -23,7 +23,6 @@ void Obstacle::onUpdate(Real dtime) {
 	
 	Vector3 translate = Vector3(movementVector.x * x_direction, movementVector.y * y_direction, movementVector.z * z_direction);
 
-
 	Vector3 top = _node->_getWorldAABB().getCorner(AxisAlignedBox::CornerEnum::FAR_LEFT_TOP);
 	Vector3 bot = _node->_getWorldAABB().getCorner(AxisAlignedBox::CornerEnum::NEAR_RIGHT_BOTTOM);
 	Vector3 leftFar = top;
@@ -59,11 +58,11 @@ void Obstacle::onUpdate(Real dtime) {
 	}
 
 	// TODO(sdecolli): Revisar el near y far
-	if (deltaZ > 0.0f && newNear > z_border[1]) {
+	if (deltaZ < 0.0f && newNear < z_border[1]) {
 		translate.z = 0.0;
 		z_direction *= -1;
 	}
-	else if (deltaZ < 0.0f && newFar < z_border[0]) {
+	else if (deltaZ > 0.0f && newFar > z_border[0]) {
 		translate.z = 0.0;
 		z_direction *= -1;
 	}
