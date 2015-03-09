@@ -24,6 +24,7 @@ void Player::createPlayerNode() {
 	_playerNode->showBoundingBox(true);
 	_playerNode->attachObject(torus);
 	_playerNode->scale(6.0, 3.0, 6.0);
+	_padreNode->rotate(Quaternion(Degree(180.f), Vector3::UNIT_Y));
 	_padreNode->addChild(_playerNode);
 }
 
