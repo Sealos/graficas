@@ -209,8 +209,8 @@ public:
 		obstacles.push_back(sierraPrueba);
 		//
 		//Construccion de tercer obstaculo
-		//SceneNode* pilares = construirPilares(mSceneMgr);
-		/*Plane plane(Vector3::UNIT_Y,0.0);
+		SceneNode* pilares = construirPilares(mSceneMgr);
+		Plane plane(Vector3::UNIT_Y,0.0);
 		MeshManager::getSingleton().createPlane("plane",ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 			plane,20000,90100,20,20,true,1,5,5,Vector3::UNIT_Z);
 			
@@ -218,8 +218,8 @@ public:
 		SceneNode* nodoPlano = mSceneMgr -> createSceneNode();
 		entPlano -> setMaterialName("Examples/GrassFloor");
 		nodoPlano -> attachObject(entPlano);
-		nodoPlano -> translate(0.0,-5000.0,-44900.0);
-		mSceneMgr->getRootSceneNode()->addChild(nodoPlano);*/
+		nodoPlano -> translate(0.0,-5000.0,44900.0);
+		mSceneMgr->getRootSceneNode()->addChild(nodoPlano);
 	}
 };
 

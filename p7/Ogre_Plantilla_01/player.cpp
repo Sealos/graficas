@@ -39,8 +39,7 @@ bool Player::onUpdate(Real dtime) {
 	Vector3 translatePlayer(0.0, 0.0, 0.0);
 	Quaternion rotatePlayer(Degree(0), Vector3::UNIT_Y);
 	Quaternion strafePlayer(Degree(0), Vector3::UNIT_Z);
-	float speedFactor = 2000.0f;
-	float playerSpeed = 1000.f;
+	float playerSpeed = 3000.f;
 	float rotationSpeed = 100.f;
 	float strafeRotSpeed = 200.f;
 	bool reiniciarPosicion = false;
