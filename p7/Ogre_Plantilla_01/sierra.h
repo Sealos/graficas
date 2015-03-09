@@ -9,7 +9,4 @@ public:
 	Sierra(Real,SceneNode*,Vector3,  Real);
 	~Sierra(){};
 	void onUpdate(Real);
-
-
-
 };
