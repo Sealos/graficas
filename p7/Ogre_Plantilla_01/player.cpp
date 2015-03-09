@@ -153,9 +153,9 @@ bool Player::onUpdate(Real dtime) {
 	return true;
 }
 
-void Player::onCollision(Coin*){}
-void Player::onCollision(Ring*){}
-void Player::onCollision(Obstacle*){}
-void Player::checkCollision(Coin*){}
-void Player::checkCollision(Ring*){}
-void Player::checkCollision(Obstacle*){}
+void Player::onCollision(Coin&){}
+void Player::onCollision(Ring&){}
+void Player::onCollision(Obstacle&){}
+void Player::checkCollision(Coin&){}
+void Player::checkCollision(Ring&){}
+void Player::checkCollision(Obstacle&){}

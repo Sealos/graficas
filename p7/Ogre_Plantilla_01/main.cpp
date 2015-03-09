@@ -6,9 +6,9 @@
 #include "sierra.h"
 #include "pilar.h"
 
-std::vector<Ring*> rings = std::vector<Ring*>(20);
-std::vector<Coin*> coins = std::vector<Coin*>(20);
-std::vector<Obstacle*> obstacles = std::vector<Obstacle*>(1);
+std::vector<Ring> rings = std::vector<Ring>();
+std::vector<Coin> coins = std::vector<Coin>();
+std::vector<Obstacle> obstacles = std::vector<Obstacle>();
 
 class MainLoopFL : public FrameListener {
 private:
@@ -29,17 +29,17 @@ public:
 
 		for (auto it = rings.begin(); it != rings.end(); ++it) {
 			player->checkCollision(*it);
-			(*it)->onUpdate(dtime);
+			it->onUpdate(dtime);
 		}
 
 		for (auto it = coins.begin(); it != coins.end(); ++it) {
 			player->checkCollision(*it);
-			(*it)->onUpdate(dtime);
+			it->onUpdate(dtime);
 		}
 
 		for (auto it = obstacles.begin(); it != obstacles.end(); ++it) {
 			player->checkCollision(*it);
-			(*it)->onUpdate(dtime);
+			it->onUpdate(dtime);
 		}
 
 		return player->onUpdate(dtime);
@@ -62,7 +62,7 @@ SceneNode* construirTorre(SceneManager* sceneMgr){
 		//entTorreAnillo -> setMaterialName("Examples/BumpyMetal");
 		SceneNode* scnTorreAnillo = sceneMgr -> createSceneNode();
 		scnTorreAnillo -> attachObject(entTorreAnillo);
-		scnTorreAnillo -> translate(0.0,i*100.0,0.0);
+		scnTorreAnillo -> translate(0.0,i*100.0f,0.0);
 		scnTorre -> addChild(scnTorreAnillo);
 	}
 	Entity* entTorreTope = sceneMgr -> createEntity("poly16.mesh");
@@ -91,12 +91,12 @@ SceneNode* construirRejas(SceneManager* sceneMgr){
 
 	SceneNode* barras = sceneMgr -> createSceneNode();
 	Quaternion rotacionBarra(Degree(90.0),Vector3::UNIT_Y);
-	for(int i =0 ; i < 6; ++i){
+	for(int i =0 ; i < 6; ++i) {
 		SceneNode* nodoBarra = sceneMgr -> createSceneNode();
 		Entity* barra = sceneMgr -> createEntity("Poly02.mesh");
 		//barra -> setMaterialName("Examples/BumpyMetal");
 		nodoBarra -> attachObject(barra);
-		nodoBarra -> translate(0.0,50.0+i*100,0.0);
+		nodoBarra -> translate(0.0,50.0f+i*100.f,0.0);
 		nodoBarra -> rotate(rotacionBarra);
 		nodoBarra -> scale(0.2,0.1,12.0);
 		
@@ -127,7 +127,7 @@ SceneNode* construirPilares(SceneManager* sceneMgr){
 
 }
 
-Sierra* construirSierra(SceneManager* sceneMgr){
+Obstacle construirSierra(SceneManager* sceneMgr){
 	// Erik para cuando leas
 	// en el obstaculo puedes hacer algo asi:
 	// new Obstacle(nodoSierra, Vector3::UNIT_X, 200.0f, Vector3::UNIT_X, 100.0f);
@@ -135,7 +135,7 @@ Sierra* construirSierra(SceneManager* sceneMgr){
 	Entity* entSierra = sceneMgr ->createEntity("saw.mesh");
 	SceneNode* nodoSierra = sceneMgr -> createSceneNode();
 	nodoSierra->attachObject(entSierra);
-	Sierra* sierra= new Sierra(50.0,nodoSierra,Vector3::UNIT_X,200.0);
+	Obstacle sierra = Obstacle(nodoSierra,Vector3::UNIT_Z,200.0f, Vector3::UNIT_Z, 100.f);
 	nodoSierra -> scale(2.0,2.0,7.0);
 	return sierra;
 }
@@ -181,7 +181,6 @@ public:
 		SceneNode *padre;
 		SceneNode *cameraNode;
 
-
 		cameraNode = mSceneMgr->createSceneNode();
 		cameraNode->attachObject(mCamera);
 		mSceneMgr->setAmbientLight(ColourValue(1, 1, 1));
@@ -197,33 +196,29 @@ public:
 		mSceneMgr->setSkyBox(true, "Examples/StormySkyBox");
 		cPlayer = new Player(mSceneMgr, mWindow, padre);
 		mSceneMgr->getRootSceneNode()->addChild(padre);
+
 		//Creacion de primer obstaculo
 		SceneNode* reja = construirRejas(mSceneMgr);
 		mSceneMgr -> getRootSceneNode() -> addChild(reja);
-		obstacles[0]=new Obstacle(reja,Vector3::UNIT_Y,10.0);
-		//
+		obstacles.push_back(Obstacle(reja,Vector3::UNIT_Y,10.0));
+		
 		//Construccion de las sierras
-		Sierra* sierraPrueba = construirSierra(mSceneMgr);
-		mSceneMgr -> getRootSceneNode() -> addChild(sierraPrueba -> _node);
+		Obstacle sierraPrueba = construirSierra(mSceneMgr);
+		mSceneMgr -> getRootSceneNode() -> addChild(sierraPrueba._node);
 		obstacles.push_back(sierraPrueba);
 		//
 		//Construccion de tercer obstaculo
-		SceneNode* pilares = construirPilares(mSceneMgr);
-		Plane plane(Vector3::UNIT_Y,0.0);
+		//SceneNode* pilares = construirPilares(mSceneMgr);
+		/*Plane plane(Vector3::UNIT_Y,0.0);
 		MeshManager::getSingleton().createPlane("plane",ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 			plane,20000,90100,20,20,true,1,5,5,Vector3::UNIT_Z);
-
+			
 		Ogre::Entity* entPlano = mSceneMgr->createEntity("PlanoEntity", "plane");
 		SceneNode* nodoPlano = mSceneMgr -> createSceneNode();
-		//entPlano -> setMaterialName("Examples/GrassFloor");
+		entPlano -> setMaterialName("Examples/GrassFloor");
 		nodoPlano -> attachObject(entPlano);
 		nodoPlano -> translate(0.0,-5000.0,-44900.0);
-		mSceneMgr->getRootSceneNode()->addChild(nodoPlano);
-		
-
-
-		
-
+		mSceneMgr->getRootSceneNode()->addChild(nodoPlano);*/
 	}
 };
 
