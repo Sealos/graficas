@@ -9,6 +9,6 @@ public:
 	Obstacle(){};
 	Obstacle(SceneNode *, Vector3, Real rotationSpeed = 100.f);
 	~Obstacle(){};
-	void onUpdate(Real);
+	virtual void onUpdate(Real);
 	bool isColliding(AxisAlignedBox&);
 };

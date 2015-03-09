@@ -15,3 +15,4 @@ void Obstacle::onUpdate(Real dtime) {
 bool Obstacle::isColliding(AxisAlignedBox& bbox) {
 	return _node->_getWorldAABB().intersects(bbox);
 }
+

@@ -18,12 +18,12 @@ Player::Player(SceneManager *sm, RenderWindow *win, SceneNode *_padreNode)
 }
 
 void Player::createPlayerNode() {
-	Entity *torus = mSceneMgr->createEntity("ObjetoPrueba", "usb_torus.mesh");
+	Entity *torus = mSceneMgr->createEntity("ObjetoPrueba", "ship.mesh");
 	torus->setMaterialName("lambert1");
 	_playerNode = mSceneMgr->createSceneNode();
 	_playerNode->showBoundingBox(true);
 	_playerNode->attachObject(torus);
-	_playerNode->scale(3.0, 3.0, 3.0);
+	_playerNode->scale(6.0, 3.0, 6.0);
 	_padreNode->addChild(_playerNode);
 }
 
