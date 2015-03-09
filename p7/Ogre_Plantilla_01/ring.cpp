@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ring.h"
 
-void Ring::onUpdate(Real dtime) {
+inline void Ring::onUpdate(Real dtime) {
 }
 
 bool Ring::isColliding(Vector3 point) {

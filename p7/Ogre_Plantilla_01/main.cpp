@@ -23,15 +23,22 @@ public:
 	bool frameStarted(const FrameEvent &evt) {
 		Vector3 playerPos = player->_padreNode->getPosition();
 		AxisAlignedBox bbox = player->_padreNode->_getWorldAABB();
+		Real dtime = evt.timeSinceLastFrame;
 
-		for (auto it = rings.begin(); it != rings.end(); ++it)
+		for (auto it = rings.begin(); it != rings.end(); ++it) {
 			player->checkCollision(*it);
+			it->onUpdate(dtime);
+		}
 
-		for (auto it = coins.begin(); it != coins.end(); ++it)
-			player->checkCollision(*it);			
-
-		for (auto it = obstacles.begin(); it != obstacles.end(); ++it)
+		for (auto it = coins.begin(); it != coins.end(); ++it) {
 			player->checkCollision(*it);
+			it->onUpdate(dtime);
+		}
+
+		for (auto it = obstacles.begin(); it != obstacles.end(); ++it) {
+			player->checkCollision(*it);
+			it->onUpdate(dtime);
+		}
 
 		return player->onUpdate(evt.timeSinceLastFrame);
 	}
