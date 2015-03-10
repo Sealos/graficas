@@ -3,8 +3,6 @@
 #include "ring.h"
 #include "obstacle.h"
 
-
-
 class Player {
 public:
 	SceneManager *mSceneMgr;
@@ -12,15 +10,18 @@ public:
 	SceneNode *_playerNode;
 	SceneNode *_padreNode;
 	OIS::InputManager *_man;
-
-
-	size_t lives;
+	Real invincibilityTime;
+	size_t health;
+	size_t score;
 
 	bool onUpdate(Real);
 	void createPlayerNode();
 	Player() {};
 	~Player();
 	Player(SceneManager *, RenderWindow *, SceneNode *); 
+
+	void reset();
+
 	void onCollision(Coin&);
 	void onCollision(Ring&);
 	void onCollision(Obstacle&);

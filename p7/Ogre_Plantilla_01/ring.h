@@ -2,6 +2,7 @@
 
 class Ring {
 public:
+	bool active;
 	SceneNode *_node;
 	Ring(){};
 	Ring(SceneNode *);
@@ -9,4 +10,5 @@ public:
 
 	void onUpdate(Real);
 	bool isColliding(Vector3);
+	bool isColliding(AxisAlignedBox& bbox);
 };

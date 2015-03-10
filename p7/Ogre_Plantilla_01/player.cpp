@@ -2,7 +2,7 @@
 #include "player.h"
 
 Player::Player(SceneManager *sm, RenderWindow *win, SceneNode *_padreNode)
-	: mSceneMgr(sm), _padreNode(_padreNode), lives(3) {
+	: mSceneMgr(sm), _padreNode(_padreNode), health(3), score(0) {
 	//Helper variables for extracting the window handle
 	size_t windowHnd = 0;
 	std::stringstream windowHndStr;
@@ -26,6 +26,9 @@ void Player::createPlayerNode() {
 	_playerNode->scale(6.0, 3.0, 6.0);
 	_padreNode->rotate(Quaternion(Degree(180.f), Vector3::UNIT_Y));
 	_padreNode->addChild(_playerNode);
+}
+
+void Player::reset() {
 }
 
 Player::~Player() {
@@ -158,4 +161,12 @@ void Player::onCollision(Ring&){}
 void Player::onCollision(Obstacle&){}
 void Player::checkCollision(Coin&){}
 void Player::checkCollision(Ring&){}
-void Player::checkCollision(Obstacle&){}
+
+void Player::checkCollision(Obstacle& obs)
+{
+	AxisAlignedBox aabb = _playerNode->_getWorldAABB();
+	if (obs.isColliding(aabb))
+	{
+		std::cout << "Colision" << std::endl;
+	}
+}

@@ -1,12 +1,16 @@
 #include "stdafx.h"
 #include "coin.h"
 
-Real rotationSpeed = 100.f;
+const Real rotationSpeed = 100.f;
 
 void Coin::onUpdate(Real dtime) {
-	Quaternion rotation(Degree(0), Vector3::UNIT_Y);
-	rotation = rotation * Quaternion(Degree((rotationSpeed * dtime)), Vector3::UNIT_Y);
+	Quaternion rotation = rotation * Quaternion(Degree((rotationSpeed * dtime)), Vector3::UNIT_Y);
 	_node->rotate(rotation);
+}
+
+Coin::Coin(SceneNode* m_node): active(true)
+{
+	_node = m_node;
 }
 
 bool Coin::isColliding(Vector3 point) {
@@ -23,4 +27,8 @@ bool Coin::isColliding(Vector3 point) {
 		return false;
 
 	return true;
+}
+
+bool Coin::isColliding(AxisAlignedBox& bbox) {
+	return _node->_getWorldAABB().intersects(bbox);
 }
