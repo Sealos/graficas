@@ -112,18 +112,17 @@ bool Player::onUpdate(Real dtime) {
 	} else {
 		if (_playerNode->getOrientation().getRoll().valueDegrees() > 0.2f)
 			sign = -1;
-
 		else if (_playerNode->getOrientation().getRoll().valueDegrees() < -0.2f)
 			sign = 1;
-
 		else
 			sign = 0;
 
 		strafePlayer = strafePlayer * Quaternion(Degree(sign * (rotationSpeed * dtime)), Vector3::UNIT_Z);
 	}
 
-	Vector3 top = _playerNode->_getWorldAABB().getCorner(AxisAlignedBox::CornerEnum::FAR_LEFT_TOP);
-	Vector3 bot = _playerNode->_getWorldAABB().getCorner(AxisAlignedBox::CornerEnum::NEAR_RIGHT_BOTTOM);
+	AxisAlignedBox aabb = _playerNode->_getWorldAABB();
+	Vector3 top = aabb.getCorner(AxisAlignedBox::CornerEnum::FAR_LEFT_TOP);
+	Vector3 bot = aabb.getCorner(AxisAlignedBox::CornerEnum::NEAR_RIGHT_BOTTOM);
 	Vector3 leftFar = top;
 	Vector3 rightNear = bot;
 	Vector3 oldPosition = _padreNode->getPosition();
@@ -138,6 +137,12 @@ bool Player::onUpdate(Real dtime) {
 	Real newFar = leftFar.z + deltaZ;
 	Real newNear = rightNear.z + deltaZ;
 
+	if (newPosition.z > 89500)
+	{
+		reset();
+		return true;
+	}
+
 	if (deltaY > 0.0f && newTop > y_border[0])
 		translatePlayer.y = 0.0;
 
@@ -150,7 +155,6 @@ bool Player::onUpdate(Real dtime) {
 	else if (deltaX < 0.0f && newLeft < x_border[1])
 		translatePlayer.x = 0.0;
 
-	// TODO(sdecolli): Revisar el near y far
 	if (deltaZ < 0.0f && newNear < z_border[1])
 		translatePlayer.z = 0.0;
 

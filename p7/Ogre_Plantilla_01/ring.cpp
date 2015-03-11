@@ -8,6 +8,12 @@ void Ring::onUpdate(Real dtime) {
 	_node->rotate(rotation);
 }
 
+Ring::~Ring()
+{
+	_node->removeAndDestroyAllChildren();
+	mSceneMgr->destroySceneNode(_node);
+}
+
 bool Ring::isColliding(Vector3 point) {
 	Vector3 farLeftTop = _node->_getWorldAABB().getCorner(AxisAlignedBox::CornerEnum::FAR_LEFT_TOP);
 	Vector3 nearRightBottom = _node->_getWorldAABB().getCorner(AxisAlignedBox::CornerEnum::NEAR_RIGHT_BOTTOM);
@@ -28,5 +34,7 @@ bool Ring::isColliding(AxisAlignedBox& bbox) {
 	return _node->_getWorldAABB().intersects(bbox);
 }
 
-Ring::Ring(SceneNode *_node) : _node(_node), active(true)
-{}
+Ring::Ring(SceneNode *_node, SceneManager *mSceneMgr)
+	: _node(_node), active(true), mSceneMgr(mSceneMgr)
+{
+}
