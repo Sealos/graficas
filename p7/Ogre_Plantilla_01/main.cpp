@@ -29,7 +29,7 @@ public:
 	void createCamera();
 	void createScene();
 	void chooseSceneManager();
-	void resetGame();
+	void resetGame(Player *player);
 };
 
 Starfox app;
@@ -56,6 +56,11 @@ bool MainLoopFL:: frameStarted(const FrameEvent &evt) {
 	for (auto it = obstacles.begin(); it != obstacles.end(); ++it) {
 		player->checkCollision(*it);
 		it->onUpdate(dtime);
+	}
+
+	if (player->health <= 0) {
+		player->reset();
+		app.resetGame(player);
 	}
 
 	return player->onUpdate(dtime);
@@ -202,7 +207,8 @@ void Starfox::createScene() {
 	mSceneMgr->getRootSceneNode()->addChild(nodoPlano);
 }
 
-void Starfox::resetGame() {
+void Starfox::resetGame(Player* player) {
+	std::cout << "Resetting" << std::endl;
 }
 
 int main (void) {

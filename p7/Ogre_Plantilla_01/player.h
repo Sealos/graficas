@@ -22,6 +22,8 @@ public:
 
 	void reset();
 
+	void dealDamage();
+
 	void onCollision(Coin&);
 	void onCollision(Ring&);
 	void onCollision(Obstacle&);

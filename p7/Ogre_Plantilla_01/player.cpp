@@ -23,12 +23,16 @@ void Player::createPlayerNode() {
 	_playerNode = mSceneMgr->createSceneNode();
 	_playerNode->showBoundingBox(true);
 	_playerNode->attachObject(torus);
-	_playerNode->scale(6.0, 3.0, 6.0);
+	_playerNode->scale(12.0, 6.0, 12.0);
 	_padreNode->rotate(Quaternion(Degree(180.f), Vector3::UNIT_Y));
 	_padreNode->addChild(_playerNode);
 }
 
 void Player::reset() {
+	health = 3;
+	score = 0;
+	_padreNode->setPosition(0.0f, 0.0f, 0.0f);
+	_padreNode->setOrientation(Quaternion(Degree(180.0f), Vector3::UNIT_Y));
 }
 
 Player::~Player() {
@@ -39,8 +43,8 @@ Player::~Player() {
 }
 
 bool Player::onUpdate(Real dtime) {
-	Vector3 translateCam(0.0, 0.0, 0.0);
-	Vector3 translatePlayer(0.0, 0.0, 0.0);
+	Vector3 translateCam(0.0f, 0.0f, 0.0f);
+	Vector3 translatePlayer(0.0f, 0.0f, 0.0f);
 	Quaternion rotatePlayer(Degree(0), Vector3::UNIT_Y);
 	Quaternion strafePlayer(Degree(0), Vector3::UNIT_Z);
 	float playerSpeed = 3000.f;
@@ -48,6 +52,9 @@ bool Player::onUpdate(Real dtime) {
 	float strafeRotSpeed = 200.f;
 	bool reiniciarPosicion = false;
 	keyboard->capture();
+
+	if (invincibilityTime)
+		invincibilityTime -= dtime;
 
 	if (keyboard->isKeyDown(OIS::KC_ESCAPE))
 		return false;
@@ -162,11 +169,15 @@ void Player::onCollision(Obstacle&){}
 void Player::checkCollision(Coin&){}
 void Player::checkCollision(Ring&){}
 
+void Player::dealDamage()
+{
+	std::cout << "Deal damage\nCurrent health: " << --health << std::endl;
+	invincibilityTime = 3.0f;
+}
+
 void Player::checkCollision(Obstacle& obs)
 {
 	AxisAlignedBox aabb = _playerNode->_getWorldAABB();
-	if (obs.isColliding(aabb))
-	{
-		std::cout << "Colision" << std::endl;
-	}
+	if (health > 0 && obs.isColliding(aabb) && invincibilityTime <= 0)
+		dealDamage();
 }
