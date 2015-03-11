@@ -169,13 +169,12 @@ bool Player::onUpdate(Real dtime) {
 
 void Player::onCollision(Coin&){}
 void Player::onCollision(Ring&){}
-void Player::onCollision(Obstacle&){}
 void Player::checkCollision(Coin&){}
 void Player::checkCollision(Ring&){}
 
-void Player::dealDamage()
+inline void Player::dealDamage()
 {
-	std::cout << "Deal damage\nCurrent health: " << --health << std::endl;
+	std::cout << "Current health: " << --health << std::endl;
 	invincibilityTime = 3.0f;
 }
 
@@ -183,5 +182,10 @@ void Player::checkCollision(Obstacle& obs)
 {
 	AxisAlignedBox aabb = _playerNode->_getWorldAABB();
 	if (health > 0 && obs.isColliding(aabb) && invincibilityTime <= 0)
-		dealDamage();
+		onCollision(obs);
+}
+
+inline void Player::onCollision(Obstacle& obs)
+{
+	dealDamage();
 }

@@ -69,7 +69,7 @@ bool MainLoopFL:: frameStarted(const FrameEvent &evt) {
 SceneNode* construirTorre(SceneManager* sceneMgr) {
 	SceneNode* scnTorre = sceneMgr -> createSceneNode();
 	Entity* entTorreBase = sceneMgr -> createEntity("poly02.mesh");
-	//entTorreBase -> setMaterialName("RustyBarrel");
+	entTorreBase -> setMaterialName("RustyBarrel");
 	SceneNode* scnTorreBase = sceneMgr->createSceneNode();
 	scnTorreBase -> attachObject(entTorreBase);
 	scnTorreBase -> scale(1.5, 3.0, 1.5);
@@ -78,7 +78,7 @@ SceneNode* construirTorre(SceneManager* sceneMgr) {
 
 	for (int i = 0; i < 7 ; ++i) {
 		Entity* entTorreAnillo = sceneMgr -> createEntity("poly04.mesh");
-		//entTorreAnillo -> setMaterialName("Examples/BumpyMetal");
+		entTorreAnillo -> setMaterialName("Examples/BumpyMetal");
 		SceneNode* scnTorreAnillo = sceneMgr -> createSceneNode();
 		scnTorreAnillo -> attachObject(entTorreAnillo);
 		scnTorreAnillo -> translate(0.0, i * 100.0f, 0.0);
@@ -86,7 +86,7 @@ SceneNode* construirTorre(SceneManager* sceneMgr) {
 	}
 
 	Entity* entTorreTope = sceneMgr -> createEntity("poly16.mesh");
-	//entTorreTope -> setMaterialName("Examples/BumpyMetal");
+	entTorreTope -> setMaterialName("Examples/BumpyMetal");
 	SceneNode* scnTorreTope = sceneMgr -> createSceneNode();
 	scnTorreTope -> attachObject(entTorreTope);
 	scnTorreTope -> translate(0.0, 600.0, 0.0);
@@ -97,9 +97,9 @@ SceneNode* construirTorre(SceneManager* sceneMgr) {
 
 SceneNode* construirRejas(SceneManager* sceneMgr) {
 	SceneNode* nodoTorre1 = construirTorre(sceneMgr);
-	nodoTorre1 -> translate(600.0, 0.0, 0.0);
+	nodoTorre1 -> translate(600.0, 0.0, 2000.0);
 	SceneNode* nodoTorre2 = construirTorre(sceneMgr);
-	nodoTorre2 -> translate(-600.0, 0.0, 0.0);
+	nodoTorre2 -> translate(-600.0, 0.0, 2000.0);
 	SceneNode* nodoReja = sceneMgr -> createSceneNode();
 	SceneNode* barras = sceneMgr -> createSceneNode();
 	Quaternion rotacionBarra(Degree(90.0), Vector3::UNIT_Y);
@@ -109,7 +109,7 @@ SceneNode* construirRejas(SceneManager* sceneMgr) {
 		Entity* barra = sceneMgr -> createEntity("Poly02.mesh");
 		barra -> setMaterialName("Examples/BumpyMetal");
 		nodoBarra -> attachObject(barra);
-		nodoBarra -> translate(0.0, 50.0f + i * 100.f, 0.0);
+		nodoBarra -> translate(0.0, 50.0f + i * 100.f, 2000.0);
 		nodoBarra -> rotate(rotacionBarra);
 		nodoBarra -> scale(0.2, 0.1, 12.0);
 		barras -> addChild(nodoBarra);
@@ -118,7 +118,7 @@ SceneNode* construirRejas(SceneManager* sceneMgr) {
 	nodoReja -> addChild(nodoTorre1);
 	nodoReja -> addChild(nodoTorre2);
 	nodoReja -> addChild(barras);
-	nodoReja -> translate(0.0, 0.0, -1200.0);
+	nodoReja -> translate(0.0, 0.0, 800.0);
 	return nodoReja;
 }
 
@@ -188,7 +188,7 @@ void Starfox::createScene() {
 	//Creacion de primer obstaculo
 	SceneNode* reja = construirRejas(mSceneMgr);
 	mSceneMgr -> getRootSceneNode() -> addChild(reja);
-	obstacles.push_back(Obstacle(reja, Vector3::UNIT_Y, 10.0));
+	obstacles.push_back(Obstacle(reja, Vector3::ZERO, 0.0f));
 	//Construccion de las sierras
 	Obstacle sierraPrueba = construirSierra(mSceneMgr);
 	mSceneMgr -> getRootSceneNode() -> addChild(sierraPrueba._node);
