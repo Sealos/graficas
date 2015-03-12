@@ -4,7 +4,7 @@
 const Real rotationSpeed = 100.f;
 
 void Ring::onUpdate(Real dtime) {
-	Quaternion rotation = Quaternion(Degree((rotationSpeed * dtime)), Vector3::UNIT_Z);
+	Quaternion rotation = Quaternion(Degree((rotationSpeed * dtime)), Vector3::UNIT_Y);
 	_node->rotate(rotation);
 }
 

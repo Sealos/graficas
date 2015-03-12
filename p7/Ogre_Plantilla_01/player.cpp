@@ -42,6 +42,13 @@ Player::~Player() {
 	mSceneMgr->destroySceneNode(_padreNode);
 }
 
+inline bool getBlinkingVisibility(Real decimal)
+{
+	if (decimal > 0.75f || (decimal < 0.5f && decimal > 0.25f))
+		return false;
+	return true;
+}
+
 bool Player::onUpdate(Real dtime) {
 	Vector3 translateCam(0.0f, 0.0f, 0.0f);
 	Vector3 translatePlayer(0.0f, 0.0f, 0.0f);
@@ -53,8 +60,14 @@ bool Player::onUpdate(Real dtime) {
 	bool reiniciarPosicion = false;
 	keyboard->capture();
 
-	if (invincibilityTime)
+	if (invincibilityTime > 0.0f)
 		invincibilityTime -= dtime;
+	else
+		invincibilityTime = 0.0f;
+
+	Real yup;
+	Real decimal = modf(invincibilityTime, &yup);
+	_playerNode->setVisible(getBlinkingVisibility(decimal));
 
 	if (keyboard->isKeyDown(OIS::KC_ESCAPE))
 		return false;
@@ -167,10 +180,34 @@ bool Player::onUpdate(Real dtime) {
 	return true;
 }
 
-void Player::onCollision(Coin&){}
-void Player::onCollision(Ring&){}
-void Player::checkCollision(Coin&){}
-void Player::checkCollision(Ring&){}
+void Player::checkCollision(Ring& ring)
+{
+	onCollision(ring);
+}
+
+void Player::onCollision(Ring& ring)
+{
+	score += 200;
+	ring.active = false;
+	Entity *ringEnt = static_cast<Entity*>(ring._node->getAttachedObject(0));
+	ringEnt->setMaterialName("Examples/Chrome");
+	std::cout << "Puntaje: " << score << std::endl;
+}
+
+void Player::checkCollision(Coin& coin)
+{
+	AxisAlignedBox aabb = _playerNode->_getWorldAABB();
+	if (coin.active && coin.isColliding(aabb))
+		onCollision(coin);
+}
+
+void Player::onCollision(Coin& coin)
+{
+	score += 100;
+	coin.active = false;
+	coin._node->setVisible(false);
+	std::cout << "Puntaje: " << score << std::endl;
+}
 
 inline void Player::dealDamage()
 {
