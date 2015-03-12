@@ -306,7 +306,7 @@ void Starfox::createScene() {
 	//
 	Plane plane(Vector3::UNIT_Y, 0.0);
 	MeshManager::getSingleton().createPlane("plane", ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-											plane, 20000, 90100, 20, 20, true, 1, 5, 5, Vector3::UNIT_Z);
+											plane, 20000, 90000, 20, 20, true, 1, 5, 5, Vector3::UNIT_Z);
 	Ogre::Entity* entPlano = mSceneMgr->createEntity("PlanoEntity", "plane");
 	SceneNode* nodoPlano = mSceneMgr -> createSceneNode();
 	entPlano -> setMaterialName("Examples/GrassFloor");
