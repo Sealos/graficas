@@ -237,7 +237,7 @@ void Starfox::createFrameListener() {
 
 void Starfox::createCamera() {
 	mCamera = mSceneMgr->createCamera("MyCamera1");
-	mCamera->setPosition(0, 50, 300);
+	mCamera->setPosition(0, 100, 600);
 	mCamera->lookAt(0, 0, 0);
 	mCamera->setNearClipDistance(5);
 }
