@@ -182,7 +182,10 @@ bool Player::onUpdate(Real dtime) {
 
 void Player::checkCollision(Ring& ring)
 {
-	onCollision(ring);
+	AxisAlignedBox aabb = _playerNode->_getWorldAABB();
+	Vector3 point = _padreNode->getPosition();
+	if (ring.active && ring.isInCircle(aabb, point) && ring.isColliding(aabb))
+		onCollision(ring);
 }
 
 void Player::onCollision(Ring& ring)
