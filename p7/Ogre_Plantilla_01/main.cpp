@@ -75,7 +75,7 @@ SceneNode* construirTorre(SceneManager* sceneMgr) {
 	scnTorreBase -> translate(0.0, 600.0, 0.0);
 	scnTorre -> addChild(scnTorreBase);
 	//
-	scnTorreBase -> showBoundingBox(true);
+
 
 	//
 	for (int i = 0; i < 13 ; ++i) {
@@ -85,6 +85,7 @@ SceneNode* construirTorre(SceneManager* sceneMgr) {
 		scnTorreAnillo -> attachObject(entTorreAnillo);
 		scnTorreAnillo -> translate(0.0, i * 100.0f, 0.0);
 		scnTorre -> addChild(scnTorreAnillo);
+		obstacles.push_back(Obstacle(scnTorreBase,Vector3::ZERO,0.0));
 	}
 
 	Entity* entTorreTope = sceneMgr -> createEntity("poly16.mesh");
@@ -93,7 +94,7 @@ SceneNode* construirTorre(SceneManager* sceneMgr) {
 	scnTorreTope -> attachObject(entTorreTope);
 	scnTorreTope -> translate(0.0, 1200.0, 0.0);
 	scnTorreTope -> scale(1.5, 1.5, 1.5);
-	scnTorreTope -> showBoundingBox(true);
+
 	scnTorre -> addChild(scnTorreTope);
 	return scnTorre;
 }
@@ -116,8 +117,9 @@ SceneNode* construirRejas(SceneManager* sceneMgr, Vector3 pos) {
 		nodoBarra -> translate(0.0, 50.0f + i * 200.f, 0.0);
 		nodoBarra -> rotate(rotacionBarra);
 		nodoBarra -> scale(0.2, 0.1, 12.0);
-		nodoBarra -> showBoundingBox(true);
+
 		barras -> addChild(nodoBarra);
+		obstacles.push_back(Obstacle(nodoBarra,Vector3::ZERO,0.0));
 	}
 
 	nodoReja -> addChild(nodoTorre1);
@@ -138,8 +140,8 @@ Obstacle construirPilar(SceneManager* sceneMgr, Vector3 pos) {
 	rect -> setMaterialName("Examples/Rocky");
 	Entity* spiral = sceneMgr -> createEntity("Poly09.mesh");
 	spiral -> setMaterialName("Examples/Rocky");
-	SceneNode* nodoRect = sceneMgr -> createSceneNode("Rect");
-	SceneNode* nodoSpiral = sceneMgr -> createSceneNode("Spiral");
+	SceneNode* nodoRect = sceneMgr -> createSceneNode();
+	SceneNode* nodoSpiral = sceneMgr -> createSceneNode();
 	nodoSpiral -> rotate(Quaternion(Degree(45.0), Vector3::UNIT_Y));
 	nodoRect -> translate(0.0, 0.0, 0.0);
 	nodoSpiral -> translate(0.0, 200, 0.0);
@@ -157,8 +159,8 @@ Obstacle construirPilar(SceneManager* sceneMgr, Vector3 pos) {
 		rect -> setMaterialName("Examples/Rocky");
 		Entity* spiral = sceneMgr -> createEntity("Poly09.mesh");
 		spiral -> setMaterialName("Examples/Rocky");
-		SceneNode* nodoRect = sceneMgr -> createSceneNode("Rect" + i);
-		SceneNode* nodoSpiral = sceneMgr -> createSceneNode("Spiral" + i);
+		SceneNode* nodoRect = sceneMgr -> createSceneNode();
+		SceneNode* nodoSpiral = sceneMgr -> createSceneNode();
 		nodoSpiral -> rotate(Quaternion(Degree(45.0 + (45.0 * i)), Vector3::UNIT_Y));
 		nodoRect -> rotate(Quaternion(Degree(45.0 * i), Vector3::UNIT_Y));
 		nodoRect -> attachObject(rect);
@@ -177,10 +179,10 @@ Obstacle construirPilar(SceneManager* sceneMgr, Vector3 pos) {
 	WireBoundingBox* lol = new WireBoundingBox();
 	AABPilar.setExtents(AABPilarMin.x, AABPilarMin.y, AABPilarMin.z, AABPilarMax.x, AABPilarMax.y, AABPilarMax.z);
 	lol -> setBoundingBox(AABPilar);
-	lol -> setVisible(true);
 	nodoPilar -> attachObject(lol);
+	nodoPilar -> scale(3.0,3.0,3.0);
 	nodoPilar -> translate(pos);
-	Obstacle pilar = Obstacle(nodoPilar, Vector3::ZERO, 50.0f, Vector3::UNIT_Y, 400.f);
+	Obstacle pilar = Obstacle(nodoPilar, Vector3::ZERO, 50.0f, Vector3::UNIT_Y, 800.f);
 	return pilar;
 }
 
@@ -190,7 +192,7 @@ Obstacle construirSierra(SceneManager* sceneMgr, Vector3 pos) {
 	SceneNode* nodoSierra = sceneMgr -> createSceneNode();
 	nodoSierra->attachObject(entSierra);
 	nodoSierra->translate(pos);
-	Obstacle sierra = Obstacle(nodoSierra, Vector3::UNIT_X, 50.0f, Vector3::UNIT_X, 800.f);
+	Obstacle sierra = Obstacle(nodoSierra, Vector3::ZERO, 50.0f, Vector3::UNIT_X, 1200.f);
 	nodoSierra->rotate(Quaternion(Degree(90.f), Vector3::UNIT_Y));
 	nodoSierra -> scale(120.0, 120.0, 420.0);
 	return sierra;
@@ -214,7 +216,7 @@ Ring construirAnillo(SceneManager* sceneMgr, Vector3 pos) {
 	Entity* entAnillo = sceneMgr -> createEntity("Poly04.mesh");
 	entAnillo -> setMaterialName("coin");
 	nodoAnillo -> attachObject(entAnillo);
-	nodoAnillo->scale(1.5f, 1.5f, 1.5f);
+	nodoAnillo->scale(2.f, 2.f, 2.f);
 	nodoAnillo -> rotate(Quaternion(Degree(90), Vector3::UNIT_X));
 	nodoAnillo -> translate(pos);
 	nodoAnillo->_updateBounds();
@@ -232,6 +234,12 @@ SceneNode* construirRectangulo(SceneManager* sceneMgr, Vector3 pos, Quaternion r
 	nodoRect ->translate(pos);
 
 	return nodoRect;
+
+}
+
+SceneNode* construirMeta(SceneManager* sceneMgr, Vector3 pos){
+
+	SceneNode* nodoMeta = sceneMgr -> createSceneNode();
 
 }
 
@@ -304,19 +312,17 @@ void Starfox::createScene() {
 	//Creacion de primer obstaculo
 	
 	//Construccion de las sierras
-	/*int numSierras = 3;
+	int numSierras = 3;
 	Real separadorSierras = z_border[0]-profundidadMinima/numSierras;
 	for(int i =0; i< numSierras; ++i){
 		Obstacle sierraPrueba = construirSierra(mSceneMgr, Vector3(4000*i, 0.0, profundidadMinima+(i*20000)));
 		mSceneMgr -> getRootSceneNode() -> addChild(sierraPrueba._node);
 		obstacles.push_back(sierraPrueba);
 	}
-	*/
+	
 	//
 	//Construccion de tercer obstaculo
-	Obstacle pilar = construirPilar(mSceneMgr, Vector3(0.0, 0.0, 0.0));
-	mSceneMgr -> getRootSceneNode() -> addChild(pilar._node);
-	obstacles.push_back(pilar);
+	
 	//
 	//Construccion de monedas
 	int numeroMonedas = 20;
@@ -326,7 +332,9 @@ void Starfox::createScene() {
 		Coin moneda = construirMoneda(mSceneMgr, Vector3(sin(i)*8000.0, cos(i)*3000, profundidadMinima+ i*separador));
 		mSceneMgr -> getRootSceneNode() -> addChild(moneda._node);
 		coins.push_back(moneda);
-
+		Obstacle pilar = construirPilar(mSceneMgr, Vector3(sin(i)*8000.0, cos(i)*3000, profundidadMinima+ i*separador));
+	mSceneMgr -> getRootSceneNode() -> addChild(pilar._node);
+	obstacles.push_back(pilar);
 	}
 	
 	//
@@ -338,10 +346,13 @@ void Starfox::createScene() {
 		mSceneMgr -> getRootSceneNode() -> addChild(anillo._node);
 		rings.push_back(anillo);
 
-		SceneNode* reja = construirRejas(mSceneMgr, Vector3(cos(i)*8000.0, sin(i)*3000,  (profundidadMinima + i*separador))-2000);
-		reja -> translate(2000.0,1500.0,0.0);
+		SceneNode* reja = construirRejas(mSceneMgr, Vector3(cos(i)*8000.0, sin(i)*3000,  (profundidadMinima + i*separador)));
+		reja -> translate(0.0,-600.0,-200.0);
 		mSceneMgr -> getRootSceneNode() -> addChild(reja);
-		obstacles.push_back(Obstacle(reja, Vector3::ZERO, 0.0f));
+
+		reja = construirRejas(mSceneMgr, Vector3(cos(i)*8000.0, sin(i)*3000,  (profundidadMinima + i*separador)));
+		reja -> translate(0.0,-600.0,200.0);
+		mSceneMgr -> getRootSceneNode() -> addChild(reja);
 	}
 	
 	//

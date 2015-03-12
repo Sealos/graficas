@@ -21,7 +21,6 @@ void Player::createPlayerNode() {
 	Entity *torus = mSceneMgr->createEntity("ObjetoPrueba", "ship.mesh");
 	torus->setMaterialName("lambert1");
 	_playerNode = mSceneMgr->createSceneNode();
-	_playerNode->showBoundingBox(true);
 	_playerNode->attachObject(torus);
 	_playerNode->scale(24.0, 12.0, 24.0);
 	_padreNode->rotate(Quaternion(Degree(180.f), Vector3::UNIT_Y));
@@ -152,7 +151,7 @@ bool Player::onUpdate(Real dtime) {
 
 	if (newPosition.z > 89500)
 	{
-		reset();
+		health = 0;
 		return true;
 	}
 

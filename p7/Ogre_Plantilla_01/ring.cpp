@@ -20,8 +20,8 @@ inline bool Ring::isInCircle(Vector3 point)
 	Real y = point.y - myPos.y;
 
 	bool result = (x*x + y*y) < radius*radius;
-	if (result)
-		std::cout << "point.x: "<< point.x << " point.y " << point.y << std::endl;
+	//if (result)
+	//	std::cout << "point.x: "<< point.x << " point.y " << point.y << std::endl;
 	return result;
 }
 
@@ -46,8 +46,6 @@ bool Ring::isColliding(AxisAlignedBox& bbox) {
 Ring::Ring(SceneNode *_node, SceneManager *mSceneMgr)
 	: _node(_node), active(true), mSceneMgr(mSceneMgr)
 {
-	_node->showBoundingBox(true);
 	radius = calculateRadius(_node);
 
-	std::cout << radius << std::endl;
 }
