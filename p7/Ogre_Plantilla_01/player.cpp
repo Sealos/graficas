@@ -23,7 +23,7 @@ void Player::createPlayerNode() {
 	_playerNode = mSceneMgr->createSceneNode();
 	_playerNode->showBoundingBox(true);
 	_playerNode->attachObject(torus);
-	_playerNode->scale(12.0, 6.0, 12.0);
+	_playerNode->scale(24.0, 12.0, 24.0);
 	_padreNode->rotate(Quaternion(Degree(180.f), Vector3::UNIT_Y));
 	_padreNode->addChild(_playerNode);
 }
@@ -54,7 +54,7 @@ bool Player::onUpdate(Real dtime) {
 	Vector3 translatePlayer(0.0f, 0.0f, 0.0f);
 	Quaternion rotatePlayer(Degree(0), Vector3::UNIT_Y);
 	Quaternion strafePlayer(Degree(0), Vector3::UNIT_Z);
-	float playerSpeed = 3000.f;
+	float playerSpeed = 2000.f;
 	float rotationSpeed = 100.f;
 	float strafeRotSpeed = 200.f;
 	bool reiniciarPosicion = false;
@@ -184,7 +184,7 @@ void Player::checkCollision(Ring& ring)
 {
 	AxisAlignedBox aabb = _playerNode->_getWorldAABB();
 	Vector3 point = _padreNode->getPosition();
-	if (ring.active && ring.isInCircle(aabb, point) && ring.isColliding(aabb))
+	if (ring.active && ring.isColliding(aabb) && ring.isInCircle(aabb, point))
 		onCollision(ring);
 }
 
