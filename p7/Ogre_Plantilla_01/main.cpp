@@ -45,7 +45,6 @@ bool MainLoopFL:: frameStarted(const FrameEvent &evt) {
 
 	for (auto it = rings.begin(); it != rings.end(); ++it) {
 		player->checkCollision(*it);
-		it->onUpdate(dtime);
 	}
 
 	for (auto it = coins.begin(); it != coins.end(); ++it) {
@@ -215,9 +214,10 @@ Ring construirAnillo(SceneManager* sceneMgr, Vector3 pos) {
 	Entity* entAnillo = sceneMgr -> createEntity("Poly04.mesh");
 	entAnillo -> setMaterialName("coin");
 	nodoAnillo -> attachObject(entAnillo);
-	nodoAnillo->scale(2.0f, 2.0f, 2.0f);
+	nodoAnillo->scale(1.5f, 1.5f, 1.5f);
 	nodoAnillo -> rotate(Quaternion(Degree(90), Vector3::UNIT_X));
 	nodoAnillo -> translate(pos);
+	nodoAnillo->_updateBounds();
 	anillo = Ring(nodoAnillo, sceneMgr);
 	return anillo;
 }
