@@ -303,7 +303,6 @@ void Starfox::createScene() {
 }
 
 void Starfox::resetGame(Player* player) {
-	std::cout << "Resetting" << std::endl;
 	for (auto it = coins.begin(); it != coins.end(); ++it)
 	{
 		it->active = true;
