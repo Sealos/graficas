@@ -128,7 +128,7 @@ SceneNode* construirPilares(SceneManager* sceneMgr) {
 }
 
 Obstacle construirSierra(SceneManager* sceneMgr) {
-	Entity* entSierra = sceneMgr ->createEntity("saw.mesh");
+	Entity* entSierra = sceneMgr ->createEntity("saw2.mesh");
 	entSierra->setMaterialName("Examples/SphereMappedRustySteel");
 	SceneNode* nodoSierra = sceneMgr -> createSceneNode();
 	nodoSierra->attachObject(entSierra);
