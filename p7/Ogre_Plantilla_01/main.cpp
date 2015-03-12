@@ -240,7 +240,7 @@ SceneNode* construirRectangulo(SceneManager* sceneMgr, Vector3 pos, Quaternion r
 SceneNode* construirMeta(SceneManager* sceneMgr, Vector3 pos){
 
 	SceneNode* nodoMeta = sceneMgr -> createSceneNode();
-
+	return nodoMeta;
 }
 
 Starfox::~Starfox() {
