@@ -24,6 +24,19 @@ void Player::createPlayerNode() {
 	_playerNode->attachObject(torus);
 	_playerNode->scale(24.0, 12.0, 24.0);
 	_padreNode->rotate(Quaternion(Degree(180.f), Vector3::UNIT_Y));
+	ParticleSystem* partSystem = mSceneMgr->createParticleSystem("Smoke", "Examples/JetEngine1");
+	ParticleSystem* partSystem2 = mSceneMgr->createParticleSystem("Smoke2", "Examples/JetEngine1");
+	SceneNode* partitculeNode = mSceneMgr->createSceneNode();
+	SceneNode* partitculeNode2 = mSceneMgr->createSceneNode();
+
+	partitculeNode->translate(-0.2f, 0.f, 0.0f);
+	partitculeNode2->translate(0.2f, 0.f, 0.0f);
+	partitculeNode->rotate(Quaternion(Degree(-90.f), Vector3::UNIT_X));
+	partitculeNode2->rotate(Quaternion(Degree(-90.f), Vector3::UNIT_X));
+	partitculeNode->attachObject(partSystem);
+	partitculeNode2->attachObject(partSystem2);
+	_playerNode->addChild(partitculeNode);
+	_playerNode->addChild(partitculeNode2);
 	_padreNode->addChild(_playerNode);
 }
 
@@ -53,7 +66,7 @@ bool Player::onUpdate(Real dtime) {
 	Vector3 translatePlayer(0.0f, 0.0f, 0.0f);
 	Quaternion rotatePlayer(Degree(0), Vector3::UNIT_Y);
 	Quaternion strafePlayer(Degree(0), Vector3::UNIT_Z);
-	float playerSpeed = 2000.f;
+	float playerSpeed = 1000.f;
 	float rotationSpeed = 100.f;
 	float strafeRotSpeed = 200.f;
 	bool reiniciarPosicion = false;
@@ -66,7 +79,7 @@ bool Player::onUpdate(Real dtime) {
 
 	Real yup;
 	Real decimal = modf(invincibilityTime, &yup);
-	_playerNode->setVisible(getBlinkingVisibility(decimal));
+	_playerNode->setVisible(getBlinkingVisibility(decimal), false);
 
 	if (keyboard->isKeyDown(OIS::KC_ESCAPE))
 		return false;
@@ -213,7 +226,7 @@ void Player::onCollision(Coin& coin)
 
 inline void Player::dealDamage()
 {
-	std::cout << "Current health: " << --health << std::endl;
+	std::cout << "Vida actual: " << --health << std::endl;
 	invincibilityTime = 3.0f;
 }
 
