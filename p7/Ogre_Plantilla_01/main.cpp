@@ -224,6 +224,7 @@ Ring construirAnillo(SceneManager* sceneMgr, Vector3 pos){
 	Entity* entAnillo = sceneMgr -> createEntity("Poly04.mesh");
 	entAnillo -> setMaterialName("coin");
 	nodoAnillo -> attachObject(entAnillo);
+	nodoAnillo -> rotate(Quaternion(Degree(90),Vector3::UNIT_X));
 	nodoAnillo -> translate(pos);
 	anillo = Ring(nodoAnillo,sceneMgr);
 
