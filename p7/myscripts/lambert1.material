@@ -10,3 +10,17 @@ material lambert1
 	}
 
 }
+
+material coin
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture golden.jpg
+			}
+		}
+	}
+}
