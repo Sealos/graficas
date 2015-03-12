@@ -280,15 +280,17 @@ void Starfox::createScene() {
 	mSceneMgr->setSkyBox(true, "Examples/StormySkyBox");
 	cPlayer = new Player(mSceneMgr, mWindow, padre);
 	mSceneMgr->getRootSceneNode()->addChild(padre);
+	Real profundidadMaxima = 80000.0;
+	Real profundidadMinima = 10000.0;
 	//Creacion decorativa
 	//Cercas del mundo
 	int numeroCercas = 15;
 	int separadorCercas = (y_border[0] - y_border[1])/numeroCercas;
 	for(int i = 0;i<numeroCercas;++i){
-		SceneNode* cercaNear = construirRectangulo(mSceneMgr,Vector3(0.0,y_border[1]+(i*separadorCercas),z_border[1]-150),Quaternion(Degree(90.0),Vector3::UNIT_Y),Vector3(1.0,1.0,200.0));
+		SceneNode* cercaNear = construirRectangulo(mSceneMgr,Vector3(0.0,y_border[1]+(i*separadorCercas),z_border[1]),Quaternion(Degree(90.0),Vector3::UNIT_Y),Vector3(1.0,1.0,200.0));
 		mSceneMgr -> getRootSceneNode() -> addChild(cercaNear);
 
-		SceneNode* cercaFar = construirRectangulo(mSceneMgr,Vector3(0.0,y_border[1]+(i*separadorCercas),z_border[0]+150),Quaternion(Degree(90.0),Vector3::UNIT_Y),Vector3(1.0,1.0,200.0));
+		SceneNode* cercaFar = construirRectangulo(mSceneMgr,Vector3(0.0,y_border[1]+(i*separadorCercas),z_border[0]),Quaternion(Degree(90.0),Vector3::UNIT_Y),Vector3(1.0,1.0,200.0));
 		mSceneMgr -> getRootSceneNode() -> addChild(cercaFar);
 
 		SceneNode* cercaLeft = construirRectangulo(mSceneMgr,Vector3(x_border[0]+150,y_border[1]+(i*separadorCercas),z_border[0]/2),Quaternion(),Vector3(1.0,1.0,900.0));
@@ -300,13 +302,16 @@ void Starfox::createScene() {
 
 	//
 	//Creacion de primer obstaculo
-	SceneNode* reja = construirRejas(mSceneMgr, Vector3(0.0, y_border[1], 10000.0));
-	mSceneMgr -> getRootSceneNode() -> addChild(reja);
-	obstacles.push_back(Obstacle(reja, Vector3::ZERO, 0.0f));
+	
 	//Construccion de las sierras
-	Obstacle sierraPrueba = construirSierra(mSceneMgr, Vector3(0.0, 0.0, 5000.0));
-	mSceneMgr -> getRootSceneNode() -> addChild(sierraPrueba._node);
-	obstacles.push_back(sierraPrueba);
+	/*int numSierras = 3;
+	Real separadorSierras = z_border[0]-profundidadMinima/numSierras;
+	for(int i =0; i< numSierras; ++i){
+		Obstacle sierraPrueba = construirSierra(mSceneMgr, Vector3(4000*i, 0.0, profundidadMinima+(i*20000)));
+		mSceneMgr -> getRootSceneNode() -> addChild(sierraPrueba._node);
+		obstacles.push_back(sierraPrueba);
+	}
+	*/
 	//
 	//Construccion de tercer obstaculo
 	Obstacle pilar = construirPilar(mSceneMgr, Vector3(0.0, 0.0, 0.0));
@@ -315,23 +320,30 @@ void Starfox::createScene() {
 	//
 	//Construccion de monedas
 	int numeroMonedas = 20;
-	Real profundidadMaxima = 80000.0;
-	Real profundidadMinima = 10000.0;
+	
 	Real separador =(profundidadMaxima-profundidadMinima)/numeroMonedas;
-	for(int i =1; i<=numeroMonedas; ++i){
-		Coin moneda = construirMoneda(mSceneMgr, Vector3(cos(i)*9000.0, sin(i)*3000, i*separador));
+	for(int i =0; i<numeroMonedas; ++i){
+		Coin moneda = construirMoneda(mSceneMgr, Vector3(sin(i)*8000.0, cos(i)*3000, profundidadMinima+ i*separador));
 		mSceneMgr -> getRootSceneNode() -> addChild(moneda._node);
 		coins.push_back(moneda);
 
-
-		coins.push_back(moneda);
 	}
 	
 	//
 	//Construccion de anillos
-	Ring anillo = construirAnillo(mSceneMgr, Vector3(0.0, 0.0, 500.0));
-	mSceneMgr -> getRootSceneNode() -> addChild(anillo._node);
-	rings.push_back(anillo);
+	int numeroAnillos = 8;
+	separador = (profundidadMaxima-profundidadMinima)/numeroAnillos;
+	for(int i = 0; i< numeroAnillos; ++i){
+		Ring anillo = construirAnillo(mSceneMgr, Vector3(cos(i)*8000.0, sin(i)*3000,  profundidadMinima + i*separador));
+		mSceneMgr -> getRootSceneNode() -> addChild(anillo._node);
+		rings.push_back(anillo);
+
+		SceneNode* reja = construirRejas(mSceneMgr, Vector3(cos(i)*8000.0, sin(i)*3000,  (profundidadMinima + i*separador))-2000);
+		reja -> translate(2000.0,1500.0,0.0);
+		mSceneMgr -> getRootSceneNode() -> addChild(reja);
+		obstacles.push_back(Obstacle(reja, Vector3::ZERO, 0.0f));
+	}
+	
 	//
 	Plane plane(Vector3::UNIT_Y, 0.0);
 	MeshManager::getSingleton().createPlane("plane", ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -340,7 +352,7 @@ void Starfox::createScene() {
 	SceneNode* nodoPlano = mSceneMgr -> createSceneNode();
 	entPlano -> setMaterialName("Examples/GrassFloor");
 	nodoPlano -> attachObject(entPlano);
-	nodoPlano -> translate(0.0, -5000.0, 44900.0);
+	nodoPlano -> translate(0.0, -5000.0, 45000.0);
 	mSceneMgr->getRootSceneNode()->addChild(nodoPlano);
 }
 
@@ -357,7 +369,7 @@ void Starfox::resetGame(Player* player) {
 	{
 		it->active = true;
 		ring = static_cast<Entity*>(it->_node->getAttachedObject(0));
-		ring->setMaterialName("ring");
+		ring->setMaterialName("coin");
 	}
 }
 
