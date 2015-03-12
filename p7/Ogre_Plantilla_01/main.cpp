@@ -222,6 +222,19 @@ Ring construirAnillo(SceneManager* sceneMgr, Vector3 pos) {
 	return anillo;
 }
 
+SceneNode* construirRectangulo(SceneManager* sceneMgr, Vector3 pos, Quaternion rot, Vector3 size){
+	SceneNode* nodoRect = sceneMgr -> createSceneNode();
+	Entity* entRect = sceneMgr -> createEntity("poly02.mesh");
+	entRect -> setMaterialName("Examples/Rocky");
+	nodoRect -> attachObject(entRect);
+	nodoRect -> rotate(rot);
+	nodoRect -> scale(size);
+	nodoRect ->translate(pos);
+
+	return nodoRect;
+
+}
+
 Starfox::~Starfox() {
 	if (mainLoop)
 		delete mainLoop;
@@ -256,7 +269,7 @@ void Starfox::createScene() {
 	cameraNode = mSceneMgr->createSceneNode();
 	cameraNode->attachObject(mCamera);
 	mSceneMgr->setAmbientLight(ColourValue(1, 1, 1));
-	mSceneMgr->setShadowTechnique(SHADOWTYPE_STENCIL_ADDITIVE);
+	//mSceneMgr->setShadowTechnique(SHADOWTYPE_STENCIL_ADDITIVE);
 	//Luces
 	Light *light1 = mSceneMgr->createLight("Light1");
 	light1->setType(Light::LT_POINT);
@@ -267,6 +280,25 @@ void Starfox::createScene() {
 	mSceneMgr->setSkyBox(true, "Examples/StormySkyBox");
 	cPlayer = new Player(mSceneMgr, mWindow, padre);
 	mSceneMgr->getRootSceneNode()->addChild(padre);
+	//Creacion decorativa
+	//Cercas del mundo
+	int numeroCercas = 15;
+	int separadorCercas = (y_border[0] - y_border[1])/numeroCercas;
+	for(int i = 0;i<numeroCercas;++i){
+		SceneNode* cercaNear = construirRectangulo(mSceneMgr,Vector3(0.0,y_border[1]+(i*separadorCercas),z_border[1]-150),Quaternion(Degree(90.0),Vector3::UNIT_Y),Vector3(1.0,1.0,200.0));
+		mSceneMgr -> getRootSceneNode() -> addChild(cercaNear);
+
+		SceneNode* cercaFar = construirRectangulo(mSceneMgr,Vector3(0.0,y_border[1]+(i*separadorCercas),z_border[0]+150),Quaternion(Degree(90.0),Vector3::UNIT_Y),Vector3(1.0,1.0,200.0));
+		mSceneMgr -> getRootSceneNode() -> addChild(cercaFar);
+
+		SceneNode* cercaLeft = construirRectangulo(mSceneMgr,Vector3(x_border[0]+150,y_border[1]+(i*separadorCercas),z_border[0]/2),Quaternion(),Vector3(1.0,1.0,900.0));
+		mSceneMgr -> getRootSceneNode() -> addChild(cercaLeft);
+
+		SceneNode* cercaRight = construirRectangulo(mSceneMgr,Vector3(x_border[1]-150,y_border[1]+(i*separadorCercas),z_border[0]/2),Quaternion(),Vector3(1.0,1.0,900.0));
+		mSceneMgr -> getRootSceneNode() -> addChild(cercaRight);
+	}
+
+	//
 	//Creacion de primer obstaculo
 	SceneNode* reja = construirRejas(mSceneMgr, Vector3(0.0, y_border[1], 10000.0));
 	mSceneMgr -> getRootSceneNode() -> addChild(reja);
@@ -282,9 +314,19 @@ void Starfox::createScene() {
 	obstacles.push_back(pilar);
 	//
 	//Construccion de monedas
-	Coin moneda = construirMoneda(mSceneMgr, Vector3(0.0, 0.0, 1000.0));
-	mSceneMgr -> getRootSceneNode() -> addChild(moneda._node);
-	coins.push_back(moneda);
+	int numeroMonedas = 20;
+	Real profundidadMaxima = 80000.0;
+	Real profundidadMinima = 10000.0;
+	Real separador =(profundidadMaxima-profundidadMinima)/numeroMonedas;
+	for(int i =1; i<=numeroMonedas; ++i){
+		Coin moneda = construirMoneda(mSceneMgr, Vector3(cos(i)*9000.0, sin(i)*3000, i*separador));
+		mSceneMgr -> getRootSceneNode() -> addChild(moneda._node);
+		coins.push_back(moneda);
+
+
+		coins.push_back(moneda);
+	}
+	
 	//
 	//Construccion de anillos
 	Ring anillo = construirAnillo(mSceneMgr, Vector3(0.0, 0.0, 500.0));
