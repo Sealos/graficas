@@ -180,10 +180,20 @@ bool Player::onUpdate(Real dtime) {
 	return true;
 }
 
-void Player::checkCollision(Ring&)
+void Player::checkCollision(Ring& ring)
 {
+	onCollision(ring);
 }
-void Player::onCollision(Ring&){}
+
+void Player::onCollision(Ring& ring)
+{
+	score += 200;
+	ring.active = false;
+	Entity *ringEnt = static_cast<Entity*>(ring._node->getAttachedObject(0));
+	ringEnt->setMaterialName("Examples/Chrome");
+	std::cout << "Puntaje: " << score << std::endl;
+}
+
 void Player::checkCollision(Coin& coin)
 {
 	AxisAlignedBox aabb = _playerNode->_getWorldAABB();
@@ -194,6 +204,8 @@ void Player::checkCollision(Coin& coin)
 void Player::onCollision(Coin& coin)
 {
 	score += 100;
+	coin.active = false;
+	coin._node->setVisible(false);
 	std::cout << "Puntaje: " << score << std::endl;
 }
 
