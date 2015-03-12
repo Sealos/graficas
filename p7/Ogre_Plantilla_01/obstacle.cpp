@@ -8,6 +8,7 @@ Obstacle::Obstacle(SceneNode *_node, Vector3 rotationVector, Real rotationSpeed)
 	z_direction = 1;
 	movementSpeed = 0.0f;
 	movementVector = Vector3::ZERO;
+	_node->showBoundingBox(true);
 }
 
 Obstacle::Obstacle(SceneNode *_node) : _node(_node) {
@@ -18,6 +19,7 @@ Obstacle::Obstacle(SceneNode *_node) : _node(_node) {
 	rotationVector =  Vector3::ZERO;
 	movementSpeed = 0.0f;
 	movementVector = Vector3::ZERO;
+	_node->showBoundingBox(true);
 }
 
 Obstacle::Obstacle(SceneNode *_node, Vector3 rotationVector, Real rotationSpeed, Vector3 movementDirection, Real movementSpeed)
@@ -26,6 +28,7 @@ Obstacle::Obstacle(SceneNode *_node, Vector3 rotationVector, Real rotationSpeed,
 	x_direction = 1;
 	y_direction = 1;
 	z_direction = 1;
+	_node->showBoundingBox(true);
 }
 
 void Obstacle::onUpdate(Real dtime) {

@@ -2,7 +2,7 @@
 #include "player.h"
 
 Player::Player(SceneManager *sm, RenderWindow *win, SceneNode *_padreNode)
-	: mSceneMgr(sm), _padreNode(_padreNode), lives(3) {
+	: mSceneMgr(sm), _padreNode(_padreNode), health(3), score(0) {
 	//Helper variables for extracting the window handle
 	size_t windowHnd = 0;
 	std::stringstream windowHndStr;
@@ -23,9 +23,16 @@ void Player::createPlayerNode() {
 	_playerNode = mSceneMgr->createSceneNode();
 	_playerNode->showBoundingBox(true);
 	_playerNode->attachObject(torus);
-	_playerNode->scale(6.0, 3.0, 6.0);
+	_playerNode->scale(12.0, 6.0, 12.0);
 	_padreNode->rotate(Quaternion(Degree(180.f), Vector3::UNIT_Y));
 	_padreNode->addChild(_playerNode);
+}
+
+void Player::reset() {
+	health = 3;
+	score = 0;
+	_padreNode->setPosition(0.0f, 0.0f, 0.0f);
+	_padreNode->setOrientation(Quaternion(Degree(180.0f), Vector3::UNIT_Y));
 }
 
 Player::~Player() {
@@ -36,8 +43,8 @@ Player::~Player() {
 }
 
 bool Player::onUpdate(Real dtime) {
-	Vector3 translateCam(0.0, 0.0, 0.0);
-	Vector3 translatePlayer(0.0, 0.0, 0.0);
+	Vector3 translateCam(0.0f, 0.0f, 0.0f);
+	Vector3 translatePlayer(0.0f, 0.0f, 0.0f);
 	Quaternion rotatePlayer(Degree(0), Vector3::UNIT_Y);
 	Quaternion strafePlayer(Degree(0), Vector3::UNIT_Z);
 	float playerSpeed = 3000.f;
@@ -45,6 +52,9 @@ bool Player::onUpdate(Real dtime) {
 	float strafeRotSpeed = 200.f;
 	bool reiniciarPosicion = false;
 	keyboard->capture();
+
+	if (invincibilityTime)
+		invincibilityTime -= dtime;
 
 	if (keyboard->isKeyDown(OIS::KC_ESCAPE))
 		return false;
@@ -102,18 +112,17 @@ bool Player::onUpdate(Real dtime) {
 	} else {
 		if (_playerNode->getOrientation().getRoll().valueDegrees() > 0.2f)
 			sign = -1;
-
 		else if (_playerNode->getOrientation().getRoll().valueDegrees() < -0.2f)
 			sign = 1;
-
 		else
 			sign = 0;
 
 		strafePlayer = strafePlayer * Quaternion(Degree(sign * (rotationSpeed * dtime)), Vector3::UNIT_Z);
 	}
 
-	Vector3 top = _playerNode->_getWorldAABB().getCorner(AxisAlignedBox::CornerEnum::FAR_LEFT_TOP);
-	Vector3 bot = _playerNode->_getWorldAABB().getCorner(AxisAlignedBox::CornerEnum::NEAR_RIGHT_BOTTOM);
+	AxisAlignedBox aabb = _playerNode->_getWorldAABB();
+	Vector3 top = aabb.getCorner(AxisAlignedBox::CornerEnum::FAR_LEFT_TOP);
+	Vector3 bot = aabb.getCorner(AxisAlignedBox::CornerEnum::NEAR_RIGHT_BOTTOM);
 	Vector3 leftFar = top;
 	Vector3 rightNear = bot;
 	Vector3 oldPosition = _padreNode->getPosition();
@@ -128,6 +137,12 @@ bool Player::onUpdate(Real dtime) {
 	Real newFar = leftFar.z + deltaZ;
 	Real newNear = rightNear.z + deltaZ;
 
+	if (newPosition.z > 89500)
+	{
+		reset();
+		return true;
+	}
+
 	if (deltaY > 0.0f && newTop > y_border[0])
 		translatePlayer.y = 0.0;
 
@@ -140,7 +155,6 @@ bool Player::onUpdate(Real dtime) {
 	else if (deltaX < 0.0f && newLeft < x_border[1])
 		translatePlayer.x = 0.0;
 
-	// TODO(sdecolli): Revisar el near y far
 	if (deltaZ < 0.0f && newNear < z_border[1])
 		translatePlayer.z = 0.0;
 
@@ -155,7 +169,23 @@ bool Player::onUpdate(Real dtime) {
 
 void Player::onCollision(Coin&){}
 void Player::onCollision(Ring&){}
-void Player::onCollision(Obstacle&){}
 void Player::checkCollision(Coin&){}
 void Player::checkCollision(Ring&){}
-void Player::checkCollision(Obstacle&){}
+
+inline void Player::dealDamage()
+{
+	std::cout << "Current health: " << --health << std::endl;
+	invincibilityTime = 3.0f;
+}
+
+void Player::checkCollision(Obstacle& obs)
+{
+	AxisAlignedBox aabb = _playerNode->_getWorldAABB();
+	if (health > 0 && obs.isColliding(aabb) && invincibilityTime <= 0)
+		onCollision(obs);
+}
+
+inline void Player::onCollision(Obstacle& obs)
+{
+	dealDamage();
+}

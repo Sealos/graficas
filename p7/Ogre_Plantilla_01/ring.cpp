@@ -1,7 +1,17 @@
 #include "stdafx.h"
 #include "ring.h"
 
+const Real rotationSpeed = 100.f;
+
 void Ring::onUpdate(Real dtime) {
+	Quaternion rotation = Quaternion(Degree((rotationSpeed * dtime)), Vector3::UNIT_Z);
+	_node->rotate(rotation);
+}
+
+Ring::~Ring()
+{
+	_node->removeAndDestroyAllChildren();
+	mSceneMgr->destroySceneNode(_node);
 }
 
 bool Ring::isColliding(Vector3 point) {
@@ -18,4 +28,13 @@ bool Ring::isColliding(Vector3 point) {
 		return false;
 
 	return true;
+}
+
+bool Ring::isColliding(AxisAlignedBox& bbox) {
+	return _node->_getWorldAABB().intersects(bbox);
+}
+
+Ring::Ring(SceneNode *_node, SceneManager *mSceneMgr)
+	: _node(_node), active(true), mSceneMgr(mSceneMgr)
+{
 }
