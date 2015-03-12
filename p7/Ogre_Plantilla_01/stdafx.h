@@ -3,6 +3,7 @@
 // Ogre headers you need
 #include "Ogre.h"
 #include "Ogre\ExampleApplication.h"
+#include "OgreWireBoundingBox.h"
 #include "OgreConfigFile.h"
 #include <vector>
 

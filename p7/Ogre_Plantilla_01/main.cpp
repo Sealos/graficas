@@ -72,11 +72,13 @@ SceneNode* construirTorre(SceneManager* sceneMgr) {
 	entTorreBase -> setMaterialName("RustyBarrel");
 	SceneNode* scnTorreBase = sceneMgr->createSceneNode();
 	scnTorreBase -> attachObject(entTorreBase);
-	scnTorreBase -> scale(1.5, 3.0, 1.5);
-	scnTorreBase -> translate(0.0, 300.0, 0.0);
+	scnTorreBase -> scale(1.5, 6.0, 1.5);
+	scnTorreBase -> translate(0.0, 600.0, 0.0);
 	scnTorre -> addChild(scnTorreBase);
-
-	for (int i = 0; i < 7 ; ++i) {
+	//
+	scnTorreBase -> showBoundingBox(true);
+	//
+	for (int i = 0; i < 13 ; ++i) {
 		Entity* entTorreAnillo = sceneMgr -> createEntity("poly04.mesh");
 		entTorreAnillo -> setMaterialName("Examples/BumpyMetal");
 		SceneNode* scnTorreAnillo = sceneMgr -> createSceneNode();
@@ -89,17 +91,20 @@ SceneNode* construirTorre(SceneManager* sceneMgr) {
 	entTorreTope -> setMaterialName("Examples/BumpyMetal");
 	SceneNode* scnTorreTope = sceneMgr -> createSceneNode();
 	scnTorreTope -> attachObject(entTorreTope);
-	scnTorreTope -> translate(0.0, 600.0, 0.0);
+	scnTorreTope -> translate(0.0, 1200.0, 0.0);
 	scnTorreTope -> scale(1.5, 1.5, 1.5);
+	scnTorreTope -> showBoundingBox(true);
 	scnTorre -> addChild(scnTorreTope);
 	return scnTorre;
 }
 
-SceneNode* construirRejas(SceneManager* sceneMgr) {
+SceneNode* construirRejas(SceneManager* sceneMgr, Vector3 pos) {
+
+	float altura = 600.0;
 	SceneNode* nodoTorre1 = construirTorre(sceneMgr);
-	nodoTorre1 -> translate(600.0, 0.0, 2000.0);
+	nodoTorre1 -> translate(600.0, 0.0, 0.0);
 	SceneNode* nodoTorre2 = construirTorre(sceneMgr);
-	nodoTorre2 -> translate(-600.0, 0.0, 2000.0);
+	nodoTorre2 -> translate(-600.0, 0.0, 0.0);
 	SceneNode* nodoReja = sceneMgr -> createSceneNode();
 	SceneNode* barras = sceneMgr -> createSceneNode();
 	Quaternion rotacionBarra(Degree(90.0), Vector3::UNIT_Y);
@@ -109,31 +114,91 @@ SceneNode* construirRejas(SceneManager* sceneMgr) {
 		Entity* barra = sceneMgr -> createEntity("Poly02.mesh");
 		barra -> setMaterialName("Examples/BumpyMetal");
 		nodoBarra -> attachObject(barra);
-		nodoBarra -> translate(0.0, 50.0f + i * 100.f, 2000.0);
+		nodoBarra -> translate(0.0, 50.0f + i * 200.f, 0.0);
 		nodoBarra -> rotate(rotacionBarra);
 		nodoBarra -> scale(0.2, 0.1, 12.0);
+		nodoBarra -> showBoundingBox(true);
+
 		barras -> addChild(nodoBarra);
 	}
 
 	nodoReja -> addChild(nodoTorre1);
 	nodoReja -> addChild(nodoTorre2);
 	nodoReja -> addChild(barras);
-	nodoReja -> translate(0.0, 0.0, 800.0);
+	nodoReja -> translate(pos);
 	return nodoReja;
 }
 
-SceneNode* construirPilares(SceneManager* sceneMgr) {
-	SceneNode* pilares = sceneMgr -> createSceneNode();
-	return pilares;
+Obstacle construirPilar(SceneManager* sceneMgr, Vector3 pos) {
+	SceneNode* nodoPilar = sceneMgr -> createSceneNode();
+	AxisAlignedBox AABPilar;
+	Vector3 AABPilarMax;
+	Vector3 AABPilarMin;
+	int secciones = 3;
+	//
+	Entity* rect = sceneMgr -> createEntity("Poly02.mesh");
+	rect -> setMaterialName("Examples/Rocky");
+	Entity* spiral = sceneMgr -> createEntity("Poly09.mesh");
+	spiral -> setMaterialName("Examples/Rocky");
+	SceneNode* nodoRect = sceneMgr -> createSceneNode("Rect");
+	SceneNode* nodoSpiral = sceneMgr -> createSceneNode("Spiral");
+	nodoSpiral -> rotate(Quaternion(Degree(45.0),Vector3::UNIT_Y));
+	nodoRect -> translate(0.0,0.0,0.0);
+	nodoSpiral -> translate(0.0,200,0.0);
+	nodoRect -> attachObject(rect);
+	nodoRect -> _updateBounds();
+	nodoSpiral->attachObject(spiral);
+	AABPilarMin = nodoRect -> _getWorldAABB().getMinimum();
+	AABPilarMax = nodoRect -> _getWorldAABB().getMaximum();
+
+	nodoPilar -> addChild(nodoRect);
+	nodoPilar -> addChild(nodoSpiral);
+	//
+	for(int i = 1; i < secciones; ++i){
+		Entity* rect = sceneMgr -> createEntity("Poly02.mesh");
+		rect -> setMaterialName("Examples/Rocky");
+		Entity* spiral = sceneMgr -> createEntity("Poly09.mesh");
+		spiral -> setMaterialName("Examples/Rocky");
+		SceneNode* nodoRect = sceneMgr -> createSceneNode("Rect"+i);
+		SceneNode* nodoSpiral = sceneMgr -> createSceneNode("Spiral"+i);
+		nodoSpiral -> rotate(Quaternion(Degree(45.0+(45.0*i)),Vector3::UNIT_Y));
+		nodoRect -> rotate(Quaternion(Degree(45.0*i),Vector3::UNIT_Y));
+		nodoRect -> attachObject(rect);
+		nodoSpiral->attachObject(spiral);
+		nodoRect -> translate(0.0,i*400.0,0.0);
+		nodoSpiral -> translate(0.0,200+(i*400.0),0.0);
+		nodoRect -> _updateBounds();
+		nodoSpiral -> _updateBounds();
+		//nodoRect -> showBoundingBox(true);
+		//nodoSpiral -> showBoundingBox(true);
+		nodoPilar -> addChild(nodoRect);
+		nodoPilar -> addChild(nodoSpiral);
+		
+		
+
+
+	}
+	AABPilarMax.y += (2*(secciones)-1)*200.0;
+	WireBoundingBox* lol = new WireBoundingBox();
+	AABPilar.setExtents(AABPilarMin.x,AABPilarMin.y,AABPilarMin.z,AABPilarMax.x,AABPilarMax.y,AABPilarMax.z);
+	lol -> setBoundingBox(AABPilar);
+	lol -> setVisible(true);
+	nodoPilar -> attachObject(lol);
+	nodoPilar -> translate(pos);
+	
+	
+	
+	Obstacle pilar = Obstacle(nodoPilar,Vector3::ZERO, 50.0f, Vector3::UNIT_Y, 400.f);
+	return pilar;
 }
 
-Obstacle construirSierra(SceneManager* sceneMgr) {
+Obstacle construirSierra(SceneManager* sceneMgr, Vector3 pos) {
 	Entity* entSierra = sceneMgr ->createEntity("saw2.mesh");
 	entSierra->setMaterialName("Examples/SphereMappedRustySteel");
 	SceneNode* nodoSierra = sceneMgr -> createSceneNode();
 	nodoSierra->attachObject(entSierra);
-	nodoSierra->translate(0.0f, 0.0f, 5000.0f);
-	Obstacle sierra = Obstacle(nodoSierra, Vector3::UNIT_X, 150.0f, Vector3::UNIT_X, 800.f);
+	nodoSierra->translate(pos);
+	Obstacle sierra = Obstacle(nodoSierra, Vector3::UNIT_X, 50.0f, Vector3::UNIT_X, 800.f);
 	nodoSierra->rotate(Quaternion(Degree(90.f), Vector3::UNIT_Y));
 	nodoSierra -> scale(120.0, 120.0, 420.0);
 	return sierra;
@@ -186,16 +251,19 @@ void Starfox::createScene() {
 	cPlayer = new Player(mSceneMgr, mWindow, padre);
 	mSceneMgr->getRootSceneNode()->addChild(padre);
 	//Creacion de primer obstaculo
-	SceneNode* reja = construirRejas(mSceneMgr);
+	SceneNode* reja = construirRejas(mSceneMgr,Vector3(0.0,y_border[1],10000.0));
 	mSceneMgr -> getRootSceneNode() -> addChild(reja);
 	obstacles.push_back(Obstacle(reja, Vector3::ZERO, 0.0f));
 	//Construccion de las sierras
-	Obstacle sierraPrueba = construirSierra(mSceneMgr);
+	Obstacle sierraPrueba = construirSierra(mSceneMgr,Vector3(0.0,0.0,5000.0));
 	mSceneMgr -> getRootSceneNode() -> addChild(sierraPrueba._node);
 	obstacles.push_back(sierraPrueba);
 	//
 	//Construccion de tercer obstaculo
-	SceneNode* pilares = construirPilares(mSceneMgr);
+	Obstacle pilar = construirPilar(mSceneMgr,Vector3(0.0,0.0,0.0));
+	mSceneMgr -> getRootSceneNode() -> addChild(pilar._node);
+	obstacles.push_back(pilar);
+	//
 	Plane plane(Vector3::UNIT_Y, 0.0);
 	MeshManager::getSingleton().createPlane("plane", ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 											plane, 20000, 90100, 20, 20, true, 1, 5, 5, Vector3::UNIT_Z);
