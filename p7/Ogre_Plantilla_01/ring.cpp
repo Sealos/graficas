@@ -8,11 +8,6 @@ void Ring::onUpdate(Real dtime) {
 	_node->rotate(rotation);
 }
 
-Ring::~Ring()
-{
-	_node->removeAndDestroyAllChildren();
-	mSceneMgr->destroySceneNode(_node);
-}
 
 bool Ring::isColliding(Vector3 point) {
 	Vector3 farLeftTop = _node->_getWorldAABB().getCorner(AxisAlignedBox::CornerEnum::FAR_LEFT_TOP);

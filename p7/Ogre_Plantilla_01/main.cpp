@@ -204,6 +204,35 @@ Obstacle construirSierra(SceneManager* sceneMgr, Vector3 pos) {
 	return sierra;
 }
 
+Coin construirMoneda(SceneManager* sceneMgr, Vector3 pos){
+	Coin moneda;
+	SceneNode* nodoMoneda = sceneMgr -> createSceneNode();
+	Entity* entMoneda = sceneMgr -> createEntity("Poly14.mesh");
+	entMoneda -> setMaterialName("coin");
+	nodoMoneda -> attachObject(entMoneda);
+	nodoMoneda -> rotate(Quaternion(Degree(90),Vector3::UNIT_X));
+	nodoMoneda -> translate(pos);
+	moneda = Coin(nodoMoneda);
+
+	return moneda;
+
+}
+
+Ring construirAnillo(SceneManager* sceneMgr, Vector3 pos){
+	Ring anillo;
+	SceneNode* nodoAnillo = sceneMgr -> createSceneNode();
+	Entity* entAnillo = sceneMgr -> createEntity("Poly04.mesh");
+	entAnillo -> setMaterialName("coin");
+	nodoAnillo -> attachObject(entAnillo);
+	nodoAnillo -> translate(pos);
+	anillo = Ring(nodoAnillo,sceneMgr);
+
+
+
+	return anillo;
+}
+
+
 
 Starfox::~Starfox() {
 	if (mainLoop)
@@ -263,6 +292,17 @@ void Starfox::createScene() {
 	Obstacle pilar = construirPilar(mSceneMgr,Vector3(0.0,0.0,0.0));
 	mSceneMgr -> getRootSceneNode() -> addChild(pilar._node);
 	obstacles.push_back(pilar);
+	//
+	//Construccion de monedas
+	Coin moneda = construirMoneda(mSceneMgr,Vector3(0.0,0.0,1000.0));
+	mSceneMgr -> getRootSceneNode() -> addChild(moneda._node);
+	coins.push_back(moneda);
+
+	//
+	//Construccion de anillos
+	Ring anillo = construirAnillo(mSceneMgr,Vector3(0.0,0.0,500.0));
+	mSceneMgr -> getRootSceneNode() -> addChild(anillo._node);
+	rings.push_back(anillo);
 	//
 	Plane plane(Vector3::UNIT_Y, 0.0);
 	MeshManager::getSingleton().createPlane("plane", ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,

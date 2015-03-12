@@ -7,7 +7,7 @@ public:
 	SceneManager *mSceneMgr;
 	Ring(){};
 	Ring(SceneNode *, SceneManager *);
-	~Ring();
+	~Ring(){};
 
 	void onUpdate(Real);
 	bool isColliding(Vector3);

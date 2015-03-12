@@ -4,7 +4,7 @@
 const Real rotationSpeed = 100.f;
 
 void Coin::onUpdate(Real dtime) {
-	Quaternion rotation = rotation * Quaternion(Degree((rotationSpeed * dtime)), Vector3::UNIT_Y);
+	Quaternion rotation = Quaternion(Degree((rotationSpeed * dtime)), Vector3::UNIT_Z);
 	_node->rotate(rotation);
 }
 
