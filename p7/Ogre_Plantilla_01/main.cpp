@@ -68,7 +68,7 @@ bool MainLoopFL:: frameStarted(const FrameEvent &evt) {
 SceneNode* construirTorre(SceneManager* sceneMgr) {
 	SceneNode* scnTorre = sceneMgr -> createSceneNode();
 	Entity* entTorreBase = sceneMgr -> createEntity("poly02.mesh");
-	entTorreBase -> setMaterialName("RustyBarrel");
+	entTorreBase -> setMaterialName("RustyM");
 	SceneNode* scnTorreBase = sceneMgr->createSceneNode();
 	scnTorreBase -> attachObject(entTorreBase);
 	scnTorreBase -> scale(1.5, 6.0, 1.5);
@@ -80,7 +80,7 @@ SceneNode* construirTorre(SceneManager* sceneMgr) {
 	//
 	for (int i = 0; i < 7 ; ++i) {
 		Entity* entTorreAnillo = sceneMgr -> createEntity("poly04.mesh");
-		entTorreAnillo -> setMaterialName("Examples/BumpyMetal");
+		entTorreAnillo -> setMaterialName("BumpyM");
 		SceneNode* scnTorreAnillo = sceneMgr -> createSceneNode();
 		scnTorreAnillo -> attachObject(entTorreAnillo);
 		scnTorreAnillo -> translate(0.0, i * 100.0f, 0.0);
@@ -89,7 +89,7 @@ SceneNode* construirTorre(SceneManager* sceneMgr) {
 	}
 
 	Entity* entTorreTope = sceneMgr -> createEntity("poly16.mesh");
-	entTorreTope -> setMaterialName("Examples/BumpyMetal");
+	entTorreTope -> setMaterialName("BumpyM");
 	SceneNode* scnTorreTope = sceneMgr -> createSceneNode();
 	scnTorreTope -> attachObject(entTorreTope);
 	scnTorreTope -> translate(0.0, 1200.0, 0.0);
@@ -112,7 +112,7 @@ SceneNode* construirRejas(SceneManager* sceneMgr, Vector3 pos) {
 	for (int i = 0 ; i < 6; ++i) {
 		SceneNode* nodoBarra = sceneMgr -> createSceneNode();
 		Entity* barra = sceneMgr -> createEntity("Poly02.mesh");
-		barra -> setMaterialName("Examples/BumpyMetal");
+		barra -> setMaterialName("BumpyM");
 		nodoBarra -> attachObject(barra);
 		nodoBarra -> translate(0.0, 50.0f + i * 200.f, 0.0);
 		nodoBarra -> rotate(rotacionBarra);
@@ -161,12 +161,12 @@ Obstacle construirPilar(SceneManager* sceneMgr, Vector3 pos) {
 		spiral -> setMaterialName("Examples/Rocky");
 		SceneNode* nodoRect = sceneMgr -> createSceneNode();
 		SceneNode* nodoSpiral = sceneMgr -> createSceneNode();
-		nodoSpiral -> rotate(Quaternion(Degree(45.0 + (45.0 * i)), Vector3::UNIT_Y));
-		nodoRect -> rotate(Quaternion(Degree(45.0 * i), Vector3::UNIT_Y));
+		nodoSpiral -> rotate(Quaternion(Degree(45.0f + (45.0f * i)), Vector3::UNIT_Y));
+		nodoRect -> rotate(Quaternion(Degree(Real(45.0 * i)), Vector3::UNIT_Y));
 		nodoRect -> attachObject(rect);
 		nodoSpiral->attachObject(spiral);
-		nodoRect -> translate(0.0, i * 400.0, 0.0);
-		nodoSpiral -> translate(0.0, 200 + (i * 400.0), 0.0);
+		nodoRect -> translate(0.0, Real(i * 400.0), 0.0);
+		nodoSpiral -> translate(0.0, Real(200 + (i * 400.0)), 0.0);
 		nodoRect -> _updateBounds();
 		nodoSpiral -> _updateBounds();
 		//nodoRect -> showBoundingBox(true);
@@ -175,7 +175,7 @@ Obstacle construirPilar(SceneManager* sceneMgr, Vector3 pos) {
 		nodoPilar -> addChild(nodoSpiral);
 	}
 
-	AABPilarMax.y += (2 * (secciones) - 1) * 200.0;
+	AABPilarMax.y += Real((2 * (secciones) - 1) * 200.0);
 	WireBoundingBox* lol = new WireBoundingBox();
 	AABPilar.setExtents(AABPilarMin.x, AABPilarMin.y, AABPilarMin.z, AABPilarMax.x, AABPilarMax.y, AABPilarMax.z);
 	lol -> setBoundingBox(AABPilar);
@@ -188,11 +188,11 @@ Obstacle construirPilar(SceneManager* sceneMgr, Vector3 pos) {
 
 Obstacle construirSierra(SceneManager* sceneMgr, Vector3 pos) {
 	Entity* entSierra = sceneMgr ->createEntity("saw2.mesh");
-	entSierra->setMaterialName("Examples/SphereMappedRustySteel");
+	entSierra->setMaterialName("SphereMappedRustyM");
 	SceneNode* nodoSierra = sceneMgr -> createSceneNode();
 	nodoSierra->attachObject(entSierra);
 	nodoSierra->translate(pos);
-	Obstacle sierra = Obstacle(nodoSierra, Vector3::ZERO, 50.0f, Vector3::UNIT_X, 1200.f);
+	Obstacle sierra = Obstacle(nodoSierra, Vector3::UNIT_X, 150.0f, Vector3::UNIT_X, 2000.f);
 	nodoSierra->rotate(Quaternion(Degree(90.f), Vector3::UNIT_Y));
 	nodoSierra -> scale(120.0, 120.0, 420.0);
 	return sierra;
@@ -241,8 +241,8 @@ SceneNode* construirColBand(SceneManager* sceneMgr){
 	SceneNode* nodo = sceneMgr -> createSceneNode();
 	Entity* entColumna = sceneMgr -> createEntity("poly02.mesh");
 	Entity* entPunta = sceneMgr -> createEntity("poly17.mesh");
-	entColumna -> setMaterialName("lambert1");
-	entPunta ->setMaterialName("lambert1");
+	entColumna -> setMaterialName("BumpyM2");
+	entPunta ->setMaterialName("BumpyM2");
 	SceneNode* columna = sceneMgr -> createSceneNode();
 	SceneNode* punta = sceneMgr -> createSceneNode();
 
@@ -261,6 +261,9 @@ SceneNode* construirMeta(SceneManager* sceneMgr, Vector3 pos){
 	SceneNode* nodoMeta = sceneMgr -> createSceneNode();
 	SceneNode* columna1 = construirColBand(sceneMgr);
 	SceneNode* columna2 = construirColBand(sceneMgr);
+
+	
+
 	columna1 -> translate(-1200.0,0.0,0.0);
 	columna2 -> translate(1200.0,0.0,0.0);
 	nodoMeta -> addChild(columna1);
@@ -302,13 +305,15 @@ void Starfox::createScene() {
 	SceneNode *cameraNode;
 	cameraNode = mSceneMgr->createSceneNode();
 	cameraNode->attachObject(mCamera);
-	mSceneMgr->setAmbientLight(ColourValue(1, 1, 1));
+	mSceneMgr->setAmbientLight(ColourValue(0.3, 0.3, 0.3));
 	//mSceneMgr->setShadowTechnique(SHADOWTYPE_STENCIL_ADDITIVE);
 	//Luces
 	Light *light1 = mSceneMgr->createLight("Light1");
-	light1->setType(Light::LT_POINT);
-	light1->setPosition(0, 0, 200);
+	light1->setType(Light::LT_DIRECTIONAL);
+	light1->setDirection(Vector3(1.0,-1,0.5));
 	light1-> setDiffuseColour(0.8f, 0.8f, 0.8f);
+
+	//
 	padre = mSceneMgr->createSceneNode();
 	padre->addChild(cameraNode);
 	mSceneMgr->setSkyBox(true, "Examples/StormySkyBox");
@@ -319,7 +324,7 @@ void Starfox::createScene() {
 	//Creacion decorativa
 	//Cercas del mundo
 	int numeroCercas = 15;
-	int separadorCercas = (y_border[0] - y_border[1])/numeroCercas;
+	int separadorCercas = int((y_border[0] - y_border[1])/numeroCercas);
 	for(int i = 0;i<numeroCercas;++i){
 		SceneNode* cercaNear = construirRectangulo(mSceneMgr,Vector3(0.0,y_border[1]+(i*separadorCercas),z_border[1]),Quaternion(Degree(90.0),Vector3::UNIT_Y),Vector3(1.0,1.0,200.0));
 		mSceneMgr -> getRootSceneNode() -> addChild(cercaNear);
@@ -336,7 +341,23 @@ void Starfox::createScene() {
 
 	SceneNode* nodoPrincipio = construirMeta(mSceneMgr,Vector3(0.0,0.0,400.0));
 	mSceneMgr -> getRootSceneNode() -> addChild(nodoPrincipio);
-	SceneNode* nodoFinal = construirMeta(mSceneMgr,Vector3(0.0,0.0,z_border[0] - 400.0));
+	Entity* entPlanos = mSceneMgr->createEntity("poly03.mesh");
+	entPlanos -> setMaterialName("inicio");
+	SceneNode* nodoPlanoBack = mSceneMgr -> createSceneNode();
+	nodoPlanoBack -> attachObject(entPlanos);
+
+	nodoPrincipio -> addChild(nodoPlanoBack);
+	nodoPlanoBack -> scale(12.0,4.0,1.0);
+
+	
+	SceneNode* nodoFinal = construirMeta(mSceneMgr,Vector3(0.0,0.0,Real(z_border[0] - 400.0)));
+	Entity* entPlano2 = mSceneMgr->createEntity("poly03.mesh");
+	entPlano2 -> setMaterialName("final");
+	SceneNode* nodoPlanoFront = mSceneMgr -> createSceneNode();
+	nodoPlanoFront -> attachObject(entPlano2);
+
+	nodoFinal -> addChild(nodoPlanoFront);
+	nodoPlanoFront -> scale(12.0,4.0,1.0);
 	mSceneMgr -> getRootSceneNode() -> addChild(nodoFinal);
 
 
@@ -347,7 +368,7 @@ void Starfox::createScene() {
 	int numSierras = 3;
 	Real separadorSierras = z_border[0]-profundidadMinima/numSierras;
 	for(int i =0; i< numSierras; ++i){
-		Obstacle sierraPrueba = construirSierra(mSceneMgr, Vector3(4000*i, 0.0, profundidadMinima+(i*20000)));
+		Obstacle sierraPrueba = construirSierra(mSceneMgr, Vector3(Real(4000*i), 0.0, profundidadMinima+(i*20000)));
 		mSceneMgr -> getRootSceneNode() -> addChild(sierraPrueba._node);
 		obstacles.push_back(sierraPrueba);
 	}
@@ -361,10 +382,10 @@ void Starfox::createScene() {
 	
 	Real separador =(profundidadMaxima-profundidadMinima)/numeroMonedas;
 	for(int i =0; i<numeroMonedas; ++i){
-		Coin moneda = construirMoneda(mSceneMgr, Vector3(sin(i)*8000.0, cos(i)*3000, profundidadMinima+ i*separador));
+		Coin moneda = construirMoneda(mSceneMgr, Vector3(Real(sin(i)*8000.0), Real(cos(i)*3000), profundidadMinima+ i*separador));
 		mSceneMgr -> getRootSceneNode() -> addChild(moneda._node);
 		coins.push_back(moneda);
-		Obstacle pilar = construirPilar(mSceneMgr, Vector3(sin(i)*8000.0, cos(i)*3000, profundidadMinima+ i*separador));
+		Obstacle pilar = construirPilar(mSceneMgr, Vector3(Real(sin(i)*8000.0), Real(cos(i)*3000), profundidadMinima+ i*separador));
 	mSceneMgr -> getRootSceneNode() -> addChild(pilar._node);
 	obstacles.push_back(pilar);
 	}
@@ -374,15 +395,15 @@ void Starfox::createScene() {
 	int numeroAnillos = 8;
 	separador = (profundidadMaxima-profundidadMinima)/numeroAnillos;
 	for(int i = 0; i< numeroAnillos; ++i){
-		Ring anillo = construirAnillo(mSceneMgr, Vector3(cos(i)*8000.0, sin(i)*3000,  profundidadMinima + i*separador));
+		Ring anillo = construirAnillo(mSceneMgr, Vector3(Real(cos(i)*8000.0), Real(sin(i)*3000),  profundidadMinima + i*separador));
 		mSceneMgr -> getRootSceneNode() -> addChild(anillo._node);
 		rings.push_back(anillo);
 
-		SceneNode* reja = construirRejas(mSceneMgr, Vector3(cos(i)*8000.0, sin(i)*3000,  (profundidadMinima + i*separador)));
+		SceneNode* reja = construirRejas(mSceneMgr, Vector3(Real(cos(i)*8000.0f), Real(sin(i)*3000.f),  (profundidadMinima + i*separador)));
 		reja -> translate(0.0,-600.0,-200.0);
 		mSceneMgr -> getRootSceneNode() -> addChild(reja);
 
-		reja = construirRejas(mSceneMgr, Vector3(cos(i)*8000.0, sin(i)*3000,  (profundidadMinima + i*separador)));
+		reja = construirRejas(mSceneMgr, Vector3(Real(cos(i)*8000.0f), Real(sin(i)*3000.f),  (profundidadMinima + i*separador)));
 		reja -> translate(0.0,-600.0,200.0);
 		mSceneMgr -> getRootSceneNode() -> addChild(reja);
 	}
@@ -390,10 +411,10 @@ void Starfox::createScene() {
 	//
 	Plane plane(Vector3::UNIT_Y, 0.0);
 	MeshManager::getSingleton().createPlane("plane", ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-											plane, 20000, 90000, 20, 20, true, 1, 5, 5, Vector3::UNIT_Z);
+											plane, 20000, 90000, 200, 200, true, 1, 5, 5, Vector3::UNIT_Z);
 	Ogre::Entity* entPlano = mSceneMgr->createEntity("PlanoEntity", "plane");
 	SceneNode* nodoPlano = mSceneMgr -> createSceneNode();
-	entPlano -> setMaterialName("Examples/GrassFloor");
+	entPlano -> setMaterialName("GrassFloorM");
 	nodoPlano -> attachObject(entPlano);
 	nodoPlano -> translate(0.0, -5000.0, 45000.0);
 	mSceneMgr->getRootSceneNode()->addChild(nodoPlano);

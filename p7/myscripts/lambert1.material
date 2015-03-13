@@ -11,15 +11,171 @@ material lambert1
 
 }
 
-material coin
+material ChromeM
 {
 	technique
 	{
 		pass
 		{
+			ambient 0.1 0.1 0.1 1	
 			texture_unit
 			{
+				texture Chrome.jpg
+				env_map spherical
+			}
+		}
+	}
+}
+
+material coin
+{
+	technique
+	{
+		pass
+		{	
+			ambient 0.4 0.2 0 1
+			texture_unit
+			{
+				
 				texture golden.jpg
+			}
+		}
+	}
+}
+
+material BumpyM
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.1 0.1 0.1
+			diffuse 1.0 1.0 1.0 1.0
+
+			texture_unit
+			{
+				texture BumpyMetal.jpg
+			}
+		}
+	}
+}
+
+material inicio
+{
+	technique
+	{
+		pass
+		{
+
+			texture_unit
+			{
+				texture Inicio.png
+			}
+		}
+	}
+}
+
+material final
+{
+	technique
+	{
+		pass
+		{
+
+			texture_unit
+			{
+				texture final.jpg
+			}
+		}
+	}
+}
+
+material BumpyM2
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.4 0.4 0.4
+			diffuse 1.0 0.5 0.5 1.0
+
+			texture_unit
+			{
+				texture BumpyMetal.jpg
+			}
+		}
+	}
+}
+
+material GrassFloorM
+{
+	technique
+	{
+		ambient 0.1 0.1 0.1
+		diffuse 0.2 0.8 0
+		pass
+		{
+			texture_unit
+			{
+				texture grass_1024.jpg
+			}
+		}
+	}
+}
+
+material RSteelM
+{
+	technique
+	{
+		pass
+		{
+			ambient 1 0.2 0 1
+			diffuse 0.5 0.5 0.5
+			texture_unit
+			{
+				texture RustySteel.jpg
+			}
+		}
+	}
+}
+
+material SphereMappedRustyM
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.1 0.1 0.1
+			diffuse 1.0 1.0 1.0 1.0
+			texture_unit
+			{
+				texture RustySteel.jpg
+			}
+
+			texture_unit
+			{
+				texture spheremap.png
+				colour_op_ex add src_texture src_current
+				colour_op_multipass_fallback one one
+				env_map spherical
+			}
+		}
+	}
+}
+
+
+material RustyM
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.1 0.1 0.1 1.0
+			diffuse 1.0 1.0 1.0 1.0
+			texture_unit
+			{
+				texture RustyBarrel.png
+				filtering trilinear
 			}
 		}
 	}

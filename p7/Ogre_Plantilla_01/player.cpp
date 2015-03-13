@@ -19,7 +19,7 @@ Player::Player(SceneManager *sm, RenderWindow *win, SceneNode *_padreNode)
 
 void Player::createPlayerNode() {
 	Entity *torus = mSceneMgr->createEntity("ObjetoPrueba", "ship.mesh");
-	torus->setMaterialName("lambert1");
+	torus->setMaterialName("Examples/BeachStones");
 	_playerNode = mSceneMgr->createSceneNode();
 	_playerNode->attachObject(torus);
 	_playerNode->scale(24.0, 12.0, 24.0);
@@ -35,8 +35,19 @@ void Player::createPlayerNode() {
 	partitculeNode2->rotate(Quaternion(Degree(-90.f), Vector3::UNIT_X));
 	partitculeNode->attachObject(partSystem);
 	partitculeNode2->attachObject(partSystem2);
+	Light* motorLight = mSceneMgr -> createLight();
+	motorLight -> setType(Light::LT_POINT);
+	motorLight -> setAttenuation(10000,1.0,0.1,0.01);
+	motorLight -> setDiffuseColour(1.0,0.5,1.0);
+	motorLight -> setSpecularColour(1.0,1.0,0.0);
+	partitculeNode -> attachObject(motorLight);
+	
 	_playerNode->addChild(partitculeNode);
 	_playerNode->addChild(partitculeNode2);
+	
+	
+	
+
 	_padreNode->addChild(_playerNode);
 }
 
@@ -205,7 +216,7 @@ void Player::onCollision(Ring& ring)
 	score += 200;
 	ring.active = false;
 	Entity *ringEnt = static_cast<Entity*>(ring._node->getAttachedObject(0));
-	ringEnt->setMaterialName("Examples/Chrome");
+	ringEnt->setMaterialName("ChromeM");
 	std::cout << "Puntaje: " << score << std::endl;
 }
 
