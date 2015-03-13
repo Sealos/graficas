@@ -78,7 +78,7 @@ SceneNode* construirTorre(SceneManager* sceneMgr) {
 
 
 	//
-	for (int i = 0; i < 13 ; ++i) {
+	for (int i = 0; i < 7 ; ++i) {
 		Entity* entTorreAnillo = sceneMgr -> createEntity("poly04.mesh");
 		entTorreAnillo -> setMaterialName("Examples/BumpyMetal");
 		SceneNode* scnTorreAnillo = sceneMgr -> createSceneNode();
@@ -237,9 +237,35 @@ SceneNode* construirRectangulo(SceneManager* sceneMgr, Vector3 pos, Quaternion r
 
 }
 
+SceneNode* construirColBand(SceneManager* sceneMgr){
+	SceneNode* nodo = sceneMgr -> createSceneNode();
+	Entity* entColumna = sceneMgr -> createEntity("poly02.mesh");
+	Entity* entPunta = sceneMgr -> createEntity("poly17.mesh");
+	entColumna -> setMaterialName("lambert1");
+	entPunta ->setMaterialName("lambert1");
+	SceneNode* columna = sceneMgr -> createSceneNode();
+	SceneNode* punta = sceneMgr -> createSceneNode();
+
+	columna -> attachObject(entColumna);
+	columna -> scale(1.0,20.0,1.0);
+	punta -> attachObject(entPunta);
+	punta -> translate(0.0,2100.0,0.0);
+	nodo -> addChild(columna);
+	nodo->addChild(punta);
+	return nodo;
+
+}
+
 SceneNode* construirMeta(SceneManager* sceneMgr, Vector3 pos){
 
 	SceneNode* nodoMeta = sceneMgr -> createSceneNode();
+	SceneNode* columna1 = construirColBand(sceneMgr);
+	SceneNode* columna2 = construirColBand(sceneMgr);
+	columna1 -> translate(-1200.0,0.0,0.0);
+	columna2 -> translate(1200.0,0.0,0.0);
+	nodoMeta -> addChild(columna1);
+	nodoMeta -> addChild(columna2);
+	nodoMeta -> translate(pos);
 	return nodoMeta;
 }
 
@@ -307,6 +333,12 @@ void Starfox::createScene() {
 		SceneNode* cercaRight = construirRectangulo(mSceneMgr,Vector3(x_border[1]-150,y_border[1]+(i*separadorCercas),z_border[0]/2),Quaternion(),Vector3(1.0,1.0,900.0));
 		mSceneMgr -> getRootSceneNode() -> addChild(cercaRight);
 	}
+
+	SceneNode* nodoPrincipio = construirMeta(mSceneMgr,Vector3(0.0,0.0,400.0));
+	mSceneMgr -> getRootSceneNode() -> addChild(nodoPrincipio);
+	SceneNode* nodoFinal = construirMeta(mSceneMgr,Vector3(0.0,0.0,z_border[0] - 400.0));
+	mSceneMgr -> getRootSceneNode() -> addChild(nodoFinal);
+
 
 	//
 	//Creacion de primer obstaculo
