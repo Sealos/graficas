@@ -1,0 +1,254 @@
+// Example particle systems
+
+
+
+
+
+
+
+
+
+
+
+
+// smoke
+particle_system Examples/Smoke
+{
+	material        	Examples/Smoke
+	particle_width  	1
+	particle_height 	5
+	cull_each       	true
+	quota           	500
+	billboard_type  	point
+	sorted				true
+    
+	// Area emitter
+	emitter Point
+	{
+		position 0 0 -15
+		angle 15
+		emission_rate 35
+		//time_to_live 2
+		time_to_live_min 2
+		time_to_live_max 2
+		direction 0 -1 0
+		velocity_min 170
+		velocity_max 290    
+		//colour_range_start 0 1 0 1	
+		//colour_range_end 0 0 1 1	
+		//colour 1 0 0 1	
+		//duration 1
+		//repeat_delay 2
+	}
+
+	affector ColourImage
+	{
+		image smokecolors.png
+	}
+
+   	/*affector Rotator
+   	{
+		rotation_range_start 0
+		rotation_range_end 360
+		rotation_speed_range_start -60
+		rotation_speed_range_end 200
+   	}*/
+
+   	//affector ColourInterpolator
+   	//{
+	//	time0 0
+	//	colour0 0 0 1 1
+	//	time1 0.25
+	//	colour1 1 0 0 1
+	//	time2 0.5
+	//	colour2 0 1 0 1
+	//	time3 0.75
+	//	colour3 0 0 1 1
+	//	time4 1
+	//	colour4 0 0 0 1
+   	//}
+
+	//affector DirectionRandomiser
+	//{
+	//	randomness 1000
+	//	scope 1.0
+	//	keep_velocity true
+	//}
+
+	/*affector DeflectorPlane
+	{
+		plane_point 0 0 100
+		plane_normal 1 0 -1
+		bounce 1.0
+	}*/
+
+	/*emitter Box
+	{
+		height 50
+		width 50
+		depth 50
+		position 0 0 -15
+		angle 0.5
+		emission_rate 150
+		//time_to_live 2
+		time_to_live_min 2
+		time_to_live_max 3
+		direction 0 0 -1
+		velocity_min 70
+		velocity_max 90    
+		//colour_range_start 0 1 0 1	
+		//colour_range_end 0 0 1 1	
+		colour 1 0 0 1	
+		//duration 1
+		//repeat_delay 2
+	}*/
+
+	/*emitter Ring
+	{
+		height 50
+		width 50
+		inner_height 0.9
+		inner_width 0.9
+		position 0 0 -15
+		angle 0.5
+		emission_rate 150
+		//time_to_live 2
+		time_to_live_min 2
+		time_to_live_max 3
+		direction 0 0 -1
+		velocity_min 70
+		velocity_max 90    
+		//colour_range_start 0 1 0 1	
+		//colour_range_end 0 0 1 1	
+		colour 1 0 0 1	
+		//duration 1
+		//repeat_delay 2
+	}*/
+
+   	affector Scaler
+   	{
+       	rate 50
+   	}
+
+}
+
+// smoke
+particle_system turbina
+{
+	material        	Examples/Smoke
+	particle_width  	1
+	particle_height 	5
+	cull_each       	true
+	quota           	500
+	billboard_type  	point
+	sorted				true
+    
+	// Area emitter
+	emitter Point
+	{
+		position 0 0 -15
+		angle 0.5
+		emission_rate 35
+		//time_to_live 2
+		time_to_live_min 2
+		time_to_live_max 2
+		direction 0 1 0
+		velocity_min 70
+		velocity_max 90    
+		//colour_range_start 0 1 0 1	
+		//colour_range_end 0 0 1 1	
+		colour 1 1 1 1	
+		//duration 1
+		//repeat_delay 2
+	}
+
+	/*affector ColourImage
+	{
+		image smokecolors.png
+	}*/
+
+   	/*affector Rotator
+   	{
+		rotation_range_start 0
+		rotation_range_end 360
+		rotation_speed_range_start -60
+		rotation_speed_range_end 200
+   	}*/
+
+   	//affector ColourInterpolator
+   	//{
+	//	time0 0
+	//	colour0 0 0 1 1
+	//	time1 0.25
+	//	colour1 1 0 0 1
+	//	time2 0.5
+	//	colour2 0 1 0 1
+	//	time3 0.75
+	//	colour3 0 0 1 1
+	//	time4 1
+	//	colour4 0 0 0 1
+   	//}
+
+	//affector DirectionRandomiser
+	//{
+	//	randomness 1000
+	//	scope 1.0
+	//	keep_velocity true
+	//}
+
+	/*affector DeflectorPlane
+	{
+		plane_point 0 0 100
+		plane_normal 1 0 -1
+		bounce 1.0
+	}*/
+
+	/*emitter Box
+	{
+		height 50
+		width 50
+		depth 50
+		position 0 0 -15
+		angle 0.5
+		emission_rate 150
+		//time_to_live 2
+		time_to_live_min 2
+		time_to_live_max 3
+		direction 0 0 -1
+		velocity_min 70
+		velocity_max 90    
+		//colour_range_start 0 1 0 1	
+		//colour_range_end 0 0 1 1	
+		colour 1 0 0 1	
+		//duration 1
+		//repeat_delay 2
+	}*/
+
+	/*emitter Ring
+	{
+		height 50
+		width 50
+		inner_height 0.9
+		inner_width 0.9
+		position 0 0 -15
+		angle 0.5
+		emission_rate 150
+		//time_to_live 2
+		time_to_live_min 1
+		time_to_live_max 2
+		direction 0 0 -1
+		velocity_min 10
+		velocity_max 30    
+		//colour_range_start 0 1 0 1	
+		//colour_range_end 0 0 1 1	
+		colour 1 0 0 1	
+		//duration 1
+		//repeat_delay 2
+	}*/
+
+   	affector Scaler
+   	{
+       	rate 30
+   	}
+
+}
